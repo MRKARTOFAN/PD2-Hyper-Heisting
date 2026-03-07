@@ -110,11 +110,7 @@ function PlayerStandard:_stance_entered(unequipped)
 	
 	local new_fov = self:get_zoom_fov(misc_attribs) + 0
 
-<<<<<<< Updated upstream
-	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration)
-=======
 	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration, duration_multiplier, duration)
->>>>>>> Stashed changes
 	managers.menu:set_mouse_sensitivity(self:in_steelsight())
 end
 
@@ -2800,11 +2796,10 @@ function PlayerStandard:_add_unit_to_char_table(char_table, unit, unit_type, int
 	end
 
 	local vec = u_head_pos - my_head_pos
-	local vec = u_head_pos - my_head_pos
 	local dis = mvector3.normalize(vec)
-	local max_dis = interaction_dist
 
-	if dis < max_dis then
+	if not interaction_dist or dis < interaction_dist then
+		local max_dis = interaction_dist or 1200
 		local max_angle = math.max(8, math.lerp(tight_area and 30 or 90, tight_area and 10 or 30, dis / max_dis))
 		local angle = vec:angle(cam_fwd)
 

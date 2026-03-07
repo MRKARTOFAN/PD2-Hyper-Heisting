@@ -2365,6 +2365,11 @@ function CopLogicIdle.on_intimidated(data, amount, aggressor_unit)
 end
 
 function CopLogicIdle._perform_objective_action(data, my_data, objective)
+	if not data.unit:movement()._actions then
+		return
+	end
+
+	if objective and not my_data.action_started and data.unit:anim_data().idle then
 	if objective and not my_data.action_started then
 		if data.unit:anim_data().act_idle or not data.unit:movement():chk_action_forbidden("action") then
 			if objective and objective.action and objective.action.variant then

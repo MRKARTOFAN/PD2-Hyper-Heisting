@@ -934,7 +934,9 @@ function CopActionHurt:init(action_desc, common_data)
 		if action_type == "death" and common_data.ext_base:has_tag("tank") then
 			local unit_id = common_data.unit:id()
 
-			managers.fire:remove_dead_dozer_from_overgrill(unit_id)
+			if managers.fire and managers.fire.remove_dead_dozer_from_overgrill then
+				managers.fire:remove_dead_dozer_from_overgrill(unit_id)
+			end
 		end
 
 		if self._is_server then

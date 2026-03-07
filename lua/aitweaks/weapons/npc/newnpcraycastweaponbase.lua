@@ -486,22 +486,9 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 		if self._suppression then
 			local suppression_slot_mask = user_unit:in_slot(16) and managers.slot:get_mask("enemies") or managers.slot:get_mask("players", "criminals")
 
-<<<<<<< Updated upstream
-			self:_suppress_units(mvec3_cpy(from_pos), mvec3_cpy(direction), ray_distance, suppression_slot_mask, user_unit, nil)
-		end
-	end
-
-	if self._alert_events then
-		result.rays = unique_hits
-	end
-
-	return result
-end
-=======
 			-- Safety check to ensure the function exists before calling it
 			if self._suppress_units then
 				self:_suppress_units(mvec3_cpy(from_pos), mvec3_cpy(direction), ray_distance, suppression_slot_mask, user_unit, nil)
 			end
 		end
 	end
->>>>>>> Stashed changes

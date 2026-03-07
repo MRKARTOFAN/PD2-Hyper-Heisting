@@ -674,18 +674,6 @@ function RaycastWeaponBase:_build_suppression(enemies_in_cone, suppr_mul)
 		end
 	end
 
-<<<<<<< Updated upstream
-	if enemies_in_cone then
-		for enemy_data, dis_error in pairs(enemies_in_cone) do
-			print(enemy_data.unit)
-
-			if not enemy_data.unit:movement():cool() then
-				enemy_data.unit:character_damage():build_suppression(suppr_mul * dis_error * self._suppression, self._panic_suppression_chance)
-			end
-		end
-	end
-end
-=======
 	if type(enemies_in_cone) == "table" then
 		for k, v in pairs(enemies_in_cone) do
 			local enemy_unit = nil
@@ -723,7 +711,6 @@ end
 			end
 		end
 	end
->>>>>>> Stashed changes
 
 function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	local ammo = tweak_data.weapon[self._name_id].CLIP_AMMO_MAX

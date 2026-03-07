@@ -87,46 +87,39 @@ local action_variants = {
 }
 local security_variant = action_variants.security
 
--- HH FIX: Register new variant types at CLASS LOAD TIME, not per-unit in init().
--- If a novel-type unit is the first to spawn, vanilla init sets _actions=nil
--- because the type isn't registered yet. Moving registration here prevents that.
-do
-	local av = CopMovement._action_variants
-	local tank = clone(security_variant)
-	tank.walk = TankCopActionWalk
-	av.tank_ftsu        = tank
-	av.trolliam_epicson = tank
-	av.spooc_heavy      = security_variant
-	av.fbi_xc45         = security_variant
-	av.fbi_pager        = security_variant
-	av.armored_sniper   = security_variant
-	av.gangster_ninja   = security_variant
-	av.armored_swat     = security_variant
-	av.cop_moss         = security_variant
-	av.shadow_taser     = security_variant
-	av.shadow_swat      = security_variant
-	local akuma = clone(security_variant)
-	akuma.hurt = ShieldActionHurt
-	akuma.walk = ShieldCopActionWalk
-	av.akuma = akuma
-end
-
-function CopMovement:init(unit)
+function CopMovement:init(unit)	
+	CopMovement._action_variants.tank_ftsu = clone(security_variant)
+	CopMovement._action_variants.tank_ftsu.walk = TankCopActionWalk
+	CopMovement._action_variants.trolliam_epicson = clone(security_variant)
+	CopMovement._action_variants.trolliam_epicson.walk = TankCopActionWalk	
+	CopMovement._action_variants.spooc_heavy = security_variant
+	CopMovement._action_variants.fbi_xc45 = security_variant
+	CopMovement._action_variants.fbi_pager = security_variant
+	CopMovement._action_variants.armored_sniper = security_variant
+	CopMovement._action_variants.gangster_ninja = security_variant
+	CopMovement._action_variants.armored_swat = security_variant
+	CopMovement._action_variants.cop_moss = security_variant
+	CopMovement._action_variants.akuma = clone(security_variant)
+	CopMovement._action_variants.akuma.hurt = ShieldActionHurt
+	CopMovement._action_variants.akuma.walk = ShieldCopActionWalk
+	CopMovement._action_variants.shadow_taser = security_variant
+CopMovement._action_variants.shadow_swat = security_variant
+	
 	old_init(self, unit)
+
 	if not self._actions then
 		self._actions = CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security
 	end
 end
 
 -- Stop the engine from wiping the actions list if the enemy's tweak data updates
--- HH FIX: Wrap unconditionally so vanilla's nil-setting of _actions is always recovered.
 local old_clbk_tweak_data_changed = CopMovement._clbk_tweak_data_changed
-function CopMovement:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
-	if old_clbk_tweak_data_changed then
+if old_clbk_tweak_data_changed then
+	function CopMovement:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
 		old_clbk_tweak_data_changed(self, old_tweak_data, new_tweak_data)
-	end
-	if not self._actions then
-		self._actions = CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security
+		if not self._actions then
+			self._actions = CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security
+		end
 	end
 end
 function CopMovement:post_init()
@@ -228,26 +221,22 @@ function CopMovement:post_init()
 		timer = self._timer
 	}
 
-	-- HH FIX: vanilla upd_ground_ray() requires self._fake_ray_data to exist;
-	-- HH's post_init replaced vanilla's entirely and never initialised it.
-	self._fake_ray_data = {
-		unit = false,
-		position = Vector3(),
-		ray = math.DOWN
-	}
-	self._move_dir = self._move_dir or Vector3()
-
 	self:upd_ground_ray()
 
+	local fake_ray = {
+		position = self._m_pos:with_z(self._m_pos.z),
+		ray = math.DOWN,
+		unit = self._unit
+	}
+
 	if not self._gnd_ray then
-		self._gnd_ray = self._fake_ray_data
+		self._gnd_ray = fake_ray
 	end
 
 	self._action_common_data.gnd_ray = self._gnd_ray
 	self:set_position(self._gnd_ray.position)
 
-	self:_post_init()
-end
+	self:_post_init(fake_ray)
 
 function CopMovement:is_taser_attack_allowed() --lol
 	return
@@ -1747,71 +1736,13 @@ function CopMovement:_upd_actions(t, dt)
 	return orig_CopMovement_upd_actions(self, t, dt)
 end
 
--- HH FIX: Reimplement action_request inline with nil guards at every _actions access.
--- A simple entry guard is insufficient because on_exit() callbacks inside
--- _interrupt_action can trigger _clbk_tweak_data_changed, nulling _actions mid-call.
+local orig_CopMovement_action_request = CopMovement.action_request
 function CopMovement:action_request(action_desc)
-	if not self:can_request_actions() then return end
-
+	-- Safety check: Do not allow new action requests if the unit is dead/deleted
 	if not self._actions then
-		self._actions = CopMovement._action_variants and
-			(CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security)
-		if not self._actions then return end
+		return false
 	end
-
-	if Network:is_server() and self._active_actions[1] and self._active_actions[1]:type() == "hurt" and self._active_actions[1]:hurt_type() == "death" then
-		debug_pause_unit(self._unit, "[CopMovement:action_request] Dead man walking!!!", self._unit, inspect(action_desc))
-	end
-
-	self.has_no_action = nil
-	local body_part = action_desc.body_part
-	local active_actions = self._active_actions
-	local interrupted_actions = nil
-
-	local function _interrupt_action(bp)
-		local old_action = active_actions[bp]
-		if old_action then
-			active_actions[bp] = false
-			if old_action.on_exit then old_action:on_exit() end
-			interrupted_actions = interrupted_actions or {}
-			interrupted_actions[bp] = old_action
-		end
-	end
-
-	_interrupt_action(body_part)
-	if body_part == 1 then
-		_interrupt_action(2)
-		_interrupt_action(3)
-	elseif body_part == 2 or body_part == 3 then
-		_interrupt_action(1)
-	end
-
-	-- Re-check: on_exit callbacks above may have triggered _clbk_tweak_data_changed
-	if not self._actions then
-		self._actions = CopMovement._action_variants and
-			(CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security)
-		if not self._actions then return end
-	end
-
-	if not self._actions[action_desc.type] then
-		debug_pause("[CopMovement:action_request] invalid action started", inspect(self._actions), inspect(action_desc))
-		return
-	end
-
-	if self._action_common_data and self._action_common_data.ext_anim and not self._action_common_data.ext_anim.pose then
-		self._action_common_data.ext_anim.pose = self._ext_anim.crouch and "crouch" or "stand"
-	end
-
-	local action, success = self._actions[action_desc.type]:new(action_desc, self._action_common_data)
-	if success and (not action.expired or not action:expired()) then
-		active_actions[body_part] = action
-	end
-	if interrupted_actions then
-		for bp, interrupted_action in pairs(interrupted_actions) do
-			self._ext_brain:action_complete_clbk(interrupted_action)
-		end
-	end
-	return success and action
+	return orig_CopMovement_action_request(self, action_desc)
 end
 -- ==========================================
 -- Crash Safety Fix: Prevent chk_action_forbidden nil _blocks crash
@@ -1859,6 +1790,6 @@ function CopMovement:chk_action_forbidden(action_type)
 		end
 	end
 	
-	-- Now that every action is safely padded, run the vanilla check!
+	-- Now that every action is safely padded, run the vanilla check
 	return orig_CopMovement_chk_action_forbidden(self, action_type)
 end
