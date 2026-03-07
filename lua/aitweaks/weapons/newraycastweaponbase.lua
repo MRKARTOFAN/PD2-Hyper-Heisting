@@ -3,15 +3,16 @@ Hooks:PostHook(NewRaycastWeaponBase, "init", "hhpost_shieldknock", function(self
 end)
 
 function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
-	if self._near_mul == 0 then
+	local near_mul = self._near_multiplier or self._near_mul or 1
+	local far_mul = self._far_multiplier or self._far_mul or 1
+
+	if near_mul == 0 then
 		return damage
 	end
 
 	local distance = col_ray.distance or mvector3.distance(col_ray.unit:position(), user_unit:position())
-	local near_dist = self._near_falloff
-	local far_dist = self._far_falloff
-	local near_mul = self._near_mul
-	local far_mul = self._far_mul
+	local near_dist = self._near_falloff or 0
+	local far_dist = self._far_falloff or 0
 	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
 	local current_state = user_unit and user_unit:movement() and user_unit:movement()._current_state
 
@@ -22,9 +23,9 @@ function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
 
 	local damage_mul = 1
 
-	if distance < near_dist then
+	if near_dist > 0 and distance < near_dist then
 		damage_mul = near_mul
-	elseif distance > far_dist then
+	elseif far_dist > 0 and distance > far_dist then
 		damage_mul = far_mul
 	end
 

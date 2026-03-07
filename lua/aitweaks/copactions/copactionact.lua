@@ -45,6 +45,7 @@ script_redirects[#script_redirects + 1] = "e_nl_cali_girls"
 CopActionAct._act_redirects.script = script_redirects
 
 function CopActionAct:init(action_desc, common_data)
+	self._timer = TimerManager:game()
 	self._common_data = common_data
 	self._action_desc = action_desc
 	self._ext_base = common_data.ext_base

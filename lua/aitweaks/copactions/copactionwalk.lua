@@ -1983,6 +1983,9 @@ function CopActionWalk:_get_max_walk_speed()
 	local speeds_table = self._common_data.char_tweak.move_speed[pose][self._haste][self._stance.name]
 	
 	local speed_modifier = self._ext_movement:speed_modifier()
+	if type(speed_modifier) ~= "number" then
+    speed_modifier = 1
+end
 	
 	if is_cop then
 		local groupai_modifier = managers.groupai:state()._enemy_speed_mul - 1 or 0 
@@ -2021,6 +2024,9 @@ function CopActionWalk:_get_current_max_walk_speed(move_dir)
 
 	local speed = self._common_data.char_tweak.move_speed[pose][self._haste][self._stance.name][move_dir]
 	local speed_modifier = self._ext_movement:speed_modifier()
+	if type(speed_modifier) ~= "number" then
+    speed_modifier = 1
+end
 	
 	if is_cop then
 		local groupai_modifier = managers.groupai:state()._enemy_speed_mul - 1 or 0 

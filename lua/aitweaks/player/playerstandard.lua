@@ -110,7 +110,11 @@ function PlayerStandard:_stance_entered(unequipped)
 	
 	local new_fov = self:get_zoom_fov(misc_attribs) + 0
 
+<<<<<<< Updated upstream
 	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration)
+=======
+	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration, duration_multiplier, duration)
+>>>>>>> Stashed changes
 	managers.menu:set_mouse_sensitivity(self:in_steelsight())
 end
 
@@ -1055,7 +1059,7 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 
 			local defense_data = character_unit:character_damage():damage_melee(action_data)
 			
-			if managers.player:has_category_upgrade("melee", "stacking_hit_damage_multiplier") then
+	if managers.player:has_category_upgrade("melee", "stacking_hit_damage_multiplier") then
 				if not self._state_data.stacking_dmg_mul or not self._state_data.stacking_dmg_mul.melee then
 					self._state_data.stacking_dmg_mul = self._state_data.stacking_dmg_mul or {}
 					self._state_data.stacking_dmg_mul.melee = self._state_data.stacking_dmg_mul.melee or {
@@ -1065,7 +1069,13 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 				end
 				
 				if defense_data and defense_data ~= "friendly_fire" then
-					if target_dead then --note: actually means "not dead"
+					-- SAFETY FIX: Ensure character_unit and character_damage exist before checking if dead
+					local is_alive = false
+					if alive(character_unit) and character_unit:character_damage() and type(character_unit:character_damage().dead) == "function" then
+						is_alive = not character_unit:character_damage():dead()
+					end
+
+					if is_alive then 
 						self._state_data.stacking_melee_speed = self._state_data.stacking_melee_speed or {
 							nil,
 							0
@@ -1085,10 +1095,13 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 					end
 				end
 			end
+--managers.player:reset_bloodthirst_damage()
 			
-			--managers.player:reset_bloodthirst_damage()
+			-- SAFETY FIX: Only call the DoT function if it exists
+			if self._check_melee_dot_damage then
+				self:_check_melee_dot_damage(col_ray, defense_data, melee_entry)
+			end
 			
-			self:_check_melee_dot_damage(col_ray, defense_data, melee_entry)
 			self:_perform_sync_melee_damage(hit_unit, col_ray, action_data.damage)
 
 			return defense_data
@@ -2761,11 +2774,32 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 end
 
 function PlayerStandard:_add_unit_to_char_table(char_table, unit, unit_type, interaction_dist, interaction_through_walls, tight_area, priority, my_head_pos, cam_fwd, ray_ignore_units, ray_types)
-	if unit:unit_data().disable_shout and not unit:brain():interaction_voice() then
+	if not alive(unit) then
 		return
 	end
 
-	local u_head_pos = unit_type == 3 and unit:base():get_mark_check_position() or unit:movement():m_head_pos() + math.UP * 30
+	-- Safety check: Ignore broken cameras and turrets
+	if unit:base() and type(unit:base().destroyed) == "function" and unit:base():destroyed() then
+		return
+	end
+
+	if unit:unit_data().disable_shout and not (unit:brain() and unit:brain():interaction_voice()) then
+		return
+	end
+
+	local u_head_pos
+	if unit_type == 3 then
+		-- Bypass the camera's internal lens check completely to prevent C++ access violations
+		if unit:base() and type(unit:base().get_mark_check_position) == "function" and not unit:base()._cone_angle then
+			u_head_pos = unit:base():get_mark_check_position()
+		else
+			u_head_pos = unit:position() + math.UP * 30
+		end
+	else
+		u_head_pos = unit:movement():m_head_pos() + math.UP * 30
+	end
+
+	local vec = u_head_pos - my_head_pos
 	local vec = u_head_pos - my_head_pos
 	local dis = mvector3.normalize(vec)
 	local max_dis = interaction_dist

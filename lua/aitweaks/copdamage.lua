@@ -1110,7 +1110,7 @@ function CopDamage:check_medic_heal()
 
 	local tweak_table_name = self._unit:base()._tweak_table
 
-	if table_contains(tweak_data.medic.disabled_units, tweak_table_name) then
+if tweak_data.medic and tweak_data.medic.disabled_units and table_contains(tweak_data.medic.disabled_units, tweak_table_name) then
 		return false
 	end
 

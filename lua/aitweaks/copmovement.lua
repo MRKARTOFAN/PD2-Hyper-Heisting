@@ -103,11 +103,25 @@ function CopMovement:init(unit)
 	CopMovement._action_variants.akuma.hurt = ShieldActionHurt
 	CopMovement._action_variants.akuma.walk = ShieldCopActionWalk
 	CopMovement._action_variants.shadow_taser = security_variant
-	CopMovement._action_variants.shadow_swat = security_variant
+CopMovement._action_variants.shadow_swat = security_variant
 	
 	old_init(self, unit)
+
+	if not self._actions then
+		self._actions = CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security
+	end
 end
 
+-- Stop the engine from wiping the actions list if the enemy's tweak data updates
+local old_clbk_tweak_data_changed = CopMovement._clbk_tweak_data_changed
+if old_clbk_tweak_data_changed then
+	function CopMovement:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
+		old_clbk_tweak_data_changed(self, old_tweak_data, new_tweak_data)
+		if not self._actions then
+			self._actions = CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security
+		end
+	end
+end
 function CopMovement:post_init()
 	local unit = self._unit
 	self._ext_brain = unit:brain()
@@ -182,6 +196,8 @@ function CopMovement:post_init()
 	self._ext_base:default_weapon_name(managers.groupai:state():enemy_weapons_hot() and "primary" or "secondary")
 
 	local fwd = self._m_rot:y()
+	self._timer = TimerManager:game()
+	
 	self._action_common_data = {
 		stance = self._stance,
 		pos = self._m_pos,
@@ -201,17 +217,26 @@ function CopMovement:post_init()
 		nav_tracker = self._nav_tracker,
 		active_actions = self._active_actions,
 		queued_actions = self._queued_actions,
-		look_vec = mvec3_cpy(fwd)
+		look_vec = mvec3_cpy(fwd),
+		timer = self._timer
 	}
 
 	self:upd_ground_ray()
 
-	if self._gnd_ray then
-		self:set_position(self._gnd_ray.position)
+	local fake_ray = {
+		position = self._m_pos:with_z(self._m_pos.z),
+		ray = math.DOWN,
+		unit = self._unit
+	}
+
+	if not self._gnd_ray then
+		self._gnd_ray = fake_ray
 	end
 
-	self:_post_init()
-end
+	self._action_common_data.gnd_ray = self._gnd_ray
+	self:set_position(self._gnd_ray.position)
+
+	self:_post_init(fake_ray)
 
 function CopMovement:is_taser_attack_allowed() --lol
 	return
@@ -1671,3 +1696,81 @@ function CopMovement:outside_worlds_bounding_box()
 		my_unit:base():set_slot(my_unit, 0)
 	end
 end
+
+-- ==========================================
+-- ULTIMATE ACTION SAFETY NET (SUPERBLT HOOKS)
+-- ==========================================
+local function inject_actions(self)
+	if not self._actions then
+		self._actions = CopMovement._action_variants and (CopMovement._action_variants[self._unit:base()._tweak_table] or CopMovement._action_variants.security)
+	end
+end
+
+Hooks:PreHook(CopMovement, "action_request", "HH_Fix_ActionReq_Cop", inject_actions)
+Hooks:PreHook(CopMovement, "_upd_actions", "HH_Fix_UpdActions_Cop", inject_actions)
+
+if CivilianMovement then
+	Hooks:PreHook(CivilianMovement, "action_request", "HH_Fix_ActionReq_Civ", inject_actions)
+	Hooks:PreHook(CivilianMovement, "_upd_actions", "HH_Fix_UpdActions_Civ", inject_actions)
+end
+
+if HuskCopMovement then
+	Hooks:PreHook(HuskCopMovement, "action_request", "HH_Fix_ActionReq_Husk", inject_actions)
+	Hooks:PreHook(HuskCopMovement, "_upd_actions", "HH_Fix_UpdActions_Husk", inject_actions)
+end
+
+if TeamAIMovement then
+	Hooks:PreHook(TeamAIMovement, "action_request", "HH_Fix_ActionReq_AI", inject_actions)
+	Hooks:PreHook(TeamAIMovement, "_upd_actions", "HH_Fix_UpdActions_AI", inject_actions)
+end
+
+-- ==========================================
+-- Crash Safety Fix: Prevent updating dead/deleted units
+-- ==========================================
+local orig_CopMovement_upd_actions = CopMovement._upd_actions
+function CopMovement:_upd_actions(t, dt)
+	-- Safety check: If the actions table was destroyed, abort the update!
+	if not self._actions then
+		return
+	end
+	return orig_CopMovement_upd_actions(self, t, dt)
+end
+
+local orig_CopMovement_action_request = CopMovement.action_request
+function CopMovement:action_request(action_desc)
+	-- Safety check: Do not allow new action requests if the unit is dead/deleted
+	if not self._actions then
+		return false
+	end
+	return orig_CopMovement_action_request(self, action_desc)
+end
+-- ==========================================
+-- Crash Safety Fix: Prevent chk_action_forbidden nil _blocks crash
+-- ==========================================
+if CopActionAct then
+	local orig_chk_action_forbidden = CopActionAct.chk_action_forbidden
+	function CopActionAct:chk_action_forbidden(action_type)
+		-- Safety check: If the action returned early and never created _blocks, 
+		-- return false (not forbidden) instead of crashing the engine!
+		if not self._blocks then
+			return false
+		end
+		
+		return orig_chk_action_forbidden(self, action_type)
+	end
+end
+
+if CopActionHurt then
+	local orig_hurt_chk_action_forbidden = CopActionHurt.chk_action_forbidden
+	function CopActionHurt:chk_action_forbidden(action_type)
+		if not self._blocks then
+			return false
+		end
+		if orig_hurt_chk_action_forbidden then
+			return orig_hurt_chk_action_forbidden(self, action_type)
+		else
+			return CopActionAct.chk_action_forbidden(self, action_type)
+		end
+	end
+end 
+

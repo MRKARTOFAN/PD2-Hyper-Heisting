@@ -32,7 +32,8 @@ function GroupAITweakData:init(tweak_data)
 	self:_init_task_data(difficulty_index)
 	self:_init_chatter_data()
 	self:_init_unit_categories(difficulty_index)
-	self:_init_enemy_spawn_groups(difficulty_index)
+	self._tactics = self._tactics or {}
+   	self:_init_enemy_spawn_groups(difficulty_index)
 end
 
 Hooks:PostHook(GroupAITweakData, "_init_chatter_data", "hh_init_chatter_data", function(self, difficulty_index)

@@ -2,6 +2,7 @@ local table_insert = table.insert
 local table_remove = table.remove
 
 function DOTManager:update(t, dt)
+	self._doted_enemies = self._doted_enemies or {}
 	for index = #self._doted_enemies, 1, -1 do
 		local dot_info = self._doted_enemies[index]
 

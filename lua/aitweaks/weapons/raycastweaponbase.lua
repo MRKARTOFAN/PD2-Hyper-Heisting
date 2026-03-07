@@ -674,6 +674,7 @@ function RaycastWeaponBase:_build_suppression(enemies_in_cone, suppr_mul)
 		end
 	end
 
+<<<<<<< Updated upstream
 	if enemies_in_cone then
 		for enemy_data, dis_error in pairs(enemies_in_cone) do
 			print(enemy_data.unit)
@@ -684,6 +685,45 @@ function RaycastWeaponBase:_build_suppression(enemies_in_cone, suppr_mul)
 		end
 	end
 end
+=======
+	if type(enemies_in_cone) == "table" then
+		for k, v in pairs(enemies_in_cone) do
+			local enemy_unit = nil
+			local dis_error = 1
+			
+			-- 1. Check if the value is a table containing a unit (Vanilla Update 240+)
+			if type(v) == "table" and type(v.unit) == "userdata" then
+				enemy_unit = v.unit
+				dis_error = type(v.suppression_amt) == "number" and v.suppression_amt or 1
+			-- 2. Check if the key is a table containing a unit (HH check_autoaim)
+			elseif type(k) == "table" and type(k.unit) == "userdata" then
+				enemy_unit = k.unit
+				dis_error = type(v) == "number" and v or 1
+			-- 3. Check if the key is a raw userdata (Older mods/vanilla)
+			elseif type(k) == "userdata" then
+				enemy_unit = k
+				dis_error = type(v) == "number" and v or 1
+			-- 4. Check if the value is a raw userdata
+			elseif type(v) == "userdata" then
+				enemy_unit = v
+				dis_error = type(k) == "number" and k or 1
+			end
+			
+			-- SAFETY FIX: Protected call to verify it is actually a Unit and not a Vector3
+			local is_valid_unit = false
+			if type(enemy_unit) == "userdata" then
+				local success, res = pcall(function() return alive(enemy_unit) end)
+				is_valid_unit = success and res
+			end
+			
+			if is_valid_unit and enemy_unit:movement() and enemy_unit:movement().cool and not enemy_unit:movement():cool() then
+				if enemy_unit:character_damage() and enemy_unit:character_damage().build_suppression then
+					enemy_unit:character_damage():build_suppression((suppr_mul or 1) * dis_error * (self._suppression or 1), self._panic_suppression_chance)
+				end
+			end
+		end
+	end
+>>>>>>> Stashed changes
 
 function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	local ammo = tweak_data.weapon[self._name_id].CLIP_AMMO_MAX

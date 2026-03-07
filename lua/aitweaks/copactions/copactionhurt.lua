@@ -87,6 +87,7 @@ CopActionHurt.network_allowed_hurt_types = {
 }
 
 function CopActionHurt:init(action_desc, common_data)
+	self._timer = TimerManager:game()
 	self._common_data = common_data
 	self._ext_base = common_data.ext_base
 	self._ext_brain = common_data.ext_brain
@@ -100,6 +101,10 @@ function CopActionHurt:init(action_desc, common_data)
 	self._attention = common_data.attention
 	self._action_desc = action_desc
 	self._is_server = Network:is_server()
+	
+	-- FIX: Create the blocks table immediately before any early returns
+	CopActionAct._create_blocks_table(self, action_desc.blocks)
+
 	local t = TimerManager:game():time()
 	local tweak_table = common_data.ext_base._tweak_table
 	local is_civilian = CopDamage.is_civilian(tweak_table)
@@ -228,31 +233,13 @@ function CopActionHurt:init(action_desc, common_data)
 			return
 		end
 	elseif action_type == "fire_hurt" or action_type == "light_hurt" and action_desc.variant == "fire" then
-		--[[local use_animation_on_fire_damage = nil
-
-		if common_data.char_tweak.use_animation_on_fire_damage == nil then
-			use_animation_on_fire_damage = true
-		else
-			use_animation_on_fire_damage = common_data.char_tweak.use_animation_on_fire_damage
-		end
-
-		if not use_animation_on_fire_damage then
-			return
-		end
-
-		local start_dot_dance_antimation = action_desc.fire_dot_data and action_desc.fire_dot_data.start_dot_dance_antimation
-
-		if not start_dot_dance_antimation then
-			return
-		end]]
-
 		redir_res = common_data.ext_movement:play_redirect("fire_hurt")
 
 		if not redir_res then
 			return
 		end
 		
-		self._machine:set_speed_soft(redir_res, self._speed, 0.5)
+		self._machine:set_speed(redir_res, self._speed)
 
 		if action_desc.ignite_character == "dragonsbreath" then
 			self:_dragons_breath_sparks()
@@ -579,11 +566,7 @@ function CopActionHurt:init(action_desc, common_data)
 			end
 			
 			if action_type == "hurt" or action_type == "expl_hurt" or action_type == "heavy_hurt" or action_type == "shield_knock" then
-				--log("type is " .. action_type .. "")
-				--if redirect then
-				--	log("redirect was " .. tostring(redirect) .. "")
-				--end
-				self._machine:set_speed_soft(redir_res, self._speed, 0.7)
+				self._machine:set_speed(redir_res, self._speed)
 			end
 
 			if action_desc.variant ~= "bleeding" then
@@ -990,8 +973,6 @@ function CopActionHurt:init(action_desc, common_data)
 	if action_type == "death" and not action_desc.variant == "fire" or action_type == "bleedout" or action_type == "fatal" then
 		self._floor_normal = self:_get_floor_normal(common_data.pos, common_data.fwd, common_data.right)
 	end
-
-	CopActionAct._create_blocks_table(self, action_desc.blocks)
 	common_data.ext_movement:enable_update()
 
 	if self._is_server then
