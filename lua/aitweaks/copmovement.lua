@@ -318,6 +318,16 @@ function CopMovement:_detonate_dark_bomb_client(enemy)
 	end
 end
 
+-- SH: fix suppressed_reaction playing stand-to-crouch animation when already crouching
+local _play_redirect_orig = CopMovement.play_redirect
+function CopMovement:play_redirect(redirect_name, ...)
+	local result = _play_redirect_orig(self, redirect_name, ...)
+	if result and redirect_name == "suppressed_reaction" and self._ext_anim.crouch then
+		self._machine:set_parameter(result, "from_stand", 0)
+	end
+	return result
+end
+
 function CopMovement:_chk_play_equip_weapon()
 	if self._stance.values[1] == 1 and not self._ext_anim.equip and not self._tweak_data.no_equip_anim and not self:chk_action_forbidden("action") then
 		local redir_res = self:play_redirect("equip")
@@ -556,6 +566,23 @@ function CopMovement:_upd_actions(t)
 	end
 end
 
+-- SH: force head position recalc during stance/suppression transitions so aim stays accurate
+local _upd_stance_orig = CopMovement._upd_stance
+function CopMovement:_upd_stance(t)
+	if self._stance.transition and self._stance.transition.next_upd_t < t then
+		self._force_head_upd = true
+	elseif self._suppression.transition and self._suppression.transition.next_upd_t < t then
+		self._force_head_upd = true
+	end
+	_upd_stance_orig(self, t)
+end
+
+local _change_stance_orig = CopMovement._change_stance
+function CopMovement:_change_stance(...)
+	_change_stance_orig(self, ...)
+	self._force_head_upd = true
+end
+
 function CopMovement:sync_action_act_start(index, blocks_hurt, clamp_to_graph, needs_full_blend, start_rot, start_pos)
 	if self._ext_damage:dead() then
 		return
@@ -641,6 +668,44 @@ function CopMovement:sync_action_dodge_start(body_part, var, side, rot, speed, s
 	end
 
 	self:action_request(action_data)
+end
+
+-- SH: disable flashlight on spawn so it only turns on when cops go hot
+local _post_init_orig = CopMovement._post_init
+function CopMovement:_post_init(...)
+	local equipped_weapon = self._ext_inventory:equipped_unit()
+	if alive(equipped_weapon) then
+		equipped_weapon:base():set_flashlight_enabled(false)
+	end
+	_post_init_orig(self, ...)
+end
+
+-- SH: toggle flashlight based on cool state and game settings
+function CopMovement:_chk_flashlight_state()
+	local equipped_weapon = self._ext_inventory:equipped_unit()
+	if not alive(equipped_weapon) then
+		return
+	end
+
+	local flashlight_on = not self:cool() and not self._ext_inventory:shield_unit() and managers.game_play_central:flashlights_on()
+	if flashlight_on then
+		local lights = self._unit:get_objects_by_type(Idstring("light"))
+		if #lights > 0 and lights[1]:enable() then
+			flashlight_on = false
+		end
+	end
+
+	equipped_weapon:base():set_flashlight_enabled(flashlight_on)
+end
+
+local _set_cool_orig = CopMovement.set_cool
+function CopMovement:set_cool(...)
+	_set_cool_orig(self, ...)
+	self:_chk_flashlight_state()
+end
+
+function CopMovement:sync_equip_weapon()
+	self:_chk_flashlight_state()
 end
 
 function CopMovement:on_suppressed(state)
@@ -805,6 +870,7 @@ function CopMovement:on_suppressed(state)
 	end
 
 	self:enable_update()
+	self._force_head_upd = true  -- SH: update head pos after suppression state change
 end
 
 local nonstags = {
@@ -813,12 +879,30 @@ local nonstags = {
 }
 
 function CopMovement:damage_clbk(my_unit, damage_info)
+	-- SH: skip damage actions on units already playing a death animation
+	if self._active_actions[1] and self._active_actions[1]._hurt_type == "death" then
+		return
+	end
+
 	local hurt_type = damage_info.result.type
 
 	if not hurt_type then
 		return
 	end
-	
+
+	-- SH: redirect stun for tanks and shields; skip light_hurt on shielded units already hurt
+	if damage_info.variant == "stun" then
+		if self._unit:base():has_tag("tank") then
+			damage_info.variant = "hurt"
+			damage_info.result = { variant = "hurt", type = "expl_hurt" }
+		elseif self._unit:base():has_tag("shield") then
+			damage_info.variant = "hurt"
+			damage_info.result = { variant = "hurt", type = "concussion" }
+		end
+	elseif damage_info.result.type == "light_hurt" and self._ext_inventory._shield_unit and self._ext_anim.hurt then
+		return
+	end
+
 	local t = TimerManager:game():time()
 	
 	if hurt_type == "healed" then

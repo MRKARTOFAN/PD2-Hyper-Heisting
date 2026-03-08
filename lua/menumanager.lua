@@ -82,7 +82,7 @@ function MenuCallbackHandler:start_job(job_data)
 		managers.network.matchmake:create_lobby(matchmake_attributes)
 	end
 
-	managers.platform:refresh_rich_presence()
+--	managers.platform:refresh_rich_presence()
 end
 
 

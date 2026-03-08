@@ -68,6 +68,56 @@ CopLogicBase._DANGEROUS_ALERT_TYPES = {
 }
 
 function CopLogicBase.on_new_objective(data, old_objective)
+	-- SH: shield_cover/unit_cover units follow their provider instead of going solo
+	if data.objective and data.objective.type == "defend_area" and data.group then
+		if data.tactics and (data.tactics.shield_cover or data.tactics.unit_cover) then
+			local cover_unit = old_objective and old_objective.cover_unit
+			if not alive(cover_unit) or cover_unit:character_damage():dead() then
+				local followers = {}
+				for u_key, u_data in pairs(data.group.units) do
+					local logic_data = alive(u_data.unit) and u_data.unit:brain()._logic_data
+					if logic_data and logic_data.tactics then
+						if logic_data.tactics.shield_cover or logic_data.tactics.unit_cover then
+							local unit = logic_data.objective and logic_data.objective.cover_unit
+							if alive(unit) and not unit:character_damage():dead() then
+								local unit_key = unit:key()
+								if data.group.units[unit_key] then
+									followers[unit_key] = followers[unit_key] or { amount = 0 }
+									followers[unit_key].amount = followers[unit_key].amount + 1
+								end
+							end
+						else
+							followers[u_key] = followers[u_key] or { amount = 0 }
+							followers[u_key].is_shield = logic_data.tactics.shield
+						end
+					end
+				end
+
+				local best_u_key, best_is_shield
+				local least_followers = math.huge
+				for u_key, follower_data in pairs(followers) do
+					if follower_data.is_shield or not data.tactics.shield_cover or data.tactics.unit_cover and not best_is_shield then
+						if follower_data.amount < least_followers or data.tactics.shield_cover and follower_data.is_shield and not best_is_shield then
+							best_u_key = u_key
+							best_is_shield = follower_data.is_shield
+							least_followers = follower_data.amount
+						end
+					end
+				end
+
+				cover_unit = best_u_key and data.group.units[best_u_key].unit
+			end
+
+			if cover_unit then
+				data.objective.type = "follow"
+				data.objective.cover_unit = cover_unit
+				data.objective.follow_unit = cover_unit
+				data.objective.path_data = nil
+				data.objective.distance = 300
+			end
+		end
+	end
+
 	if old_objective and old_objective.follow_unit then
 		
 		if alive(old_objective.follow_unit) then
@@ -209,57 +259,14 @@ function CopLogicBase.on_delayed_clbk(internal_data, id)
 	end
 end
 
---[[function CopLogicBase.on_objective_unit_damaged(data, follow_unit, attacker_unit)
-	if not alive(data.unit) or not alive(follow_unit) or data.unit:character_damage():dead() then
-		return
+-- SH: Remove follow unit immediately on death, not after body despawns
+function CopLogicBase.on_objective_unit_damaged(data, unit, attacker_unit)
+	if unit:character_damage()._dead then
+		data.objective_failed_clbk(data.unit, data.objective)
 	end
+end
 
-	local objective = data.objective
 
-	if follow_unit:character_damage().dead and follow_unit:character_damage():dead() then
-		objective.death_clbk_key = nil
-
-		data.objective_failed_clbk(data.unit, objective)
-	end
-
-	if attacker_unit ~= nil and alive(attacker_unit) then
-		if data.is_converted then
-			local alert_data = {
-				"aggression",
-				attacker_unit:movement():m_pos(),
-				[5] = attacker_unit
-			}
-
-			TeamAILogicIdle.on_alert(data, alert_data)
-
-			local damage_info = {
-				attacker_unit = attacker_unit,
-				result = {
-					type = "none"
-				}
-			}
-
-			TeamAILogicIdle.damage_clbk(data, damage_info)
-		elseif data.tactics and data.tactics.provide_coverfire then
-			local alert_data = {
-				"aggression",
-				follow_unit:movement():m_pos(),
-				1000,
-				data.SO_access,
-				attacker_unit,
-				attacker_unit:movement():m_pos()
-			}
-
-			CopLogicIdle.on_alert(data, alert_data)
-
-			local damage_info = {
-				attacker_unit = attacker_unit
-			}
-
-			CopLogicIdle.damage_clbk(data, damage_info)
-		end
-	end
-end]]
 
 function CopLogicBase.draw_reserved_positions(data)
 	local my_pos = data.m_pos
@@ -895,10 +902,9 @@ function CopLogicBase._upd_attention_obj_detection(data, min_reaction, max_react
 		managers.groupai:state():set_importance_weight(data.key, player_importance_wgt)
 	end
 
-	return delay
-end
-
-function CopLogicBase._create_detected_attention_object_data(t, my_unit, u_key, attention_info, settings, forced, visible_data)
+	-- SH: cap detection delay at 0.5s when not in stealth for responsive detection
+	return data.cool and delay or math.min(0.5, delay)
+end(t, my_unit, u_key, attention_info, settings, forced, visible_data)
 	local ext_brain = my_unit:brain()
 
 	attention_info.handler:add_listener("detect_" .. tostring_g(my_unit:key()), callback(ext_brain, ext_brain, "on_detected_attention_obj_modified"))
@@ -968,7 +974,7 @@ function CopLogicBase._create_detected_attention_object_data(t, my_unit, u_key, 
 	local new_entry = {
 		verified = false,
 		verified_t = false,
-		notice_progress = 0,
+		notice_progress = managers.groupai:state():enemy_weapons_hot() and 1 or 0,
 		settings = settings,
 		unit = attention_info.unit,
 		u_key = u_key,
@@ -1229,6 +1235,12 @@ function CopLogicBase.on_detected_attention_obj_modified(data, modified_u_key)
 end
 
 function CopLogicBase._set_attention_obj(data, new_att_obj, new_reaction)
+	-- SH: disable forced voicelines during target acquisition (HH manages its own chatter below)
+	local chatter = data.char_tweak.chatter
+	data.char_tweak.chatter = {}
+	local _restore_chatter = function()
+		data.char_tweak.chatter = chatter
+	end
 	local old_att_obj = data.attention_obj
 	data.attention_obj = new_att_obj
 
@@ -1310,6 +1322,7 @@ function CopLogicBase._set_attention_obj(data, new_att_obj, new_reaction)
 			managers.groupai:state():on_enemy_disengaging(data.unit, old_att_obj.u_key)
 		end
 	end
+	_restore_chatter()
 end
 
 function CopLogicBase.should_duck_on_alert(data, alert_data)
@@ -1349,68 +1362,42 @@ function CopLogicBase._chk_nearly_visible_chk_needed(data, attention_info, u_key
 end
 
 function CopLogicBase.is_obstructed(data, objective, strictness, attention)
-	local my_data = data.internal_data
+	attention = attention or data.attention_obj
+	strictness = 1 - (strictness or 0)
 
-	if not objective then
+	if not objective or objective.is_default or (objective.in_place or not objective.nav_seg) and not objective.action then
 		return true, false
 	end
 
-	if data.unit:character_damage():dead() then
-		return true, true
-	end
-	
+	-- HH: forced objectives bypass obstruction
 	if objective.forced then
 		return
-	end
-
-	local health_ratio = data.unit:character_damage():health_ratio()
-
-	if health_ratio <= 0 then
-		return true, true
-	end
-
-	if objective.is_default then
-		return true, false
-	elseif objective.in_place or not objective.nav_seg then
-		if not objective.action then
-			return true, false
-		end
 	end
 
 	if objective.interrupt_suppression and data.is_suppressed then
 		return true, true
 	end
 
-	local strictness_mul = strictness and 1 - strictness
-
 	if objective.interrupt_health then
-		if health_ratio < 1 then
-			local too_much_damage = nil
-
-			if strictness_mul then
-				too_much_damage = health_ratio * strictness_mul < objective.interrupt_health
-			else
-				too_much_damage = health_ratio < objective.interrupt_health
-			end
-
-			if too_much_damage then
-				return true, true
-			end
+		local health_ratio = data.unit:character_damage():health_ratio()
+		if health_ratio < 1 and health_ratio * strictness < objective.interrupt_health or data.unit:character_damage():dead() then
+			return true, true
 		end
 	end
 
+	-- HH: interrupt_on_contact - engage range interrupt for close combat
 	if objective.interrupt_on_contact then
-		if attention and AIAttentionObject.REACT_COMBAT <= attention.reaction then			
+		local my_data = data.internal_data
+		if attention and AIAttentionObject.REACT_COMBAT <= attention.reaction then
 			if my_data.attitude == "engage" or attention.verified_t and data.t - attention.verified_t <= 15 then
 				local z_diff = math.abs(attention.m_pos.z - data.m_pos.z)
 				local enemy_dis = attention.dis
 				local interrupt_dis = my_data.weapon_range and my_data.weapon_range.close or 2000
-				
-				interrupt_dis = interrupt_dis * (not strictness and 1 or strictness_mul)
-				
+
+				interrupt_dis = interrupt_dis * strictness
+
 				if z_diff > 250 then
 					z_diff = z_diff - 250
-					
 					interrupt_dis = math.lerp(interrupt_dis, interrupt_dis * 0.25, z_diff / 250)
 				end
 
@@ -1420,70 +1407,39 @@ function CopLogicBase.is_obstructed(data, objective, strictness, attention)
 			end
 		end
 	end
-	
+
 	if objective.interrupt_dis then
-		attention = attention or data.attention_obj
-
-		if attention and attention.reaction then
-			local reaction_to_check = nil
-
-			if data.cool then
-				reaction_to_check = REACT_SURPRISED
-			else
-				reaction_to_check = REACT_COMBAT
-			end
-			
-			if reaction_to_check <= attention.reaction then
-				if objective.interrupt_dis == -1 then
-					return true, true
-				elseif math_abs(attention.m_pos.z - data.m_pos.z) < 250 then
-					local enemy_dis = attention.dis
-
-					if strictness_mul then
-						enemy_dis = enemy_dis * strictness_mul
-					end
-
-					if not attention.verified then
-						enemy_dis = enemy_dis * 2
-					end
-
-					if enemy_dis < objective.interrupt_dis then
-						return true, true
-					end
-				end
-
-				if objective.pos and math_abs(attention.m_pos.z - objective.pos.z) < 250 then
-					local enemy_dis = mvec3_dis(objective.pos, attention.m_pos)
-
-					if strictness_mul then
-						enemy_dis = enemy_dis * strictness_mul
-					end
-
-					if enemy_dis < objective.interrupt_dis then
-						return true, true
-					end
-				end
-			elseif objective.interrupt_dis == -1 and not data.cool then
+		if attention and (AIAttentionObject.REACT_COMBAT <= attention.reaction or data.cool and AIAttentionObject.REACT_SURPRISED <= attention.reaction) then
+			if objective.interrupt_dis == -1 then
 				return true, true
+			end
+
+			-- SH: verified LOS check for min interrupt distance
+			if attention.verified and data.char_tweak.min_obj_interrupt_dis then
+				if attention.dis * strictness < data.char_tweak.min_obj_interrupt_dis then
+					return true, true
+				end
+			end
+
+			if math.abs(attention.m_pos.z - data.m_pos.z) < 250 then
+				if attention.dis * strictness * (attention.verified and 1 or 2) < objective.interrupt_dis then
+					return true, true
+				end
+			end
+
+			if objective.pos and math.abs(attention.m_pos.z - objective.pos.z) < 250 then
+				if mvec3_dis(objective.pos, attention.m_pos) * strictness < objective.interrupt_dis then
+					return true, true
+				end
 			end
 		elseif objective.interrupt_dis == -1 and not data.cool then
 			return true, true
 		end
 	end
 
-	--[[if objective.interrupt_dis and data.name == "travel" and data.attention_obj and data.attention_obj.reaction >= REACT_COMBAT and data.unit:base().has_tag and data.unit:base():has_tag("special") then
-		if not data.unit:base():has_tag("sniper") and data.unit:base()._tweak_table ~= "phalanx_minion" and data.unit:base()._tweak_table ~= "phalanx_vip" then
-			local enter_attack_range = 1400
-			local focus_enemy_dis = data.attention_obj.verified and data.attention_obj.dis or data.attention_obj.verified_dis
-
-			if focus_enemy_dis < enter_attack_range then
-				return true, true
-			end
-		end
-	end]]
-
 	return false, false
 end
+
 
 function CopLogicBase._chk_say_criminal_too_close(data, attention_obj)
 	if not data.said_too_close_t or data.t > data.said_too_close_t then
@@ -1818,87 +1774,50 @@ function CopLogicBase.on_attention_obj_identified(data, attention_u_key, attenti
 end
 
 function CopLogicBase.chk_am_i_aimed_at(data, attention_obj, max_dot)
-	if not attention_obj.is_person or not attention_obj.is_alive then
+	-- SH: fixed for clients/NPCs using detect_look_dir
+	if not attention_obj.is_person then
 		return
 	end
 
-	if attention_obj.dis < 700 and max_dot > 0.3 then
-		max_dot = math_lerp(0.3, max_dot, (attention_obj.dis - 50) / 650)
+	if attention_obj.dis < 1000 then
+		max_dot = math.lerp(max_dot * 0.75, max_dot, attention_obj.dis / 1000)
 	end
 
-	local enemy_look_dir = tmp_vec1
-	local weapon_rot = nil
+	mvec3_set(tmp_vec1, attention_obj.unit:movement():detect_look_dir())
+	mvector3.direction(tmp_vec2, attention_obj.m_head_pos, data.unit:movement():m_com())
 
-	if attention_obj.is_husk_player then
-		mvec3_set(enemy_look_dir, attention_obj.unit:movement():detect_look_dir())
+	return max_dot < mvector3.dot(tmp_vec2, tmp_vec1)
+end
+
+
+function CopLogicBase._chk_alert_obstructed(listen_pos, alert_data)
+	-- SH: larger alert ranges penetrate walls more; footsteps still fully blocked
+	if not alert_data[3] then
+		return false
+	end
+
+	local alert_epicenter
+	if alert_data[1] == "bullet" then
+		alert_epicenter = tmp_vec1
+		mvec3_step(alert_epicenter, alert_data[2], alert_data[6], 20)
 	else
-		if attention_obj.is_local_player then
-			m_rot_y(attention_obj.unit:movement():m_head_rot(), enemy_look_dir)
-		else
-			if attention_obj.unit:inventory() and attention_obj.unit:inventory():equipped_unit() then
-				if attention_obj.unit:movement()._stance.values[3] >= 0.6 then
-					local weapon_fire_obj = attention_obj.unit:inventory():equipped_unit():get_object(Idstring("fire"))
-
-					if alive(weapon_fire_obj) then
-						weapon_rot = weapon_fire_obj:rotation()
-					end
-				end
-			end
-
-			if weapon_rot then
-				m_rot_y(weapon_rot, enemy_look_dir)
-			else
-				m_rot_z(attention_obj.unit:movement():m_head_rot(), enemy_look_dir)
-			end
-		end
-
-		mvec3_norm(enemy_look_dir)
+		alert_epicenter = alert_data[2]
 	end
 
-	local enemy_vec = data.unit:movement():m_com() - attention_obj.m_head_pos
-	mvec3_norm(enemy_vec)
-
-	--[[local line = Draw:brush(Color.white:with_alpha(0.2), 0.1)
-	local init_pos = weapon_rot and attention_obj.unit:inventory():equipped_unit():get_object(Idstring("fire")):position() or attention_obj.m_head_pos
-	line:cylinder(init_pos, init_pos + enemy_look_dir * 500, 0.1)]]
-
-	return max_dot < mvec3_dot(enemy_vec, enemy_look_dir)
-end
-
-function CopLogicBase._chk_alert_obstructed(my_listen_pos, alert_data)
-	if alert_data[3] then
-		if not CopLogicBase._alert_obstruction_slotmask then
-			CopLogicBase._alert_obstruction_slotmask = managers.slot:get_mask("AI_visibility")
-		end
-
-		local alert_epicenter = nil
-
-		if alert_data[1] == "bullet" then
-			alert_epicenter = tmp_vec1
-
-			mvec3_step(alert_epicenter, alert_data[2], alert_data[6], 50)
-		else
-			alert_epicenter = alert_data[2]
-		end
-
-		local ray = World:raycast("ray", my_listen_pos, alert_epicenter, "slot_mask", CopLogicBase._alert_obstruction_slotmask, "ray_type", "ai_vision", "report")
-
-		if ray then
-			if alert_data[1] == "footstep" then
-				return true
-			end
-
-			local my_dis_sq = mvec3_dis(my_listen_pos, alert_epicenter)
-			local dampening = alert_data[1] == "bullet" and 0.5 or 0.25
-			local effective_dis_sq = alert_data[3] * dampening
-			effective_dis_sq = effective_dis_sq * effective_dis_sq
-
-			if my_dis_sq > effective_dis_sq then
-				return true
-			end
-		end
+	if not World:raycast("ray", listen_pos, alert_epicenter, "slot_mask", managers.slot:get_mask("AI_visibility"), "ray_type", "ai_vision", "report") then
+		return false
 	end
+
+	if alert_data[1] == "footstep" then
+		return true
+	end
+
+	local my_dis_sq = mvec3_dis_sq(listen_pos, alert_epicenter)
+	local effective_dis_sq = (alert_data[3] * math.map_range_clamped(alert_data[3], 0, 10000, 0.75, 1)) ^ 2
+
+	return my_dis_sq > effective_dis_sq
 end
+
 
 function CopLogicBase.do_grenade(data, pos, flash, drop)
 	if not managers.groupai:state():is_smoke_grenade_active() or data.unit:base().has_tag and not data.unit:base():has_tag("law") or data.char_tweak.cannot_throw_grenades then --if you're not calling this function from somewhere outside do_smart_grenade, remove this entire check
@@ -2025,9 +1944,112 @@ function CopLogicBase.do_smart_grenade(data, my_data, focus_enemy)
 	
 end
 
-function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_unit) --this function makes no damn sense and uses multipliers for some reason, so i fixed it.
-	local surrender_tweak = data.char_tweak.surrender
+-- SH: modular surrender check functions table
+CopLogicBase.surrender_chk_funcs = {
+	health = function(data, aggressor_unit, surrender_data)
+		local health_ratio = data.unit:character_damage():health_ratio()
+		if health_ratio >= 1 then
+			return
+		end
 
+		local min_ratio, max_ratio, min_chance, max_chance
+		for ratio, chance in pairs(surrender_data) do
+			if not min_ratio or ratio < min_ratio then
+				min_ratio = ratio
+				min_chance = chance
+			end
+			if not max_ratio or ratio > max_ratio then
+				max_ratio = ratio
+				max_chance = chance
+			end
+		end
+
+		if health_ratio < max_ratio then
+			return 1 - math.map_range_clamped(health_ratio, min_ratio, max_ratio, min_chance, max_chance)
+		end
+	end,
+
+	aggressor_dis = function(data, aggressor_unit, surrender_data)
+		local agg_dis = mvec3_dis(data.m_pos, aggressor_unit:movement():m_pos())
+		local min_dis, max_dis, min_chance, max_chance
+
+		for dis, chance in pairs(surrender_data) do
+			if not min_dis or dis < min_dis then
+				min_dis = dis
+				min_chance = chance
+			end
+			if not max_dis or dis > max_dis then
+				max_dis = dis
+				max_chance = chance
+			end
+		end
+
+		if agg_dis < max_dis then
+			return 1 - math.map_range_clamped(agg_dis, min_dis, max_dis, min_chance, max_chance)
+		end
+	end,
+
+	weapon_down = function(data, aggressor_unit, surrender_data)
+		local anim_data = data.unit:anim_data()
+		if anim_data.reload or data.unit:inventory():equipped_unit():base():get_ammo_remaining_in_clip() == 0 then
+			return 1 - surrender_data
+		elseif anim_data.hurt then
+			return 1 - surrender_data * 0.8
+		end
+	end,
+
+	flanked = function(data, aggressor_unit, surrender_data)
+		mvector3.direction(tmp_vec1, data.m_pos, aggressor_unit:movement():m_pos())
+		local fwd_dot = mvector3.dot(data.unit:movement():m_fwd(), tmp_vec1)
+		if fwd_dot < 0 then
+			return 1 - surrender_data * math.abs(fwd_dot)
+		end
+	end,
+
+	unaware_of_aggressor = function(data, aggressor_unit, surrender_data)
+		local att_info = data.detected_attention_objects[aggressor_unit:key()]
+		if not att_info or not att_info.identified or data.t - att_info.identified_t < 1 then
+			return 1 - surrender_data
+		end
+	end,
+
+	enemy_weap_cold = function(data, aggressor_unit, surrender_data)
+		if not managers.groupai:state():enemy_weapons_hot() then
+			return 1 - surrender_data
+		end
+	end,
+
+	isolated = function(data, aggressor_unit, surrender_data)
+		if not data.group or not data.group.has_spawned or data.group.initial_size <= 1 then
+			return
+		end
+
+		local max_dis_sq = 800 ^ 2
+		for u_key, u_data in pairs(data.group.units) do
+			if u_key ~= data.key and mvec3_dis_sq(data.m_pos, u_data.m_pos) < max_dis_sq then
+				return
+			end
+		end
+
+		return 1 - surrender_data
+	end,
+
+	pants_down = function(data, aggressor_unit, surrender_data)
+		local not_cool_t = data.unit:movement():not_cool_t()
+		if (not not_cool_t or data.t - not_cool_t < 1.5) and not managers.groupai:state():enemy_weapons_hot() then
+			return 1 - surrender_data
+		end
+	end,
+
+	not_assault = function(data, aggressor_unit, surrender_data)
+		if not managers.groupai:state():get_assault_mode() then
+			return 1 - surrender_data
+		end
+	end
+}
+
+function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_unit)
+	local surrender_tweak = data.char_tweak.surrender
 	if not surrender_tweak then
 		return
 	end
@@ -2036,142 +2058,45 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 		return 0
 	end
 
-	local t = data.t
+	if data.surrender_window and data.t > data.surrender_window.window_expire_t then
+		return
+	end
 
-	local hold_chance = 1
-	hold_chance = hold_chance - surrender_tweak.base_chance
-	local surrender_chk = {
-		health = function (health_surrender)
-			local health_ratio = data.unit:character_damage():health_ratio()
-
-			if health_ratio < 1 then
-				local min_setting, max_setting = nil
-
-				for k, v in pairs(health_surrender) do
-					if not min_setting or k < min_setting.k then
-						min_setting = {
-							k = k,
-							v = v
-						}
-					end
-
-					if not max_setting or max_setting.k < k then
-						max_setting = {
-							k = k,
-							v = v
-						}
-					end
-				end
-
-				if health_ratio < max_setting.k then
-					local reduction = math.lerp(min_setting.v, max_setting.v, math.max(0, health_ratio - min_setting.k) / (max_setting.k - min_setting.k))
-					hold_chance = hold_chance - reduction
-				end
-			end
-		end,
-		aggressor_dis = function (agg_dis_surrender)
-			local agg_dis = mvec3_dis(data.m_pos, aggressor_unit:movement():m_pos())
-			local min_setting, max_setting = nil
-
-			for k, v in pairs(agg_dis_surrender) do
-				if not min_setting or k < min_setting.k then
-					min_setting = {
-						k = k,
-						v = v
-					}
-				end
-
-				if not max_setting or max_setting.k < k then
-					max_setting = {
-						k = k,
-						v = v
-					}
-				end
-			end
-
-			if agg_dis < max_setting.k then
-				local reduction = math.lerp(min_setting.v, max_setting.v, math.max(0, agg_dis - min_setting.k) / (max_setting.k - min_setting.k))
-				hold_chance = hold_chance - reduction
-			end
-		end,
-		weapon_down = function (weap_down_surrender)
-			local anim_data = data.unit:anim_data()
-
-			if anim_data.reload then
-				hold_chance = hold_chance - weap_down_surrender
-			elseif anim_data.hurt then
-				hold_chance = hold_chance - weap_down_surrender
-			end
-		end,
-		flanked = function (flanked_surrender)
-			local dis = mvec3_dir(tmp_vec1, data.m_pos, aggressor_unit:movement():m_pos())
-
-			local fwd = data.unit:movement():m_rot():y()
-			local fwd_dot = mvec3_dot(fwd, tmp_vec1)
-
-			if fwd_dot < -0.5 then
-				hold_chance = hold_chance - flanked_surrender
-			end
-		end,
-		unaware_of_aggressor = function (unaware_of_aggressor_surrender)
-			local att_info = data.detected_attention_objects[aggressor_unit:key()]
-
-			if not att_info or not att_info.identified or t - att_info.identified_t < 1 then
-				hold_chance = hold_chance - unaware_of_aggressor_surrender
-			end
-		end,
-		enemy_weap_cold = function (enemy_weap_cold_surrender)
-			if not managers.groupai:state():chk_assault_active_atm() and not managers.groupai:state():whisper_mode() then
-				hold_chance = hold_chance - enemy_weap_cold_surrender
-			end
-		end,
-		isolated = function (isolated_surrender)
-			if data.group and data.group.has_spawned and data.group.initial_size > 1 then
-				local has_support = nil
-				local max_dis_sq = 640000
-
-				for u_key, u_data in pairs(data.group.units) do
-					if u_key ~= data.key and mvec3_dis_sq(data.m_pos, u_data.m_pos) < max_dis_sq then
-						has_support = true
-
-						break
-					end
-
-					if not has_support then
-						hold_chance = hold_chance - isolated_surrender
-					end
-				end
-			end
-		end,
-		pants_down = function (pants_down_surrender)
-			local not_cool_t = data.unit:movement():not_cool_t()
-
-			if (not not_cool_t or t - not_cool_t < 1.5) and managers.groupai:state():whisper_mode() then
-				hold_chance = hold_chance - pants_down_surrender
-			end
-		end
-	}
+	local hold_chance = 1 - surrender_tweak.base_chance
 
 	for reason, reason_data in pairs(surrender_tweak.reasons) do
-		surrender_chk[reason](reason_data)
+		if CopLogicBase.surrender_chk_funcs[reason] then
+			hold_chance = hold_chance * (CopLogicBase.surrender_chk_funcs[reason](data, aggressor_unit, reason_data) or 1)
+		end
 	end
-	
-	hold_chance = math.clamp(hold_chance, 0, 1)
-	
-	local diff_index =  managers.modifiers and managers.modifiers:check_boolean("TotalAnarchy") and 8 or tweak_data:difficulty_to_index(Global.game_settings.difficulty)
-	
-	if diff_index > 6 then
-		hold_chance = hold_chance * 1.25
+
+	if hold_chance > 1 - (surrender_tweak.significant_chance or 0) then
+		return 1
 	end
 
 	for factor, factor_data in pairs(surrender_tweak.factors) do
-		surrender_chk[factor](factor_data)
+		if CopLogicBase.surrender_chk_funcs[factor] then
+			hold_chance = hold_chance * (CopLogicBase.surrender_chk_funcs[factor](data, aggressor_unit, factor_data) or 1)
+		end
 	end
-	
-	--log("chance was " .. hold_chance .. "!")
+
+	if data.surrender_window then
+		hold_chance = hold_chance * (1 - data.surrender_window.chance_mul)
+	end
+
+	-- SH: violence cooldown reduces surrender chance
+	if surrender_tweak.violence_timeout then
+		local violence_t = data.unit:character_damage():last_suppression_t()
+		if violence_t then
+			local violence_dt = data.t - violence_t
+			if violence_dt < surrender_tweak.violence_timeout then
+				hold_chance = hold_chance + (1 - hold_chance) * (1 - violence_dt / surrender_tweak.violence_timeout)
+			end
+		end
+	end
 
 	return hold_chance < 1 and hold_chance
-end 
+end
 
 
 function CopLogicBase.on_long_dis_interacted(data, other_unit, secondary)
@@ -2182,150 +2107,127 @@ function CopLogicBase.chk_start_action_dodge(data, reason)
 		return
 	end
 
-	if data.dodge_timeout_t and data.t < data.dodge_timeout_t or data.dodge_chk_timeout_t and data.t < data.dodge_chk_timeout_t or data.unit:movement():chk_action_forbidden("walk") then
+	if data.dodge_timeout_t and data.t < data.dodge_timeout_t or data.unit:movement():chk_action_forbidden("walk") then
 		return
 	end
 
-	local dodge_tweak = data.char_tweak.dodge.occasions[reason]
-	data.dodge_chk_timeout_t = TimerManager:game():time() + math.lerp(dodge_tweak.check_timeout[1], dodge_tweak.check_timeout[2], math.random())
+	if data.dodge_chk_timeout_t and data.t < data.dodge_chk_timeout_t and reason ~= "hit" then
+		return
+	end
 
+	-- SH: consistent dodge check cooldown
+	data.dodge_chk_timeout_t = TimerManager:game():time() + 0.5
+
+	local dodge_tweak = data.char_tweak.dodge.occasions[reason]
 	if dodge_tweak.chance == 0 or dodge_tweak.chance < math.random() then
 		return
 	end
 
+	local enemy_dir = tmp_vec3
+	if data.attention_obj and data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
+		mvec3_set(enemy_dir, data.attention_obj.m_pos)
+		mvec3_sub(enemy_dir, data.m_pos)
+		mvector3.set_z(enemy_dir, 0)
+		mvector3.normalize(enemy_dir)
+	else
+		mvec3_set(enemy_dir, math.UP)
+		mvector3.random_orthogonal(enemy_dir)
+	end
+
+	local dodge_dir = mvec3_cpy(enemy_dir)
+	mvector3.cross(dodge_dir, enemy_dir, math.UP)
+	if math.random() < 0.5 then
+		mvector3.negate(dodge_dir)
+	end
+
+	local test_space, available_space, min_space, prefered_space = 0, 0, 90, 130
+	local ray_params = {
+		trace = true,
+		tracker_from = data.unit:movement():nav_tracker(),
+		pos_to = tmp_vec1
+	}
+
+	mvec3_set(ray_params.pos_to, dodge_dir)
+	mvector3.multiply(ray_params.pos_to, prefered_space)
+	mvector3.add(ray_params.pos_to, data.m_pos)
+	local ray_hit1 = managers.navigation:raycast(ray_params)
+	if ray_hit1 then
+		mvec3_set(tmp_vec2, ray_params.trace[1])
+		mvec3_sub(tmp_vec2, data.m_pos)
+		mvector3.set_z(tmp_vec2, 0)
+		test_space = mvector3.length(tmp_vec2)
+	else
+		test_space = prefered_space
+	end
+
+	if test_space >= min_space then
+		available_space = test_space
+	end
+
+	mvec3_set(ray_params.pos_to, dodge_dir)
+	mvector3.multiply(ray_params.pos_to, -prefered_space)
+	mvector3.add(ray_params.pos_to, data.m_pos)
+	local ray_hit2 = managers.navigation:raycast(ray_params)
+	if ray_hit2 then
+		mvec3_set(tmp_vec2, ray_params.trace[1])
+		mvec3_sub(tmp_vec2, data.m_pos)
+		mvector3.set_z(tmp_vec2, 0)
+		test_space = mvector3.length(tmp_vec2)
+	elseif available_space < prefered_space then
+		test_space = prefered_space
+	end
+
+	if test_space >= min_space and test_space > available_space then
+		available_space = test_space
+		mvector3.negate(dodge_dir)
+	end
+
+	-- SH: give enemies a chance to dodge backwards if side space is limited
+	if available_space < min_space or data.attention_obj and math.random() < math.max(0, 1 - data.attention_obj.dis / 500) then
+		mvec3_set(ray_params.pos_to, enemy_dir)
+		mvector3.multiply(ray_params.pos_to, -prefered_space)
+		mvector3.add(ray_params.pos_to, data.m_pos)
+		local ray_hit3 = managers.navigation:raycast(ray_params)
+		if ray_hit3 then
+			mvec3_set(tmp_vec2, ray_params.trace[1])
+			mvec3_sub(tmp_vec2, data.m_pos)
+			mvector3.set_z(tmp_vec2, 0)
+			test_space = mvector3.length(tmp_vec2)
+		else
+			test_space = prefered_space
+		end
+
+		if test_space >= min_space and test_space >= available_space then
+			available_space = test_space
+			mvec3_set(dodge_dir, enemy_dir)
+			mvector3.negate(dodge_dir)
+		end
+	end
+
+	if available_space < min_space then
+		return
+	end
+
+	mrotation.x(data.unit:movement():m_rot(), tmp_vec1)
+	local right_dot = mvector3.dot(dodge_dir, tmp_vec1)
+	local fwd_dot = mvector3.dot(dodge_dir, data.unit:movement():m_fwd())
+	local dodge_side = math.abs(fwd_dot) > 0.6 and (fwd_dot > 0 and "fwd" or "bwd") or right_dot > 0 and "r" or "l"
+
 	local rand_nr = math.random()
 	local total_chance = 0
-	local variation, variation_data = nil
-
+	local variation, variation_data
 	for test_variation, test_variation_data in pairs(dodge_tweak.variations) do
 		total_chance = total_chance + test_variation_data.chance
 
 		if test_variation_data.chance > 0 and rand_nr <= total_chance then
 			variation = test_variation
 			variation_data = test_variation_data
-
 			break
-		end
-	end
-
-	local dodge_dir = Vector3()
-	local face_attention = nil
-	local valid_directions_forward_and_back = nil
-
-	if data.attention_obj and AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
-		mvec3_set(dodge_dir, data.attention_obj.m_pos)
-		mvec3_sub(dodge_dir, data.m_pos)
-		mvector3.set_z(dodge_dir, 0)
-		mvector3.normalize(dodge_dir)
-
-		mvector3.cross(dodge_dir, dodge_dir, math.UP)	
-	else
-		mvector3.random_orthogonal(dodge_dir, math.UP)
-	end
-
-	local dodge_dir_reversed = false
-
-	if math.random() < 0.5 then
-		mvector3.negate(dodge_dir)
-
-		dodge_dir_reversed = not dodge_dir_reversed
-	end
-
-	local prefered_space = 130
-	local min_space = 90
-	local ray_to_pos = tmp_vec1
-
-	mvec3_set(ray_to_pos, dodge_dir)
-	mvector3.multiply(ray_to_pos, 130)
-	mvector3.add(ray_to_pos, data.m_pos)
-
-	local ray_params = {
-		trace = true,
-		tracker_from = data.unit:movement():nav_tracker(),
-		pos_to = ray_to_pos
-	}
-	local ray_hit1 = managers.navigation:raycast(ray_params)
-	local dis = nil
-
-	if ray_hit1 then
-		local hit_vec = tmp_vec2
-
-		mvec3_set(hit_vec, ray_params.trace[1])
-		mvec3_sub(hit_vec, data.m_pos)
-		mvec3_set_z(hit_vec, 0)
-
-		dis = mvector3.length(hit_vec)
-
-		mvec3_set(ray_to_pos, dodge_dir)
-		mvector3.multiply(ray_to_pos, -130)
-		mvector3.add(ray_to_pos, data.m_pos)
-
-		ray_params.pos_to = ray_to_pos
-		local ray_hit2 = managers.navigation:raycast(ray_params)
-
-		if ray_hit2 then
-			mvec3_set(hit_vec, ray_params.trace[1])
-			mvec3_sub(hit_vec, data.m_pos)
-			mvec3_set_z(hit_vec, 0)
-
-			local prev_dis = dis
-			dis = mvector3.length(hit_vec)
-
-			if prev_dis < dis and min_space < dis then
-				mvector3.negate(dodge_dir)
-
-				dodge_dir_reversed = not dodge_dir_reversed
-			end
-		else
-			mvector3.negate(dodge_dir)
-
-			dis = nil
-			dodge_dir_reversed = not dodge_dir_reversed
-		end
-	end
-
-	if ray_hit1 and dis and dis < min_space then
-		return
-	end
-
-	local dodge_side = nil
-
-	if face_attention then
-		if valid_directions_forward_and_back then
-			if dodge_dir_reversed then
-				dodge_side = "bwd"
-			else
-				dodge_side = "fwd"
-			end
-		elseif dodge_dir_reversed then
-			dodge_side = "l"
-		else
-			dodge_side = "r"
-		end
-	else
-		local fwd_dot = mvec3_dot(dodge_dir, data.unit:movement():m_fwd())
-		local my_right = tmp_vec1
-
-		mrotation.x(data.unit:movement():m_rot(), my_right)
-
-		local right_dot = mvec3_dot(dodge_dir, my_right)
-
-		if math.abs(fwd_dot) > 0.7071067690849 then
-			if fwd_dot > 0 then
-				dodge_side = "fwd"
-			else
-				dodge_side = "bwd"
-			end
-		elseif right_dot > 0 then
-			dodge_side = "r"
-		else
-			dodge_side = "l"
 		end
 	end
 
 	local body_part = 1
 	local shoot_chance = variation_data.shoot_chance
-
 	if shoot_chance and shoot_chance > 0 and math.random() < shoot_chance then
 		body_part = 2
 	end
