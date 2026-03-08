@@ -39,7 +39,11 @@ function CopActionTurn:init(action_desc, common_data)
 	self._end_angle = end_angle
 	self._turn_left = end_angle > 0
 
-	local fwd_polar = common_data.fwd:to_polar()
+	-- HH FIX: common_data.fwd is a stale copy from movement init, never updated.
+	-- Using it as the base for turn angle computation caused wrong end_dir,
+	-- producing the spine-break 180 rotation. Use live m_rot():y() instead.
+	local live_fwd = ext_mov:m_rot():y()
+	local fwd_polar = live_fwd:to_polar()
 	local end_dir = fwd_polar:with_spin(fwd_polar.spin + end_angle):to_vector()
 	self._end_dir = end_dir
 

@@ -1975,6 +1975,7 @@ function CopLogicAttack.action_complete_clbk(data, action)
 	
 	if action_type == "walk" then
 		my_data.advancing = nil
+		my_data.old_action_advancing = nil 
 
 		CopLogicAttack._cancel_cover_pathing(data, my_data)
 		CopLogicAttack._cancel_charge(data, my_data)
@@ -2979,22 +2980,30 @@ function CopLogicAttack.action_taken(data, my_data)
 end
 
 function CopLogicAttack._upd_stop_old_action(data, my_data)
-	if my_data.advancing then
+	-- HH FIX: - early return during in-progress transitions, and only
+	-- call _start_idle_action_from_act when needs_idle is set. Post-update 237,
+	-- anim_data.act is true for cops in normal ready stance, which caused the old
+	-- broad (act OR act_idle OR to_idle) check to fire spurious blocking idle
+	-- requests, freezing cops indefinitely.
+	if data.unit:anim_data().to_idle or data.unit:anim_data().hurt then
+		return
+	end
+
+	if my_data.advancing and my_data.old_action_advancing then
 		if not data.unit:movement():chk_action_forbidden("walk") then
-			data.brain:action_request({
+			data.unit:brain():action_request({
 				body_part = 2,
 				type = "idle"
 			})
 		end
 	end
-	
-	if data.unit:anim_data().act or data.unit:anim_data().act_idle or data.unit:anim_data().to_idle then
-		if not my_data.starting_idle_action_from_act then
-			my_data.starting_idle_action_from_act = true
+
+	if data.unit:movement():chk_action_forbidden("walk") then
+		if not data.unit:movement():chk_action_forbidden("idle") then
 			CopLogicIdle._start_idle_action_from_act(data)
 		end
-	else
-		my_data.starting_idle_action_from_act = nil
+	elseif data.unit:anim_data().act and data.unit:anim_data().needs_idle then
+		CopLogicIdle._start_idle_action_from_act(data)
 	end
 
 	CopLogicIdle._chk_has_old_action(data, my_data)

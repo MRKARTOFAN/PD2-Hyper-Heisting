@@ -1195,9 +1195,14 @@ function CopActionHurt:_start_enemy_fire_effect_on_death(death_variant, action_d
 		tmp_used_flame_objects[idx] = false
 	end
 
-	self._fire_death_sound_source_table = {enemy_unit = self._unit}
+	-- HH FIX: old HH API was start_burn_body_sound({enemy_unit=unit}, duration).
+	-- Vanilla API changed to start_burn_body_sound(unit, entry, delay) where entry is
+	-- a table that gets entry.burn_sound_source populated for later cleanup.
+	self._fire_death_sound_source_table = {}
 
-	managers.fire:start_burn_body_sound(self._fire_death_sound_source_table, effect_tbl.duration)
+	if alive(self._unit) then
+		managers.fire:start_burn_body_sound(self._unit, self._fire_death_sound_source_table, effect_tbl.duration)
+	end
 end
 
 function CopActionHurt:_dragons_breath_sparks()
@@ -2575,8 +2580,8 @@ function CopActionHurt:on_destroy()
 		end
 	end
 
-	if self._fire_death_sound_source_table and self._fire_death_sound_source_table.sound_source then
-		managers.fire:_stop_burn_body_sound(self._fire_death_sound_source_table.sound_source)
+	if self._fire_death_sound_source_table and self._fire_death_sound_source_table.burn_sound_source then
+		managers.fire:stop_burn_body_sound(self._fire_death_sound_source_table.burn_sound_source)
 	end
 end
 

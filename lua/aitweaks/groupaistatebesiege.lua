@@ -4741,3 +4741,41 @@ function GroupAIStateBesiege:assign_enemy_to_group_ai(unit, team_id)
 	self:_add_group_member(group, unit:key())
 	self:set_enemy_assigned(area, unit:key())
 end
+-- HH FIX: HH creates assault_area objectives without an area field (chase/hunter/
+-- deathguard tactics use nav_seg instead). Vanilla _assign_assault_groups_to_retire
+-- assumes area always exists, crashing with "attempt to index field 'area' (a nil value)".
+-- Override to guard against nil area.
+function GroupAIStateBesiege:_assign_assault_groups_to_retire()
+	local function suitable_grp_func(group)
+		if group.objective.type == "assault_area" then
+			-- Guard: chase/hunter/deathguard objectives use nav_seg instead of area
+			if not group.objective.area then
+				return
+			end
+
+			local regroup_area = nil
+
+			if next(group.objective.area.criminal.units) then
+				for other_area_id, other_area in pairs(group.objective.area.neighbours) do
+					if not next(other_area.criminal.units) then
+						regroup_area = other_area
+						break
+					end
+				end
+			end
+
+			regroup_area = regroup_area or group.objective.area
+			local grp_objective = {
+				stance = "hos",
+				attitude = "avoid",
+				pose = "crouch",
+				type = "recon_area",
+				area = regroup_area
+			}
+
+			self:_set_objective_to_enemy_group(group, grp_objective)
+		end
+	end
+
+	self:_assign_groups_to_retire(self._tweak_data.recon.groups, suitable_grp_func)
+end

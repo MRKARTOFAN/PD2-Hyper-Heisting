@@ -97,7 +97,7 @@ function PlayerTased:_start_action_tased(t, non_lethal)
 	self:_stance_entered()
 	self:_update_crosshair_offset()
 	self._unit:camera():play_redirect(self:get_animation("tased"))
-	self._unit:sound():play("tasered_loop")
+	self._tasered_loop_sound = self._unit:sound():play("tasered_loop")
 	managers.hint:show_hint(non_lethal and "hint_been_electrocuted" or "hint_been_tasered")
 	
 	local tase_shake_mul = self._taser_resist and 0.5 or 1
@@ -452,6 +452,17 @@ function PlayerTased:on_tase_ended()
 	end
 
 	self._taser_unit = nil
+end
+
+function PlayerTased:exit(state_data)
+	-- HH FIX: tasered_loop is a looping sound played on enter but never stopped.
+	-- Without an exit function it persists indefinitely after tase ends.
+	if self._tasered_loop_sound then
+		self._tasered_loop_sound:stop()
+		self._tasered_loop_sound = nil
+	end
+
+	PlayerTased.super.exit(self, state_data)
 end
 
 function PlayerTased:update(t, dt)

@@ -2429,6 +2429,12 @@ function CopLogicIdle._chk_has_old_action(data, my_data)
 	my_data.has_old_action = anim_data.to_idle or anim_data.act
 	local lower_body_action = data.unit:movement()._active_actions[2]
 	my_data.advancing = lower_body_action and lower_body_action:type() == "walk" and lower_body_action
+
+	-- HH FIX: track old advancing action separately (LIES pattern) so
+	-- _upd_stop_old_action can distinguish a stuck advance from a normal act state
+	if my_data.advancing then
+		my_data.old_action_advancing = my_data.advancing
+	end
 end
 
 function CopLogicIdle._start_idle_action_from_act(data)
