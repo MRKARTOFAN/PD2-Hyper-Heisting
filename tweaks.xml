@@ -279,17 +279,6 @@
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
 				<xml/>
-				<state name="std/crouch/still/idle"/>
-				<from name="std/dodge"/>
-		</search>
-		<target mode="attributes">
-				<attr name="blend" value="7"/>
-		</target>
-	</tweak>
-	
-	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
-		<search>
-				<xml/>
 				<state name="std/stand/spawn"/>
 				<from_group name="std/stand/still/idle"/>
 		</search>

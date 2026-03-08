@@ -2369,7 +2369,6 @@ function CopLogicIdle._perform_objective_action(data, my_data, objective)
 		return
 	end
 
-	if objective and not my_data.action_started and data.unit:anim_data().idle then
 	if objective and not my_data.action_started then
 		if data.unit:anim_data().act_idle or not data.unit:movement():chk_action_forbidden("action") then
 			if objective and objective.action and objective.action.variant then

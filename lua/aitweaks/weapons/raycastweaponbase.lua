@@ -711,6 +711,7 @@ function RaycastWeaponBase:_build_suppression(enemies_in_cone, suppr_mul)
 			end
 		end
 	end
+end
 
 function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	local ammo = tweak_data.weapon[self._name_id].CLIP_AMMO_MAX

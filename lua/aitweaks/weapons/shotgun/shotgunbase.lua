@@ -33,11 +33,17 @@ function ShotgunBase:get_damage_falloff(damage, col_ray, user_unit)
 	spread_mul = spread_mul - spread_mul_reduction
 	inc_range_mul = math.max(1, spread_mul * inc_range_mul)
 	
+	-- HH FIX: _damage_near/_damage_far are nil for weapons without range stats defined.
+	-- Fall back to full damage (no falloff) rather than crashing.
+	if not self._damage_near or not self._damage_far or self._damage_far == 0 then
+		return damage
+	end
+
 	local damage_percent_min = inc_range_mul * 0.1
 	damage_percent_min = damage * damage_percent_min
 	local new_damage = 1 - math_min(1, math_max(0, distance - self._damage_near * inc_range_mul) / (self._damage_far * inc_range_mul))
 	new_damage = new_damage * damage
-	
+
 	if new_damage < damage_percent_min then
 		new_damage = damage_percent_min
 	end

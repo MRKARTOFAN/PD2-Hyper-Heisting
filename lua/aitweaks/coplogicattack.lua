@@ -188,6 +188,9 @@ function CopLogicAttack.update(data)
 		CopLogicAttack._upd_stop_old_action(data, my_data)
 
 		if my_data.has_old_action then
+			-- HH FIX: still aim/fire while waiting for old action to clear
+			data.logic._upd_aim(data, my_data)
+
 			if not my_data.use_brain and not my_data.update_queue_id then
 				data.brain:set_update_enabled_state(false)
 

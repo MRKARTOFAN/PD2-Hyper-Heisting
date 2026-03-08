@@ -158,13 +158,19 @@ function PlayerMovement:play_taser_boom(local_unit)
 	else
 		mvec3_set(pos, self._unit:movement():m_pos())
 	end
-	
-	world_g:effect_manager():spawn({
+
+	-- HH FIX: store and immediately fade-kill the effect so any embedded
+	-- looping audio in the particle does not play indefinitely after tase ends.
+	local effect = world_g:effect_manager():spawn({
 		effect = Idstring("effects/pd2_mod_hh/particles/weapons/explosion/electric_explosion"),
 		position = pos,
 		normal = math.UP
 	})
-	
+
+	if effect then
+		world_g:effect_manager():fade_kill(effect)
+	end
+
 	self._unit:sound():play("c4_explode_metal")
 end
 

@@ -492,3 +492,4 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 			end
 		end
 	end
+end

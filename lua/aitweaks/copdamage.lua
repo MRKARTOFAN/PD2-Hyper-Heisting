@@ -1273,6 +1273,34 @@ function CopDamage:damage_melee(attack_data)
 		if tweak_data.achievement.cavity.melee_type == attack_data.name_id and not CopDamage.is_civilian(self._unit:base()._tweak_table) then
 			managers.achievment:award(tweak_data.achievement.cavity.award)
 		end
+
+		-- HH: headshot multiplier for melee (mirrors damage_bullet logic)
+		if head then
+			managers.player:on_headshot_dealt()
+
+			if not self._damage_reduction_multiplier then
+				local headshot_multiplier = managers.player:upgrade_value("weapon", "passive_headshot_damage_multiplier", 1)
+
+				if self._char_tweak.headshot_dmg_mul then
+					damage = damage * self._char_tweak.headshot_dmg_mul * headshot_multiplier
+				else
+					damage = self._health * 10
+				end
+			end
+		end
+	end
+
+	-- HH: soft headshot cone multiplier for melee weapons that define get_add_head_shot_mul
+	if not head and attack_data.weapon_unit and alive(attack_data.weapon_unit) and attack_data.weapon_unit:base().get_add_head_shot_mul then
+		if self._char_tweak and not self._unit:base():has_tag("tank") and self._char_tweak.headshot_dmg_mul and not self._char_tweak.ignore_headshot then
+			local add_head_shot_mul = attack_data.weapon_unit:base():get_add_head_shot_mul()
+
+			if add_head_shot_mul then
+				local tweak_headshot_mul = math.max(0, self._char_tweak.headshot_dmg_mul - 1)
+				local mul = tweak_headshot_mul * add_head_shot_mul + 1
+				damage = damage * mul
+			end
+		end
 	end
 
 	if self._marked_dmg_mul then
@@ -1310,7 +1338,9 @@ function CopDamage:damage_melee(attack_data)
 				variant = attack_data.variant
 			}
 		else
-			if head then --cosmetic helmet/hat pop because it feels nice
+			if head then
+				managers.player:on_lethal_headshot_dealt(attack_data.attacker_unit, attack_data)
+
 				self:_spawn_head_gadget({
 					position = attack_data.col_ray.body:position(),
 					rotation = attack_data.col_ray.body:rotation(),
@@ -1324,7 +1354,7 @@ function CopDamage:damage_melee(attack_data)
 			}
 
 			self:die(attack_data)
-			self:chk_killshot(attack_data.attacker_unit, "melee")
+			self:chk_killshot(attack_data.attacker_unit, "melee", head)
 		end
 	else
 		attack_data.damage = damage
@@ -1373,6 +1403,7 @@ function CopDamage:damage_melee(attack_data)
 	end
 
 	attack_data.result = result
+	attack_data.headshot = head  -- HH: expose headshot flag to downstream listeners
 	attack_data.pos = attack_data.col_ray.position
 	local snatch_pager = false
 

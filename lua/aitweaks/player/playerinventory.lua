@@ -101,27 +101,29 @@ function PlayerInventory:_stop_jammer_effect()
 		return
 	end
 
-	self._jammer_data.effect = nil
+	local jammer_data = self._jammer_data
+	self._jammer_data = nil -- HH FIX: must nil the table so is_jammer_active() returns false
 
-	if self._jammer_data.sound then
-		self._jammer_data.sound:stop()
-		self._unit:sound_source():post_event("ecm_jammer_jam_signal_stop") --make sure the sound event even happened, like with normal ECMs
+	if jammer_data.sound then
+		jammer_data.sound:stop()
+		self._unit:sound_source():post_event("ecm_jammer_jam_signal_stop")
 	end
 
 	if Network:is_server() then
 		managers.groupai:state():register_ecm_jammer(self._unit, false)
 	end
 
-	managers.enemy:remove_delayed_clbk(self._jammer_data.stop_jamming_callback_key, true) --callbacks get removed on execution, this is in here for cases where the effect needs to end prematurely
+	managers.enemy:remove_delayed_clbk(jammer_data.stop_jamming_callback_key, true)
 
-	if self._jammer_data.dodge_listener_key then
-		managers.player:unregister_message(Message.OnEnemyKilled, self._jammer_data.dodge_listener_key, true)
+	if jammer_data.dodge_listener_key then
+		managers.player:unregister_message(Message.OnEnemyKilled, jammer_data.dodge_listener_key, true)
 	end
 end
 
 function PlayerInventory:start_feedback_effect(...)
 	self:_start_feedback_effect(...)
-	self:_send_net_event(self._NET_EVENTS.feedback_start) --just like with the jamming effect, the local player starts the effect locally and syncs it. There's no reason to do it the way it was done
+	self:_send_net_event(self._NET_EVENTS.feedback_start)
+	return true -- HH FIX: must return true so attempt_ability() decrements the grenade count
 end
 
 function PlayerInventory:_start_feedback_effect(end_time, interval, range)
@@ -181,22 +183,23 @@ function PlayerInventory:_stop_feedback_effect()
 		return
 	end
 
-	self._jammer_data.effect = nil
+	local jammer_data = self._jammer_data
+	self._jammer_data = nil -- HH FIX: must nil the table so is_jammer_active() returns false
 
-	if self._jammer_data.sound then
-		self._jammer_data.sound:stop()
-		self._unit:sound_source():post_event("ecm_jammer_puke_signal_stop") --make sure the sound event even happened, like with normal ECMs
+	if jammer_data.sound then
+		jammer_data.sound:stop()
+		self._unit:sound_source():post_event("ecm_jammer_puke_signal_stop")
 	end
 
-	if self._jammer_data.heal_listener_key then
-		managers.player:unregister_message(Message.OnEnemyKilled, self._jammer_data.heal_listener_key, true)
+	if jammer_data.heal_listener_key then
+		managers.player:unregister_message(Message.OnEnemyKilled, jammer_data.heal_listener_key, true)
 	end
 
-	if self._jammer_data.dodge_listener_key then
-		managers.player:unregister_message(Message.OnEnemyKilled, self._jammer_data.dodge_listener_key, true)
+	if jammer_data.dodge_listener_key then
+		managers.player:unregister_message(Message.OnEnemyKilled, jammer_data.dodge_listener_key, true)
 	end
 
-	managers.enemy:remove_delayed_clbk(self._jammer_data.feedback_callback_key, true)
+	managers.enemy:remove_delayed_clbk(jammer_data.feedback_callback_key, true)
 end
 
 --this is how you do proper healing checks + make sure players with active berserker effects block healing from teammates

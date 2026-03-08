@@ -642,13 +642,13 @@ function CopActionHurt:init(action_desc, common_data)
 						end
 
 						if not variant then
-							if action_type == "expl_hurt" then
-								variant = self.hurt_anim_variants[action_type][dir_str]
-							else
-								variant = self.hurt_anim_variants[action_type].not_crouching[dir_str][height]
-							end
+							-- HH FIX: expl_hurt uses the same not_crouching structure as other types;
+							-- the direct [dir_str] lookup returned nil, crashing at "variant > 1".
+							-- Also respect crouching state to match vanilla.
+							local pose_type = crouching and "crouching" or "not_crouching"
+							variant = self.hurt_anim_variants[action_type][pose_type][dir_str][height]
 
-							if variant > 1 then
+							if variant and variant > 1 then
 								variant = self:_pseudorandom(variant)
 							end
 						end
@@ -934,6 +934,7 @@ function CopActionHurt:init(action_desc, common_data)
 		if action_type == "death" and common_data.ext_base:has_tag("tank") then
 			local unit_id = common_data.unit:id()
 
+			-- HH FIX: remove_dead_dozer_from_overgrill is HH-only; vanilla managers.fire lacks it
 			if managers.fire and managers.fire.remove_dead_dozer_from_overgrill then
 				managers.fire:remove_dead_dozer_from_overgrill(unit_id)
 			end
