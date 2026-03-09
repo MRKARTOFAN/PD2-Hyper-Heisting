@@ -9,6 +9,18 @@ function SkillTreeTweakData:init()
 	table.insert(self.default_upgrades, "player_run_and_reload")
 	table.insert(self.default_upgrades, "first_aid_kit_deploy_time_multiplier")
 	
+	local function digest(value)
+		return Application:digest_value(value, true)
+	end
+	
+	-- T4 skill cost 16 points due infamy skill point reduction is gone
+	self.tier_unlocks = {
+		digest(0),
+		digest(1),
+		digest(3),
+		digest(16)
+	}
+	
 	self.skills.insulation = { --The Rubber
 		{
 			upgrades = {
