@@ -1929,7 +1929,7 @@ function CopActionWalk:get_husk_interrupt_desc()
 		end_pose = self._action_desc.end_pose]] --these are just going to cause issues if the action was already interrupted
 	}
 
-	-- Fix potential crash when walk action gets interrupted on client and simplify interrupt path
+	-- (SHAI) Fix potential crash: when a walk action is interrupted on a client, the old nav_path may reference freed memory. Build a simplified 2-waypoint path from the current position to reduce the crash window.
 	local from = mvec3_cpy(self._ext_movement:m_pos())
 	local path = old_action_desc.nav_path or self._nav_path
 	if path and self._calculate_simplified_path then
@@ -1951,7 +1951,7 @@ function CopActionWalk:get_husk_interrupt_desc()
 	return old_action_desc
 end
 
--- Helper function to get the final path position
+-- (SHAI) Add CopActionWalk.get_destination_pos: returns the last position in either the simplified or raw nav_path. Used by other logic to know the enemy's intended endpoint without having to inspect the path array directly.
 function CopActionWalk:get_destination_pos()
 	local path = self._simplified_path or self._nav_path
 	if path and path[#path] then
@@ -3956,7 +3956,7 @@ function CopActionWalk:_chk_correct_pose()
 	end
 end
 
--- Fix pathing start position (should always be our current position)
+-- (SHAI) PreHook CopActionWalk.init on server: vanilla sometimes passes a stale first waypoint that is behind the unit's current position, causing a brief backwards shuffle. Inserts the unit's real current position at index 1 when it differs from the first waypoint.
 if Network:is_server() then
 	Hooks:PreHook(CopActionWalk, "init", "hh_walk_init", function(self, action_desc, common_data)
 		if action_desc.nav_path and #action_desc.nav_path > 0 then
