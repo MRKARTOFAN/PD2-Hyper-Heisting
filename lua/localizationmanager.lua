@@ -1,5 +1,12 @@
 ﻿Hooks:Add("LocalizationManagerPostInit", "shin_loc", function(loc)
 	LocalizationManager:add_localized_strings({
+		["menu_max_progress"] = "Max account progression",
+		["menu_max_progress_help"] = "Max out your account progression and skip grind.",
+		["menu_progress_msg"] = "Are you sure you want to max out your progress?\nThis will max out your character and unlock all available items.",
+		["menu_max_masks"] = "Max mask customization",
+		["menu_max_masks_help"] = "Max out your masks and customization for them to skip grind.",
+		["menu_masks_msg"] = "Are you sure you want to max out your masks?\nThis will give you 10 of each mask, material, pattern and color.",
+		
 		["hhmenu_hold_to_jump"] = "AUTO-JUMP",
 		["hhmenu_hold_to_jump_help"] = "Allow consecutive jumps by simply holding the jump button.",
 		["hhmenu_staticrecoil"] = "Static Recoil",
