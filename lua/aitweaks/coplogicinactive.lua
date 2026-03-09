@@ -50,9 +50,6 @@ function CopLogicInactive.enter(data, new_logic_name, enter_params)
 end
 
 function CopLogicInactive.on_enemy_weapons_hot(data)
-	-- Remove corpse attention settings on loud
-	data.brain:set_attention_settings(nil)
-
 	if data.unit:interaction():active() then
 		data.unit:interaction():set_active(false, true, true)
 	end

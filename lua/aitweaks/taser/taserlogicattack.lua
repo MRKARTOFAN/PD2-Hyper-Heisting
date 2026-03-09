@@ -505,13 +505,9 @@ function TaserLogicAttack._chk_reaction_to_attention_object(data, attention_data
 end
 
 function TaserLogicAttack._chk_play_charge_weapon_sound(data, my_data, focus_enemy)
-	-- Save charge sound cooldown to data (not my_data) so it persists across logic changes (SH)
-	if my_data.tasing or data.last_charge_snd_play_t and data.t - data.last_charge_snd_play_t < 10 then
-		return
-	end
+	--[[if not my_data.tasing and (not my_data.last_charge_snd_play_t or data.t - my_data.last_charge_snd_play_t > 30) and focus_enemy.verified_dis <= 1500 and math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300 then
+		my_data.last_charge_snd_play_t = data.t
 
-	if focus_enemy.verified_dis < 2000 and math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300 then
-		data.last_charge_snd_play_t = data.t
 		data.unit:sound():play("taser_charge", nil, true)
-	end
+	end]]
 end

@@ -2267,19 +2267,3 @@ function CopLogicBase.chk_start_action_dodge(data, reason)
 
 	return action
 end
-
--- Add chance for enemies to comment on squad member deaths
-Hooks:PostHook(CopLogicBase, "death_clbk", "hh_death_clbk", function(data, damage_info)
-	if not data.group then
-		return
-	end
-
-	local weapon_base = alive(damage_info.weapon_unit) and damage_info.weapon_unit:base()
-	if weapon_base and weapon_base.is_category and weapon_base:is_category("trip_mine") then
-		managers.groupai:state():_chk_say_group(data.group, "trip_mine")
-	elseif weapon_base and weapon_base.is_category and weapon_base:is_category("saw") and math.random() < 0.75 then
-		managers.groupai:state():_chk_say_group(data.group, "saw")
-	elseif math.random() < (damage_info.variant == "melee" and 0.75 or 0.25) then
-		managers.groupai:state():_chk_say_group(data.group, "group_death")
-	end
-end)

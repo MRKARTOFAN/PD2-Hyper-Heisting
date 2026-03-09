@@ -692,9 +692,3 @@ function CopActionTase:on_destroy()
 		self._malfunction_clbk_id = nil
 	end
 end
-
-
--- Static helper for LOS obstruction check (SH)
-function CopActionTase.is_obstructed(from, to, slotmask, radius)
-	return World:raycast("ray", from, to, "slot_mask", slotmask, "sphere_cast_radius", radius, "report")
-end

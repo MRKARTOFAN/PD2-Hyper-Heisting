@@ -1020,37 +1020,49 @@ function CopActionHurt:is_network_allowed(action_desc)
 	return true
 end
 
--- Fix pseudo random number generator having very low entropy
 function CopActionHurt:_pseudorandom(a, b)
-	if CopActionHurt._host_peer == nil then
-		CopActionHurt._host_peer = Network:is_client() and managers.network:session():peer(1) or false
-	end
-
+	local mult = 10
 	local ht = managers.game_play_central:get_heist_timer()
-	if CopActionHurt._host_peer then
-		ht = ht + Network:qos(CopActionHurt._host_peer:rpc()).ping / 1000
+
+	if ht < 0 then
+		ht = -ht
 	end
 
-	-- Switch seed 4 times a second, switching too much would make the PRNG depend on client ping too much
-	ht = math_round(ht * 4)
+	while ht < 60 do
+		ht = ht + ht
+	end
 
-	-- Adapted from https://stackoverflow.com/a/35377265
-	ht = ht * 3266489917 + 374761393;
-	ht = bit.bor(bit.lshift(ht, 17), bit.rshift(ht, 15))
-	ht = ht + self._unit:id() * 3266489917;
-	ht = ht * 668265263;
-	ht = bit.bxor(ht, bit.rshift(ht, 15)) * 2246822519;
-	ht = bit.bxor(ht, bit.rshift(ht, 13)) * 3266489917;
-	ht = bit.bxor(ht, bit.rshift(ht, 16));
+	local is_host = self._is_server or Global.game_settings.single_player
 
-	local val = bit.band(ht, 0xffffff) / 0x1000000
+	if not is_host then
+		self._host_peer = self._host_peer or managers.network:session():peer(1)
+
+		if self._host_peer then
+			ht = ht + Network:qos(self._host_peer:rpc()).ping / 1000
+		end
+	end
+
+	local t = math_floor(ht * mult + 0.5) / mult
+	local r = math_random() * 999 + 1
+	local uid = self._unit:id()
+	local seed = uid^(t / 183.62) * 100 % 100000
+
+	math_randomseed(seed)
+
+	local ret = nil
+
 	if a and b then
-		return math_floor(math_lerp(a, b + 1, val))
+		ret = math_random(a, b)
 	elseif a then
-		return math_floor(math_lerp(1, a + 1, val))
+		ret = math_random(a)
 	else
-		return val
+		ret = math_random()
 	end
+
+	math_randomseed(ht / r + ht)
+	math_random()
+
+	return ret
 end
 
 CopActionHurt.idx_to_hurt_type_map = {
@@ -2800,62 +2812,4 @@ end
 
 function CopActionHurt:_set_ik_updator(name)
 	self._upd_ik = self[name]
-end
-
--- Remove position reservations on death
--- Improve reaction to ECM feedback by playing specific voicelines and pain sounds
-if Network:is_server() then
-	Hooks:PostHook(CopActionHurt, "init", "hh_hurt_init", function(self)
-		if self._hurt_type == "death" then
-			self._unit:brain():rem_all_pos_rsrv()
-		elseif self._hurt_type == "hurt_sick" then
-			local t = TimerManager:game():time()
-			self._say_sick_t = t + math.rand((self._sick_time - t) * 0.5)
-			self._say_hurt_t = t + math.rand(2, 5)
-		end
-	end)
-end
-
-
--- Prevent hurt and knockdown animations stacking, once one plays it needs to finish for another one to trigger
-local _hurt_blocks = {
-	heavy_hurt = true,
-	hurt = true,
-	hurt_sick = true,
-	knock_down = true,
-	poison_hurt = true,
-	shield_knock = true,
-	stagger = true
-}
-
-local _chk_block_original = CopActionHurt.chk_block
-function CopActionHurt:chk_block(action_type, t)
-	if self._hurt_type == "death" then
-		return true
-	elseif _hurt_blocks[action_type] and not self._ext_anim.hurt_exit then
-		return true
-	elseif action_type == "turn" then
-		return true
-	elseif action_type == "death" then
-		return false
-	end
-
-	return _chk_block_original(self, action_type, t)
-end
-
-
--- Allow dodge and surrender actions to interrupt hurt actions
-CopActionHurt.allowed_client_act_variants = {
-	hands_up = true,
-	hands_back = true,
-	tied = true,
-	tied_all_in_one = true
-}
-
-function CopActionHurt:chk_block_client(action_desc, action_type, t)
-	if action_desc.type == "dodge" or action_desc.type == "act" and self.allowed_client_act_variants[action_desc.variant] then
-		return false
-	end
-
-	return self:chk_block(action_type, t)
 end
