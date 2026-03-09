@@ -4779,3 +4779,59 @@ function GroupAIStateBesiege:_assign_assault_groups_to_retire()
 
 	self:_assign_groups_to_retire(self._tweak_data.recon.groups, suitable_grp_func)
 end
+
+
+-- Fix reenforce group delay: preserve next_dispatch_t across _begin_reenforce_task (SH)
+local _begin_reenforce_task_original = GroupAIStateBesiege._begin_reenforce_task
+if _begin_reenforce_task_original then
+	function GroupAIStateBesiege:_begin_reenforce_task(...)
+		local next_dispatch_t = self._task_data.reenforce.next_dispatch_t or 0
+		_begin_reenforce_task_original(self, ...)
+		self._task_data.reenforce.next_dispatch_t = next_dispatch_t
+	end
+end
+
+-- Helper to create a basic coarse path from an area (SH)
+function GroupAIStateBesiege:_coarse_path_from_area(area)
+	return {
+		{
+			area.pos_nav_seg,
+			mvector3.copy(area.pos)
+		}
+	}
+end
+
+-- Helper to check if any group member has visuals on their focus target (SH)
+function GroupAIStateBesiege:_can_group_see_target(group, limit_range, verified_duration)
+	local preferred_range = math.huge
+	if limit_range then
+		for _, u_data in pairs(group.units) do
+			local internal_data = u_data.unit:brain()._logic_data.internal_data
+			local weapon_range = internal_data and internal_data.weapon_range
+			preferred_range = math.min(preferred_range, weapon_range and weapon_range[limit_range] or 3000)
+		end
+	end
+
+	for _, u_data in pairs(group.units) do
+		local logic_data = u_data.unit:brain()._logic_data
+		if logic_data.objective and logic_data.objective.grp_objective == group.objective then
+			local focus_enemy = logic_data.attention_obj
+			if focus_enemy and focus_enemy.reaction > AIAttentionObject.REACT_AIM and focus_enemy.dis <= preferred_range then
+				if focus_enemy.verified or verified_duration and focus_enemy.verified_t and self._t - focus_enemy.verified_t < verified_duration then
+					return u_data
+				end
+			end
+		end
+	end
+end
+
+-- Spawn cooldown helpers using _next_group_spawn_t (SH)
+function GroupAIStateBesiege:_is_objective_type_on_cooldown(type)
+	return self._next_group_spawn_t and self._next_group_spawn_t[type] and self._next_group_spawn_t[type] > self._t
+end
+
+function GroupAIStateBesiege:_set_objective_type_cooldown(type, cooldown)
+	if self._next_group_spawn_t then
+		self._next_group_spawn_t[type] = self._t + cooldown
+	end
+end
