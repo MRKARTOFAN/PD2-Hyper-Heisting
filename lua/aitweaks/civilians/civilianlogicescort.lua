@@ -1,6 +1,6 @@
 local mvec3_cpy = mvector3.copy
 
--- (SHAI) Override too_scared_to_move: keep hostage escort moving as long as no armed enemy is closer than the nearest player. Prevents civilians freezing mid-escort when police are far away.
+-- Don't stop moving as long as no enemy is any closer than a player
 function CivilianLogicEscort.too_scared_to_move(data)
 	local min_dis_sq = 1000 ^ 2
 	local closest_criminal_dis_sq = math.huge

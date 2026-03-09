@@ -4781,7 +4781,7 @@ function GroupAIStateBesiege:_assign_assault_groups_to_retire()
 end
 
 
--- (SHAI) Fix GroupAIStateBesiege._begin_reenforce_task: the vanilla function resets next_dispatch_t to 0 as a side effect when reinitialising the task. Preserving the value prevents immediate double-spawning at the start of a new reinforce wave.
+-- Fix reenforce group delay: preserve next_dispatch_t across _begin_reenforce_task (SH)
 local _begin_reenforce_task_original = GroupAIStateBesiege._begin_reenforce_task
 if _begin_reenforce_task_original then
 	function GroupAIStateBesiege:_begin_reenforce_task(...)
@@ -4791,7 +4791,7 @@ if _begin_reenforce_task_original then
 	end
 end
 
--- (SHAI) Add GroupAIStateBesiege._coarse_path_from_area helper: builds a minimal single-waypoint coarse path from an area's nav segment and position. Used as a fallback route when a full pathfind is unnecessary or unavailable.
+-- Helper to create a basic coarse path from an area (SH)
 function GroupAIStateBesiege:_coarse_path_from_area(area)
 	return {
 		{
@@ -4801,7 +4801,7 @@ function GroupAIStateBesiege:_coarse_path_from_area(area)
 	}
 end
 
--- (SHAI) Add GroupAIStateBesiege._can_group_see_target helper: iterates group units and returns the first member whose attention object is verified (or recently verified within verified_duration) at or within the group's weapon range. Used to decide whether to push or wait for a sighting.
+-- Helper to check if any group member has visuals on their focus target (SH)
 function GroupAIStateBesiege:_can_group_see_target(group, limit_range, verified_duration)
 	local preferred_range = math.huge
 	if limit_range then
@@ -4825,7 +4825,7 @@ function GroupAIStateBesiege:_can_group_see_target(group, limit_range, verified_
 	end
 end
 
--- (SHAI) Add _is_objective_type_on_cooldown / _set_objective_type_cooldown helpers: per-objective-type spawn cooldown stored in _next_group_spawn_t (initialised in the init PostHook). Prevents besiege logic from flooding the same task type with units.
+-- Spawn cooldown helpers using _next_group_spawn_t (SH)
 function GroupAIStateBesiege:_is_objective_type_on_cooldown(type)
 	return self._next_group_spawn_t and self._next_group_spawn_t[type] and self._next_group_spawn_t[type] > self._t
 end

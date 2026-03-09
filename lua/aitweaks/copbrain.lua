@@ -963,7 +963,7 @@ function CopBrain:get_pathing_prio(data)
 	return prio
 end
 
--- (SHAI) Logic variant aliases: map DLC boss enemy types (mobster_boss, chavez_boss, etc.) to the triad_boss logic so they behave as proper bosses rather than falling back to a generic variant. Also aliases heavy_swat_sniper to marshal_marksman when available.
+-- Logic variant aliases (SH)
 CopBrain._logic_variants.mobster_boss = CopBrain._logic_variants.triad_boss
 CopBrain._logic_variants.chavez_boss = CopBrain._logic_variants.triad_boss
 CopBrain._logic_variants.hector_boss = CopBrain._logic_variants.triad_boss
@@ -978,7 +978,7 @@ CopBrain._next_logic_upd_t = 0
 CopBrain._logic_upd_interval = 1 / 30
 
 
--- (SHAI) Rate-limit CopBrain._chk_use_cover_grenade: Cloakers that dodge via grenade can call this every frame, flooding enemies with grenades. Wraps the function so it only fires when _next_cover_grenade_chk_t has elapsed.
+-- Fix spamming of grenades by units that dodge with grenades (Cloaker) (SH)
 if CopBrain._chk_use_cover_grenade then
 	local _chk_use_cover_grenade_original = CopBrain._chk_use_cover_grenade
 	function CopBrain:_chk_use_cover_grenade(...)
@@ -989,7 +989,8 @@ if CopBrain._chk_use_cover_grenade then
 end
 
 
--- (SHAI) Override CopBrain.clbk_damage: skip the damage callback for poison/fire DoT ticks. Without this, enemies inside a molotov or poison cloud constantly re-enter attack logic on every tick, causing frantic shoot-aim cycling instead of reacting once and moving out.
+-- Don't trigger damage callback from dot damage as it would make enemies go into shoot action
+-- when they stand inside a poison cloud or molotov (SH)
 local clbk_damage_original = CopBrain.clbk_damage
 function CopBrain:clbk_damage(my_unit, damage_info, ...)
 	if damage_info.variant ~= "poison" and not damage_info.is_fire_dot_damage and not damage_info.is_molotov then
@@ -998,14 +999,14 @@ function CopBrain:clbk_damage(my_unit, damage_info, ...)
 end
 
 
--- (SHAI) PreHook CopBrain.convert_to_criminal: stores the mastermind who converted this enemy as minion_owner. GroupAIStateBase._determine_objective_for_criminal_AI reads this to make the Joker follow their actual owner instead of the nearest player. Also resets combat chatter cooldown on conversion.
+-- Set Joker owner to keep follow objective correct (SH)
 Hooks:PreHook(CopBrain, "convert_to_criminal", "hh_convert_to_criminal_sh", function(self, mastermind_criminal)
 	self._logic_data.minion_owner = mastermind_criminal or managers.player:local_player()
 	self._logic_data.combat_chatter_cooldown_t = (self._logic_data.t or 0) + math.rand(30, 90)
 end)
 
 
--- (SHAI) Override CopBrain.on_surrender_chance: tightens surrender timing — window is 2.5–3.5× the interaction delay (vs vanilla's wider range) and the timeout is 4–8 s. On repeated shouts the chance multiplier decays by ^0.8 so enemies that have already been shouted at surrender more readily.
+-- Make surrender window slightly shorter and less random (SH)
 if not CopBrain.on_surrender_chance then
 	Hooks:OverrideFunction(CopBrain, "on_surrender_chance", function(self)
 		local t = TimerManager:game():time()
@@ -1034,7 +1035,7 @@ if not CopBrain.on_surrender_chance then
 end
 
 
--- (SHAI) PostHook CopBrain.on_suppressed: plays a panic bark (lk3a/lk3b) when an enemy enters panic-suppression, or a generic suppress chatter line for enemies that have a suppress chatter entry. Adds audio feedback so players know suppression is working.
+-- Add suppression voicelines (SH)
 Hooks:PostHook(CopBrain, "on_suppressed", "hh_on_suppressed_voiceline", function(self, state)
 	if not state then return end
 	if state == "panic" then
@@ -1045,7 +1046,7 @@ Hooks:PostHook(CopBrain, "on_suppressed", "hh_on_suppressed_voiceline", function
 end)
 
 
--- (SHAI) Throttle CopBrain.update to 30 Hz (1/30 s interval): the brain's logic tick runs every frame by default, wasting CPU on redundant AI decisions. Cap it at 30 updates/s; individual timers inside the logic already track their own sub-intervals so nothing is missed.
+-- Limit logic updates, there's no need to update it every frame (SH)
 local _update_original = CopBrain.update
 function CopBrain:update(unit, t, ...)
 	if self._next_logic_upd_t <= t then
@@ -1055,7 +1056,7 @@ function CopBrain:update(unit, t, ...)
 end
 
 
--- (SHAI) PostHook CopBrain.clbk_pathing_results: after the brain processes a completed path search, forward the event to the active logic module (e.g. CopLogicTravel.on_pathing_results). Without this, logic modules that override on_pathing_results never receive the callback.
+-- Call pathing results callback in logic if it exists (SH)
 Hooks:PostHook(CopBrain, "clbk_pathing_results", "hh_clbk_pathing_results_logic", function(self)
 	local current_logic = self._current_logic
 	if current_logic and current_logic.on_pathing_results then

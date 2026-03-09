@@ -505,7 +505,7 @@ function TaserLogicAttack._chk_reaction_to_attention_object(data, attention_data
 end
 
 function TaserLogicAttack._chk_play_charge_weapon_sound(data, my_data, focus_enemy)
-	-- (SHAI) Store cooldown in data (logic-persistent) rather than my_data (logic-local) so the charge sound does not replay every time the taser re-enters attack logic within the 10-second window.
+	-- Save charge sound cooldown to data (not my_data) so it persists across logic changes (SH)
 	if my_data.tasing or data.last_charge_snd_play_t and data.t - data.last_charge_snd_play_t < 10 then
 		return
 	end

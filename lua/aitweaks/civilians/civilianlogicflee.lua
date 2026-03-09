@@ -149,7 +149,7 @@ function CivilianLogicFlee.on_rescue_SO_administered(ignore_this, data, receiver
 	managers.groupai:state():unregister_rescueable_hostage(data.key)
 end
 
--- (SHAI) Rewrite rescue_SO_verification: only allow enemies to rescue a hostage if they are in the same nav area or the global rescue flag is set. Prevents enemies across the map from pathing to a single hostage.
+-- Tweak hostage rescue conditions
 function CivilianLogicFlee.rescue_SO_verification(ignore_this, params, unit)
 	if unit:movement():cool() then
 		return false
@@ -176,7 +176,7 @@ function CivilianLogicFlee.rescue_SO_verification(ignore_this, params, unit)
 	end
 end
 
--- (SHAI) Rewrite _delayed_intimidate_clbk: fixes a vanilla bug where civilians sometimes ignore intimidation attempts. If the civ is obstructed (can't drop to ground) it retries the intimidate after a short delay until they comply.
+-- Workaround for civilians being unresponsive when intimidated
 function CivilianLogicFlee._delayed_intimidate_clbk(ignore_this, params)
 	local data = params[1]
 	local amount = params[2]
@@ -215,7 +215,7 @@ function CivilianLogicFlee._delayed_intimidate_clbk(ignore_this, params)
 	})
 end
 
--- (SHAI) PostHook CivilianLogicFlee.action_complete_clbk: when a fleeing civilian finishes their last walk segment, immediately trigger the update that despawns them instead of waiting up to one full logic tick. Reduces the visible pop.
+-- Remove civilians as soon as they reached their flee point instead of waiting for the next logic update
 Hooks:PostHook(CivilianLogicFlee, "action_complete_clbk", "hh_flee_action_complete_clbk", function(data, action)
 	if action:type() ~= "walk" then
 		return

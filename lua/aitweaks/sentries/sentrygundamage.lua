@@ -139,7 +139,7 @@ function SentryGunDamage:damage_explosion(attack_data)
 end
 
 
--- (SHAI) PostHook SentryGunDamage._apply_damage + needs_repair override: when the turret shield HP hits zero, stores a repair timestamp 1 s in the future (_shield_repair_t). needs_repair only returns true after that delay, giving players a brief window to continue using the turret before the repair animation plays.
+-- Add delay before SWAT turrets retract for repair when shield breaks (SH)
 Hooks:PostHook(SentryGunDamage, "_apply_damage", "sh__apply_damage", function (self, damage, dmg_shield)
 	if dmg_shield and self._shield_health <= 0 and not self._shield_repair_t then
 		self._shield_repair_t = TimerManager:game():time() + 1

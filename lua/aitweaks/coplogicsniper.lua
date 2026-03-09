@@ -227,7 +227,7 @@ function CopLogicSniper._upd_enemy_detection(data)
 	CopLogicBase._report_detections(data.detected_attention_objects)
 end
 
--- (SHAI) PostHook CopLogicSniper.action_complete_clbk: after an act/hurt/dodge action, if the sniper has drifted from their objective position (> 10 units), walk them back. Prevents snipers from permanently leaving their scripted post after being staggered.
+-- Return to objective position after act/hurt/dodge actions
 Hooks:PostHook(CopLogicSniper, "action_complete_clbk", "hh_action_complete_clbk", function(data, action)
 	local action_type = action:type()
 	local my_data = data.internal_data

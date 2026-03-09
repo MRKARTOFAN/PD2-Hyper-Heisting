@@ -725,7 +725,7 @@ function TankCopLogicAttack._set_verified_paths(data, verified_paths)
 end
 
 
--- (SHAI) Override TankCopLogicAttack._chk_exit_attack_logic: suppresses the base exit check while the Bulldozer is executing a chase walk (walking_to_chase_pos), and keeps them in attack logic while their target is within 2000 units at combat reaction. Prevents premature de-aggro during a charge.
+-- Don't exit attack logic while chasing (SH)
 function TankCopLogicAttack._chk_exit_attack_logic(data, ...)
 	if not data.internal_data.walking_to_chase_pos then
 		if not data.attention_obj or data.attention_obj.dis > 2000 or data.attention_obj.reaction < AIAttentionObject.REACT_COMBAT then
