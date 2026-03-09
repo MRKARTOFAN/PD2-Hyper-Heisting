@@ -493,3 +493,44 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 		end
 	end
 end
+
+
+-- Make team AI weapons alert enemies (SH — oversight fix for bots with player weapons)
+if not Network:is_client() then
+	Hooks:PostHook(NewNPCRaycastWeaponBase, "set_user_is_team_ai", "sh_set_user_is_team_ai", function (self)
+		if not self._setup or not alive(self._setup.user_unit) then
+			return
+		end
+
+		self._setup.alert_AI = true
+		self._setup.alert_filter = self._setup.user_unit:brain():SO_access()
+		self._alert_events = {}
+	end)
+end
+
+
+-- Prevent player skills and ammo types from affecting NPC weapons (SH)
+local _update_stats_values_original = NewNPCRaycastWeaponBase._update_stats_values
+function NewNPCRaycastWeaponBase:_update_stats_values(...)
+	local can_shoot_through_shield = self._can_shoot_through_shield
+	local can_shoot_through_enemy = self._can_shoot_through_enemy
+	local can_shoot_through_wall = self._can_shoot_through_wall
+	local bullet_class = self._bullet_class
+	local bullet_slotmask = self._bullet_slotmask
+	local blank_slotmask = self._blank_slotmask
+
+	_update_stats_values_original(self, ...)
+
+	self._can_shoot_through_shield = can_shoot_through_shield
+	self._can_shoot_through_enemy = can_shoot_through_enemy
+	self._can_shoot_through_wall = can_shoot_through_wall
+	self._bullet_class = bullet_class
+	self._bullet_slotmask = bullet_slotmask
+	self._blank_slotmask = blank_slotmask
+end
+
+function NewNPCRaycastWeaponBase:get_add_head_shot_mul()
+end
+
+function NewNPCRaycastWeaponBase:is_stagger()
+end
