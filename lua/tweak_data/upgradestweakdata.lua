@@ -1065,6 +1065,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			6
 		}
 	}
+	self.values.player.killshot_close_panic_chance = {0.75}
 	self.values.temporary.pocket_ecm_kill_dodge = {
 		{
 			0.15,

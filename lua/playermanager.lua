@@ -702,12 +702,19 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	
 	if dist_sq <= close_combat_sq then
 		regen_armor_bonus = regen_armor_bonus + self:upgrade_value("player", "killshot_close_regen_armor_bonus", 0)
+	end
+
+	local mid_range_distance = 4000
+	local mid_range_sq = mid_range_distance * mid_range_distance
+
+	if dist_sq <= mid_range_sq then
 		local panic_chance = self:upgrade_value("player", "killshot_close_panic_chance", 0)
 		panic_chance = managers.modifiers:modify_value("PlayerManager:GetKillshotPanicChance", panic_chance)
 
 		if panic_chance > 0 or panic_chance == -1 then
 			local slotmask = managers.slot:get_mask("enemies")
-			local units = world_g:find_units_quick("sphere", player_unit:movement():m_pos(), tweak_data.upgrades.killshot_close_panic_range, slotmask)
+			local panic_range = tweak_data.upgrades.killshot_close_panic_range or 1000
+			local units = world_g:find_units_quick("sphere", killed_unit:movement():m_pos(), panic_range, slotmask)
 
 			for e_key, unit in pairs(units) do
 				if alive(unit) and unit:character_damage() and not unit:character_damage():dead() then
