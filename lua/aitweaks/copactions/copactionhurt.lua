@@ -2818,7 +2818,7 @@ end
 
 
 -- Prevent hurt and knockdown animations stacking, once one plays it needs to finish for another one to trigger
-CopActionHurt.hurt_blocks = {
+local _hurt_blocks = {
 	heavy_hurt = true,
 	hurt = true,
 	hurt_sick = true,
@@ -2832,7 +2832,7 @@ local _chk_block_original = CopActionHurt.chk_block
 function CopActionHurt:chk_block(action_type, t)
 	if self._hurt_type == "death" then
 		return true
-	elseif self.hurt_blocks[action_type] and not self._ext_anim.hurt_exit then
+	elseif _hurt_blocks[action_type] and not self._ext_anim.hurt_exit then
 		return true
 	elseif action_type == "turn" then
 		return true
@@ -2840,7 +2840,7 @@ function CopActionHurt:chk_block(action_type, t)
 		return false
 	end
 
-	return CopActionAct.chk_block(self, action_type, t)
+	return _chk_block_original(self, action_type, t)
 end
 
 

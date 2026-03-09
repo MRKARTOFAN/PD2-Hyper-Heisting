@@ -2306,7 +2306,7 @@ function CopLogicTravel.on_pathing_results(data)
 		return
 	end
 
-	CopLogicTravel.upd_advance(data)
+	_on_pathing_results_original(data)
 end
 
 -- Follow pathing improvement: use continuous instead of segmented path

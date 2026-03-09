@@ -202,7 +202,7 @@ function CivilianLogicSurrender.on_alert(data, alert_data)
 		end
 
 		if is_intimidation then
-			data.brain:on_intimidated(1, aggressor)
+			data.unit:brain():on_intimidated(1, aggressor)
 			return
 		end
 	end
@@ -221,7 +221,7 @@ function CivilianLogicSurrender.on_alert(data, alert_data)
 
 	if my_data.scare_meter >= my_data.scare_max and data.is_tied and data.unit:anim_data().stand then
 		data.unit:sound():say(math.random() < 0.5 and "a01x_any" or "a02x_any", true)
-		data.brain:on_hostage_move_interaction(aggressor, "stay")
+		data.unit:brain():on_hostage_move_interaction(aggressor, "stay")
 	elseif not data.unit:sound():speaking(data.t) then
 		local dis_mul = math.map_range_clamped(alert_dis, 0, 4000, 1, 0)
 		local scare_mul = math.map_range_clamped(my_data.scare_meter, 0, my_data.scare_max, 0, 1)

@@ -3348,5 +3348,3 @@ function MarshalLogicAttack._upd_combat_movement(data)
 	end
 end
 
--- Marshal doesn't need separate cover update; handled via _upd_combat_movement (SH)
-function MarshalLogicAttack.update_cover(data) end
