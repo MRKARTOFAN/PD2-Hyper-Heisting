@@ -4047,3 +4047,49 @@ function CopDamage:_AI_comment_death(unit, killed_unit, special_comment)
 		unit:sound():say("g36x_any", true)
 	end
 end
+
+
+-- Increase health granularity for more accurate damage calculations (SH)
+CopDamage._HEALTH_GRANULARITY = 8192
+
+-- Fix _send_melee_attack_result: clamp body_index to prevent crashes (SH)
+local _send_melee_attack_result_original = CopDamage._send_melee_attack_result
+if _send_melee_attack_result_original then
+	function CopDamage:_send_melee_attack_result(attack_data, damage_percent, damage_effect_percent, hit_offset_height, variant, body_index)
+		body_index = math.clamp(body_index or 0, 0, 128)
+		return _send_melee_attack_result_original(self, attack_data, damage_percent, damage_effect_percent, hit_offset_height, variant, body_index)
+	end
+end
+
+-- Fix _dismember_condition and _sync_dismember to prevent NPC vs NPC crashes (SH)
+local _dismember_condition_original = CopDamage._dismember_condition
+if _dismember_condition_original then
+	function CopDamage:_dismember_condition(attack_data, ...)
+		if alive(attack_data.attacker_unit) and attack_data.attacker_unit:base().is_local_player then
+			return _dismember_condition_original(self, attack_data, ...)
+		end
+	end
+end
+
+local _sync_dismember_original = CopDamage._sync_dismember
+if _sync_dismember_original then
+	function CopDamage:_sync_dismember(attacker_unit, ...)
+		if alive(attacker_unit) and attacker_unit:base().is_husk_player then
+			return _sync_dismember_original(self, attacker_unit, ...)
+		end
+	end
+end
+
+-- Add temporary damage reduction when healed by a medic (SH)
+Hooks:PostHook(CopDamage, "do_medic_heal", "hh_do_medic_heal_sh", function(self)
+	self._last_medic_heal_t = TimerManager:game():time()
+end)
+
+local _apply_damage_reduction_sh_orig = CopDamage._apply_damage_reduction
+function CopDamage:_apply_damage_reduction(...)
+	local damage = _apply_damage_reduction_sh_orig(self, ...)
+	if self._last_medic_heal_t and TimerManager:game():time() - self._last_medic_heal_t < 2 then
+		damage = damage * 0.5
+	end
+	return damage
+end
