@@ -1929,6 +1929,13 @@ function CopActionWalk:get_husk_interrupt_desc()
 		end_pose = self._action_desc.end_pose]] --these are just going to cause issues if the action was already interrupted
 	}
 
+	-- Fix potential crash when walk action gets interrupted on client and simplify interrupt path
+	local from = mvec3_cpy(self._ext_movement:m_pos())
+	local path = old_action_desc.nav_path or self._nav_path
+	if path and self._calculate_simplified_path then
+		old_action_desc.nav_path = self._calculate_simplified_path(from, path, 2, true)
+	end
+
 	local sync_blocks = self._blocks or self._old_blocks
 
 	if sync_blocks then
@@ -1942,6 +1949,18 @@ function CopActionWalk:get_husk_interrupt_desc()
 	end
 
 	return old_action_desc
+end
+
+-- Helper function to get the final path position
+function CopActionWalk:get_destination_pos()
+	local path = self._simplified_path or self._nav_path
+	if path and path[#path] then
+		local nav_point = path[#path]
+		if type(nav_point) == "table" then
+			return nav_point.position or nav_point[1]
+		end
+		return nav_point
+	end
 end
 
 function CopActionWalk:on_attention(attention)
@@ -3935,4 +3954,17 @@ function CopActionWalk:_chk_correct_pose()
 			no_sync = true
 		})
 	end
+end
+
+-- Fix pathing start position (should always be our current position)
+if Network:is_server() then
+	Hooks:PreHook(CopActionWalk, "init", "hh_walk_init", function(self, action_desc, common_data)
+		if action_desc.nav_path and #action_desc.nav_path > 0 then
+			local pos = common_data.pos
+			local from_pos = action_desc.nav_path[1]
+			if pos.x ~= from_pos.x or pos.y ~= from_pos.y then
+				table.insert(action_desc.nav_path, 1, mvec3_cpy(pos))
+			end
+		end
+	end)
 end

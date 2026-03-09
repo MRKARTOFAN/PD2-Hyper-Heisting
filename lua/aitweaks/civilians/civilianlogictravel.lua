@@ -238,14 +238,16 @@ function CivilianLogicTravel.update(data)
 					to_pos = coarse_path[cur_index + 1][2]
 				end
 				
-				local unobstructed_line = CopLogicTravel._check_path_is_straight_line(data.m_pos, to_pos, data)
-				
+				-- Use fast raycast check first, fall back to full LOS check
+				local unobstructed_line = (math.abs(data.m_pos.z - to_pos.z) < 100 and not managers.navigation:raycast({ pos_from = data.m_pos, pos_to = to_pos }))
+					or CopLogicTravel._check_path_is_straight_line(data.m_pos, to_pos, data)
+
 				if unobstructed_line then
 					my_data.advance_path = {
 						mvec3_cpy(data.m_pos),
 						mvec3_cpy(to_pos)
 					}
-					
+
 					CopLogicAttack._correct_path_start_pos(data, my_data.advance_path)
 
 					local end_rot = nil

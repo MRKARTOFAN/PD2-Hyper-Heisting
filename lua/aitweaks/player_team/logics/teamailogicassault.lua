@@ -738,3 +738,19 @@ function TeamAILogicAssault._chk_exit_assault_logic(data, new_reaction)
 		end
 	end
 end
+
+-- Prevent reverting to hostile stance when bot enters assault from combat stance (SH)
+local _enter_assault_original = TeamAILogicAssault.enter
+function TeamAILogicAssault.enter(data, ...)
+	local movement = data.unit:movement()
+	local set_stance = movement.set_stance
+	movement.set_stance = function(self, ...)
+		if self:stance_code() == 1 then
+			return set_stance(self, ...)
+		end
+	end
+
+	_enter_assault_original(data, ...)
+
+	movement.set_stance = set_stance ~= getmetatable(movement).set_stance and set_stance or nil
+end

@@ -46,6 +46,9 @@ local REACT_AIM = AIAttentionObject.REACT_AIM
 local REACT_COMBAT = AIAttentionObject.REACT_COMBAT
 local REACT_SHOOT = AIAttentionObject.REACT_SHOOT
 
+-- Reuse function of idle logic to make enemies in an area aware of a player entering the area
+CopLogicAttack.on_area_safety = CopLogicIdle.on_area_safety
+
 function CopLogicAttack.enter(data, new_logic_name, enter_params)
 	CopLogicBase.enter(data, new_logic_name, enter_params)
 	data.brain:cancel_all_pathing_searches()
@@ -2473,6 +2476,102 @@ function CopLogicAttack.aim_allow_fire(shoot, aim, data, my_data)
 	end
 end
 
+-- Helper function to reuse in other enemy logic _upd_aim functions (SH)
+function CopLogicAttack._check_aim_shoot(data, my_data, focus_enemy, verified, nearly_visible)
+	if not focus_enemy or focus_enemy.reaction < AIAttentionObject.REACT_AIM then
+		return
+	end
+
+	local advancing = my_data.advancing and not my_data.advancing:stopping()
+	local running = data.unit:anim_data().run or advancing and my_data.advancing:haste() == "run"
+	local verified_dt = focus_enemy.verified_t and data.t - focus_enemy.verified_t or math.huge
+	local weapon_range = my_data.weapon_range or { close = 750, optimal = 1500, far = 3000 }
+	local firing_range = running and weapon_range.close or weapon_range.far
+	local enemy_dis = focus_enemy.verified_dis
+	local pushing = data.group and data.group.objective and (data.group.objective.open_fire or data.group.objective.moving_in)
+
+	local expected_pos
+	local aim = data.char_tweak.always_face_enemy or not advancing or pushing or verified_dt < math.map_range(enemy_dis, 0, firing_range, 6, 3)
+	local shoot = aim and my_data.shooting and AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction and verified_dt < (running and 2 or 4)
+
+	if verified or nearly_visible then
+		if not shoot and AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction then
+			local suppression_t = data.unit:character_damage():last_suppression_t()
+			local suppression_dt = suppression_t and data.t - suppression_t
+			local assault_dt = focus_enemy.criminal_record and focus_enemy.criminal_record.assault_t and data.t - focus_enemy.criminal_record.assault_t
+
+			if suppression_dt and suppression_dt < 7 * (running and 0.5 or 1) * (verified and 1 or 0.5) then
+				shoot = true
+			elseif verified and enemy_dis < firing_range then
+				shoot = true
+			elseif verified and assault_dt and assault_dt < (running and 2 or 4) then
+				shoot = true
+			elseif my_data.attitude == "engage" and my_data.firing and verified_dt < 4 then
+				shoot = true
+			end
+		end
+
+		aim = aim or shoot or enemy_dis < firing_range
+	else
+		if not shoot and focus_enemy.criminal_record then
+			expected_pos = focus_enemy.criminal_record.pos
+		else
+			expected_pos = focus_enemy.last_verified_pos or focus_enemy.verified_pos
+		end
+	end
+
+	return aim, shoot, expected_pos
+end
+
+-- Improve aggressive chatter: specials get priority and are not limited by max amount of chatter in area (SH)
+function CopLogicAttack._chk_say_chatter(data, chatter_type, cooldown)
+	if data.unit:base():has_tag("special") then
+		if not data.unit:sound():speaking(data.t) then
+			data.unit:sound():say(tweak_data.group_ai.enemy_chatter[chatter_type].queue, true)
+			data.combat_chatter_cooldown_t = data.t + cooldown
+			return true
+		end
+	elseif managers.groupai:state():chk_say_enemy_chatter(data.unit, data.m_pos, chatter_type) then
+		data.combat_chatter_cooldown_t = data.t + cooldown
+		return true
+	end
+end
+
+Hooks:PreHook(CopLogicAttack, "aim_allow_fire", "hh_aim_allow_fire_chatter", function(shoot, aim, data, my_data)
+	local chatter = data.char_tweak.chatter
+	local is_off_cooldown = not data.combat_chatter_cooldown_t or data.combat_chatter_cooldown_t < data.t
+	if not chatter then
+		return
+	end
+
+	if data.unit:in_slot(16) then
+		if aim and is_off_cooldown and chatter.aggressive and not data.unit:sound():speaking(data.t) then
+			data.unit:sound():say(shoot and "lk3a" or "lk3b", true)
+			data.combat_chatter_cooldown_t = data.t + math.rand(30, 90)
+		end
+		return
+	end
+
+	if shoot and not my_data.firing then
+		if chatter.detect and not managers.groupai:state():enemy_weapons_hot() then
+			local not_cool_t = data.unit:movement():not_cool_t() or -100
+			if data.t - not_cool_t < 2 then
+				CopLogicAttack._chk_say_chatter(data, "detect", math.rand(10, 20))
+				return
+			end
+		end
+
+		if chatter.contact then
+			CopLogicAttack._chk_say_chatter(data, data.attention_obj and data.attention_obj.is_deployable and "sentry_gun" or "contact", math.rand(10, 20))
+			return
+		end
+	end
+
+	if aim and is_off_cooldown and chatter.aggressive then
+		CopLogicAttack._chk_say_chatter(data, "aggressive", math.rand(10, 20))
+	end
+end)
+
 function CopLogicAttack.chk_should_turn(data, my_data)
 	return not my_data.turning and not my_data.has_old_action and not my_data.advancing and not my_data.moving_to_cover and not my_data.walking_to_cover_shoot_pos and not my_data.surprised and not my_data.menacing and not data.unit:movement():chk_action_forbidden("walk")
 end
@@ -3248,3 +3347,4 @@ function MarshalLogicAttack._upd_combat_movement(data)
 		end
 	end
 end
+

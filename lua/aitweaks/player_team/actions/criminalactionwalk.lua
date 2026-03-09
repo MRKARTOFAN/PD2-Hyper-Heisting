@@ -7,5 +7,5 @@ function CriminalActionWalk:_get_max_walk_speed(...)
 end
 
 function CriminalActionWalk:_get_current_max_walk_speed(...)
-	return CriminalActionWalk.super._get_current_max_walk_speed(self, ...)
+	return CriminalActionWalk.super._get_current_max_walk_speed(self, "fwd")
 end

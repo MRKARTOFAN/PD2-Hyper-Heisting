@@ -1518,3 +1518,8 @@ function CopLogicArrest._ask_call_the_police(data)
 		end
 	end
 end
+
+-- Stop shooting when entering arrest logic
+Hooks:PostHook(CopLogicArrest, "enter", "hh_arrest_enter", function(data)
+	data.unit:movement():set_allow_fire(false)
+end)

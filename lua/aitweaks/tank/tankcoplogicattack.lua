@@ -723,3 +723,13 @@ end
 function TankCopLogicAttack._set_verified_paths(data, verified_paths)
 	data.internal_data.chase_path = verified_paths.chase_path
 end
+
+
+-- Don't exit attack logic while chasing (SH)
+function TankCopLogicAttack._chk_exit_attack_logic(data, ...)
+	if not data.internal_data.walking_to_chase_pos then
+		if not data.attention_obj or data.attention_obj.dis > 2000 or data.attention_obj.reaction < AIAttentionObject.REACT_COMBAT then
+			CopLogicAttack._chk_exit_attack_logic(data, ...)
+		end
+	end
+end
