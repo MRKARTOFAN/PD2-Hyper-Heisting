@@ -804,7 +804,7 @@ function CarryData:_chk_register_steal_SO()
 		type = "act",
 		interrupt_health = 0.9,
 		haste = "run",
-		pose = "stand",  -- (SHAI) Use stand pose so enemies carry stolen bags upright at a run rather than crouching; crouch-running with a bag looks unnatural and is slower.
+		pose = "stand",  -- (SHAI) stand: enemies carry stolen bags upright at a run; crouching with a bag looks unnatural and is slower.
 		interrupt_dis = 700,
 		nav_seg = drop_nav_seg,
 		pos = drop_pos,

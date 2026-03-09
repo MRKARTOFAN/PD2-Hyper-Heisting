@@ -509,7 +509,7 @@ if not Network:is_client() then
 end
 
 
--- (SHAI) Override NewNPCRaycastWeaponBase._update_stats_values: snapshots NPC-specific weapon properties (bullet class, slot masks, pierce flags) before calling the base stats update, then restores them. The base update copies player skill upgrades onto the weapon; for NPCs these are incorrect and cause bots to pierce walls or use wrong ammo types.
+-- (SHAI) Override NewNPCRaycastWeaponBase._update_stats_values: snapshots NPC-specific weapon properties (bullet class, slot masks, pierce flags) before calling the base stats update, then restores them. The base update copies player skill upgrades onto the weapon; for NPCs this causes bots to pierce walls or use wrong ammo types.
 local _update_stats_values_original = NewNPCRaycastWeaponBase._update_stats_values
 function NewNPCRaycastWeaponBase:_update_stats_values(...)
 	local can_shoot_through_shield = self._can_shoot_through_shield
