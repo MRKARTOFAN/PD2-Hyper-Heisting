@@ -48,7 +48,7 @@ function MedicDamage:heal_unit(unit, no_cooldown)
 end
 
 
--- Require line of sight to heal, with slightly increased radius to compensate (SH)
+-- (SHAI) Override MedicDamage.verify_heal_requesting_unit: after passing original checks, performs two raycasts (to head and to feet of the requester). If either is unobstructed the heal is allowed, handling allies peeking cover. Healing radius is boosted ×1.5 via get_healing_radius_sq to offset the stricter LOS requirement.
 local _verify_heal_requesting_unit_original = MedicDamage.verify_heal_requesting_unit
 function MedicDamage:verify_heal_requesting_unit(requesting_unit, ...)
 	if not _verify_heal_requesting_unit_original(self, requesting_unit, ...) then
@@ -75,7 +75,7 @@ function MedicDamage:get_healing_radius_sq(...)
 end
 
 
--- Fix medics healing during full body actions (SH)
+-- (SHAI) Override MedicDamage.is_available_for_healing: returns false while the medic's act slot is forbidden (playing an act animation such as cuffing, surrendering, or being staggered). Vanilla medics could emit heals while ragdolling, which looked wrong and wasted heal charges.
 local _is_available_for_healing_original = MedicDamage.is_available_for_healing
 function MedicDamage:is_available_for_healing(requesting_unit, ...)
 	if self._unit:movement():chk_action_forbidden("act") then

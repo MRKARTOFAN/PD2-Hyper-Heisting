@@ -694,7 +694,7 @@ function CopActionTase:on_destroy()
 end
 
 
--- Static helper for LOS obstruction check (SH)
+-- (SHAI) Add CopActionTase.is_obstructed static helper: sphere-cast ray from 'from' to 'to' with the given slot mask and radius. Used by taser attack logic to confirm the shock wire path is clear before committing to a tase, preventing arcs through walls.
 function CopActionTase.is_obstructed(from, to, slotmask, radius)
 	return World:raycast("ray", from, to, "slot_mask", slotmask, "sphere_cast_radius", radius, "report")
 end

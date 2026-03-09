@@ -411,7 +411,7 @@ function CopActionIdle:need_upd()
 	return false
 end
 
--- Helper function to check if turning is allowed
+-- (SHAI) Add CopActionIdle._can_turn helper: returns true only when the action slots are idle and no queued actions are pending. Used by the attention hook below to gate facing updates, preventing turn animations from interrupting active actions.
 function CopActionIdle:_can_turn()
 	if self._ext_movement:chk_action_forbidden("turn") then
 		return
@@ -426,7 +426,7 @@ function CopActionIdle:_can_turn()
 	return not queued_actions or not queued_actions[1] or not queued_actions[2]
 end
 
--- Enable client turn behavior on host
+-- (SHAI) PostHook CopActionIdle.on_attention: mirrors the client-side turn-allowed flag on the host. Without this, enemies on the host never set _turn_allowed from attention events and appear to ignore players they are aware of.
 Hooks:PostHook(CopActionIdle, "on_attention", "hh_on_attention", function(self, attention)
 	if not attention or self._is_cool or self._body_part ~= 3 then
 		return

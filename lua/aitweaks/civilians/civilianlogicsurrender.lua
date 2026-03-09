@@ -164,8 +164,7 @@ function CivilianLogicSurrender._delayed_intimidate_clbk(ignore_this, params)
 	end
 end
 
--- Make civilians get down more consistently
--- If we have shouted at them and that shout would intimidate but not make them drop, run the function again after a short delay
+-- (SHAI) PostHook CivilianLogicSurrender._delayed_intimidate_clbk: if a shout triggered intimidation but the civ did not go prone (e.g. they were mid-animation), re-fires the callback up to 0.5 s later so the civ reliably ends up on the ground.
 Hooks:PostHook(CivilianLogicSurrender, "_delayed_intimidate_clbk", "hh__delayed_intimidate_clbk", function(ignore_this, params)
 	local data = params[1]
 	if data.unit:movement():chk_action_forbidden("walk") then
@@ -185,7 +184,7 @@ Hooks:PostHook(CivilianLogicSurrender, "_delayed_intimidate_clbk", "hh__delayed_
 	CopLogicBase.add_delayed_clbk(my_data, my_data.delayed_intimidate_id, callback(CivilianLogicSurrender, CivilianLogicSurrender, "_delayed_intimidate_clbk", params), TimerManager:game():time() + 0.1 + math.random() * 0.4)
 end)
 
--- Fix civs randomly popping up to standing position and rework scared screams
+-- (SHAI) Rewrite CivilianLogicSurrender.on_alert: prevents tied/surrendered civs from standing up when startled by gunshots. Also reworks scared scream chance — screams are now distance- and fear-scaled instead of purely random, so distant shots cause less panic.
 function CivilianLogicSurrender.on_alert(data, alert_data)
 	local alert_type = alert_data[1]
 	if alert_type ~= "aggression" and alert_type ~= "bullet" and alert_type ~= "explosion" then

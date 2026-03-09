@@ -46,7 +46,7 @@ local REACT_AIM = AIAttentionObject.REACT_AIM
 local REACT_COMBAT = AIAttentionObject.REACT_COMBAT
 local REACT_SHOOT = AIAttentionObject.REACT_SHOOT
 
--- Reuse function of idle logic to make enemies in an area aware of a player entering the area
+-- (SHAI) Alias CopLogicAttack.on_area_safety to CopLogicIdle.on_area_safety: when a player enters a nav area, the game calls on_area_safety on the active logic. Attack logic didn't implement it, so enemies in attack state ignored area intrusions. This forward to the idle implementation fixes that.
 CopLogicAttack.on_area_safety = CopLogicIdle.on_area_safety
 
 function CopLogicAttack.enter(data, new_logic_name, enter_params)
@@ -2476,7 +2476,7 @@ function CopLogicAttack.aim_allow_fire(shoot, aim, data, my_data)
 	end
 end
 
--- Helper function to reuse in other enemy logic _upd_aim functions (SH)
+-- (SHAI) Add CopLogicAttack._check_aim_shoot helper: centralises the aim/shoot decision used by multiple enemy logic variants (standard cop, taser, sniper, etc.). Factors in: target reaction level, verification age, movement speed (running reduces firing range), group push objectives, suppression time, and assault record. Returns aim bool, shoot bool, and expected enemy position for unverified targets.
 function CopLogicAttack._check_aim_shoot(data, my_data, focus_enemy, verified, nearly_visible)
 	if not focus_enemy or focus_enemy.reaction < AIAttentionObject.REACT_AIM then
 		return
@@ -2523,7 +2523,7 @@ function CopLogicAttack._check_aim_shoot(data, my_data, focus_enemy, verified, n
 	return aim, shoot, expected_pos
 end
 
--- Improve aggressive chatter: specials get priority and are not limited by max amount of chatter in area (SH)
+-- (SHAI) Add CopLogicAttack._chk_say_chatter: wrapper around groupai chatter that gives special enemies (Bulldozer, Cloaker, etc.) a dedicated channel — they always bark if not already speaking, bypassing the area's concurrent-chatter cap. Regular enemies still go through the normal area gate.
 function CopLogicAttack._chk_say_chatter(data, chatter_type, cooldown)
 	if data.unit:base():has_tag("special") then
 		if not data.unit:sound():speaking(data.t) then

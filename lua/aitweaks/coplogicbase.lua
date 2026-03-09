@@ -2268,7 +2268,7 @@ function CopLogicBase.chk_start_action_dodge(data, reason)
 	return action
 end
 
--- Add chance for enemies to comment on squad member deaths
+-- (SHAI) PostHook CopLogicBase.death_clbk: when a group member dies, gives nearby group-mates a chance to comment. Trip-mine and saw kills always trigger a specific bark; melee kills have a 75% chance; other kills 25%. Adds life to firefights without flooding the audio.
 Hooks:PostHook(CopLogicBase, "death_clbk", "hh_death_clbk", function(data, damage_info)
 	if not data.group then
 		return

@@ -4049,10 +4049,10 @@ function CopDamage:_AI_comment_death(unit, killed_unit, special_comment)
 end
 
 
--- Increase health granularity for more accurate damage calculations (SH)
+-- (SHAI) Raise CopDamage._HEALTH_GRANULARITY from the vanilla default to 8192: health is stored as an integer divided by this value, so a higher granularity means finer HP increments and less rounding error on small damage ticks.
 CopDamage._HEALTH_GRANULARITY = 8192
 
--- Fix _send_melee_attack_result: clamp body_index to prevent crashes (SH)
+-- (SHAI) Fix CopDamage._send_melee_attack_result: clamps body_index to [0, 128] before sending the network message. Modded weapons can produce out-of-range body indices that cause an engine crash on the receiving client.
 local _send_melee_attack_result_original = CopDamage._send_melee_attack_result
 if _send_melee_attack_result_original then
 	function CopDamage:_send_melee_attack_result(attack_data, damage_percent, damage_effect_percent, hit_offset_height, variant, body_index)
@@ -4061,7 +4061,7 @@ if _send_melee_attack_result_original then
 	end
 end
 
--- Fix _dismember_condition and _sync_dismember to prevent NPC vs NPC crashes (SH)
+-- (SHAI) Fix dismemberment: _dismember_condition only runs for the local player (host-side attacker), _sync_dismember only runs for husk players (remote attackers). NPC-vs-NPC dismember was never intended and crashes the game when the body part table is missing.
 local _dismember_condition_original = CopDamage._dismember_condition
 if _dismember_condition_original then
 	function CopDamage:_dismember_condition(attack_data, ...)
@@ -4080,7 +4080,7 @@ if _sync_dismember_original then
 	end
 end
 
--- Add temporary damage reduction when healed by a medic (SH)
+-- (SHAI) Medic heal damage reduction: records heal time in _last_medic_heal_t via a PostHook, then wraps _apply_damage_reduction to halve incoming damage for 2 seconds after a medic heal. Makes medic support meaningful in sustained fights.
 Hooks:PostHook(CopDamage, "do_medic_heal", "hh_do_medic_heal_sh", function(self)
 	self._last_medic_heal_t = TimerManager:game():time()
 end)

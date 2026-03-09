@@ -3265,18 +3265,18 @@ function GroupAIStateBase:on_objective_failed(unit, objective)
 	end
 end
 
--- Fix _set_rescue_state to properly propagate the state parameter (SH)
+-- (SHAI) Fix GroupAIStateBase._set_rescue_state: vanilla hardcoded the state to true inside the function body, ignoring the parameter. This replaces it with a one-liner that actually stores the passed value, allowing the rescue state to be toggled off.
 function GroupAIStateBase:_set_rescue_state(state)
 	self._rescue_allowed = state
 end
 
--- Initialize vars needed by other SH features (SH)
+-- (SHAI) PostHook GroupAIStateBase.init: ensures _next_police_upd_task and _next_group_spawn_t are initialised to safe defaults on game start. Both tables are referenced by SHAI helper functions and would cause nil-index errors if not present.
 Hooks:PostHook(GroupAIStateBase, "init", "hh_init_sh_vars", function(self)
 	self._next_police_upd_task = self._next_police_upd_task or 0
 	self._next_group_spawn_t = self._next_group_spawn_t or {}
 end)
 
--- Restore scripted cloaker spawn noise (SH)
+-- (SHAI) Override GroupAIStateBase._process_recurring_grp_SO: after the original recurring SO fires, sends the cloaker_spawned sync event and plays the spawn HUD sound. The vanilla function sends the event but modded builds sometimes suppress it; this ensures it always fires.
 local _process_recurring_grp_SO_original = GroupAIStateBase._process_recurring_grp_SO
 if _process_recurring_grp_SO_original then
 	function GroupAIStateBase:_process_recurring_grp_SO(...)
@@ -3288,7 +3288,7 @@ if _process_recurring_grp_SO_original then
 	end
 end
 
--- Make difficulty progress smoother (SH)
+-- (SHAI) Smooth difficulty ramping: _update_difficulty_value increments difficulty by 0.05 every 15 s toward the target. set_difficulty wraps the original to activate smooth ramping during the heist; immediate jumps are still used at heist start or when difficulty decreases.
 function GroupAIStateBase:_update_difficulty_value()
 	if self._target_difficulty and self._t >= self._next_difficulty_step_t then
 		self._difficulty_value = math.min(self._difficulty_value + self._difficulty_step, self._target_difficulty)
@@ -3316,7 +3316,7 @@ end
 
 Hooks:PostHook(GroupAIStateBase, "update", "hh_update_difficulty", GroupAIStateBase._update_difficulty_value)
 
--- Delay spawn points when enemies die close to them (SH)
+-- (SHAI) PostHook GroupAIStateBase.on_enemy_unregistered: when an enemy dies near their spawn point (within spawn_kill_max_dis), applies a cooldown proportional to proximity. Prevents the same spawn point from immediately producing a new unit in view of the players.
 Hooks:PostHook(GroupAIStateBase, "on_enemy_unregistered", "hh_on_enemy_unregistered_sh", function(self, unit)
 	if Network:is_client() or not unit:character_damage():dead() then return end
 	local e_data = self._police[unit:key()]
@@ -3329,7 +3329,7 @@ Hooks:PostHook(GroupAIStateBase, "on_enemy_unregistered", "hh_on_enemy_unregiste
 	e_data.spawn_group.delay_t = math.max(e_data.spawn_group.delay_t or 0, delay_t)
 end)
 
--- Additional area/nav safety helpers (SH)
+-- (SHAI) Add is_area_safe / is_nav_seg_safe / is_nav_seg_area_safe helpers: return true when no active criminal is in the given nav area or segment. Used by rescue/steal SO verification and spawn logic to avoid placing enemies on top of players.
 function GroupAIStateBase:is_area_safe(area)
 	for _, u_data in pairs(self._criminals) do
 		if u_data.status ~= "disabled" and u_data.status ~= "dead" and area.nav_segs[u_data.tracker:nav_segment()] then
@@ -3355,7 +3355,7 @@ function GroupAIStateBase:is_nav_seg_area_safe(skip_areas, nav_seg)
 	return self:is_area_safe(self:get_area_from_nav_seg_id(nav_seg))
 end
 
--- Count police force assigned to a specific task type (SH)
+-- (SHAI) Add GroupAIStateBase._count_police_force(task_name): sums the size of all groups whose objective type equals "task_name_area". Allows besiege logic to check how many units are already committed to a task before dispatching more.
 function GroupAIStateBase:_count_police_force(task_name)
 	local amount = 0
 	local objective_type = task_name .. "_area"
@@ -3367,7 +3367,7 @@ function GroupAIStateBase:_count_police_force(task_name)
 	return amount
 end
 
--- Set accurate criminal position on spotted (SH)
+-- (SHAI) PostHook GroupAIStateBase.criminal_spotted: copies m_det_pos (the exact position where detection occurred) into the criminal sighting record. Vanilla left pos as the nav-segment centre, causing enemies to look at the wrong spot when first spotted.
 Hooks:PostHook(GroupAIStateBase, "criminal_spotted", "hh_criminal_spotted_sh", function(self, unit)
 	local u_sighting = self._criminals[unit:key()]
 	if u_sighting and u_sighting.m_det_pos then
@@ -3375,7 +3375,7 @@ Hooks:PostHook(GroupAIStateBase, "criminal_spotted", "hh_criminal_spotted_sh", f
 	end
 end)
 
--- Make jokers follow their actual owner instead of the closest player (SH)
+-- (SHAI) Override GroupAIStateBase._determine_objective_for_criminal_AI: if the converted unit has minion_owner set (written by the CopBrain.convert_to_criminal PreHook), returns a follow objective targeting that specific player. Fixes Jokers switching owners whenever distances change.
 local _determine_obj_orig = GroupAIStateBase._determine_objective_for_criminal_AI
 function GroupAIStateBase:_determine_objective_for_criminal_AI(unit, ...)
 	local logic_data = unit:brain()._logic_data
@@ -3389,7 +3389,7 @@ function GroupAIStateBase:_determine_objective_for_criminal_AI(unit, ...)
 	return _determine_obj_orig(self, unit, ...)
 end
 
--- Adjust objective data for rescue and steal SOs (SH)
+-- (SHAI) PreHook GroupAIStateBase.add_special_objective for carrysteal/rescue IDs: standardises SO parameters — 4 s retry interval, 2000-unit search radius (sq), 800-unit interrupt distance, 0.8 health interrupt threshold, no forced pose. Prevents enemies ignoring steal objectives because the search radius was too small.
 Hooks:PreHook(GroupAIStateBase, "add_special_objective", "hh_add_special_objective_sh", function(self, id, objective_data)
 	if type(id) ~= "string" or not id:match("^carrysteal") and not id:match("^rescue") then
 		return
@@ -3403,12 +3403,12 @@ Hooks:PreHook(GroupAIStateBase, "add_special_objective", "hh_add_special_objecti
 	end
 end)
 
--- Fully count all criminals for the balancing multiplier (SH)
+-- (SHAI) Fix GroupAIStateBase._get_balancing_multiplier: counts all criminals in _char_criminals (clamped to table size) instead of just players in certain states, so the spawn multiplier scales correctly in all player configurations.
 function GroupAIStateBase:_get_balancing_multiplier(balance_multipliers)
 	return balance_multipliers[math.clamp(table.size(self._char_criminals), 1, #balance_multipliers)]
 end
 
--- Set a minimum gunshot and bullet impact alert range in loud (SH)
+-- (SHAI) PreHook GroupAIStateBase.propagate_alert: in loud assault, clamps bullet alert range to at least 800 units. Vanilla could produce sub-100-unit bullet alerts when the attacker is suppressed, making nearby enemies react as if the shot was silent.
 Hooks:PreHook(GroupAIStateBase, "propagate_alert", "hh_propagate_alert_sh", function(self, alert_data)
 	if alert_data[1] == "bullet" and alert_data[3] and self:enemy_weapons_hot() then
 		alert_data[3] = math.max(alert_data[3], 800)

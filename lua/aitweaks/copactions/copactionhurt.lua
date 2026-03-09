@@ -1020,7 +1020,7 @@ function CopActionHurt:is_network_allowed(action_desc)
 	return true
 end
 
--- Fix pseudo random number generator having very low entropy
+-- (SHAI) Override math.rand / math.random inside hurt: the vanilla Lua PRNG is seeded once at startup so networked games produce identical sequences. This replaces it with a hash of the heist timer + unit ID, giving each unit an independent, time-varying sequence that avoids predictable dodge/hurt patterns.
 function CopActionHurt:_pseudorandom(a, b)
 	if CopActionHurt._host_peer == nil then
 		CopActionHurt._host_peer = Network:is_client() and managers.network:session():peer(1) or false
@@ -2802,8 +2802,7 @@ function CopActionHurt:_set_ik_updator(name)
 	self._upd_ik = self[name]
 end
 
--- Remove position reservations on death
--- Improve reaction to ECM feedback by playing specific voicelines and pain sounds
+-- (SHAI) PostHook CopActionHurt.init on server: on death, releases all nav-position reservations so other units aren't blocked by the corpse's slot. On hurt_sick (ECM stun), randomises the voiceline timers so stun reactions don't all play at the same time.
 if Network:is_server() then
 	Hooks:PostHook(CopActionHurt, "init", "hh_hurt_init", function(self)
 		if self._hurt_type == "death" then
@@ -2817,7 +2816,7 @@ if Network:is_server() then
 end
 
 
--- Prevent hurt and knockdown animations stacking, once one plays it needs to finish for another one to trigger
+-- (SHAI) Override CopActionHurt.chk_block: during an active hurt/knockdown animation, block new hurt/knockdown actions until the exit phase begins (_ext_anim.hurt_exit). Death always blocks, dodge/surrender remain interruptible. Prevents visual glitches from overlapping ragdoll transitions.
 local _hurt_blocks = {
 	heavy_hurt = true,
 	hurt = true,
@@ -2844,7 +2843,7 @@ function CopActionHurt:chk_block(action_type, t)
 end
 
 
--- Allow dodge and surrender actions to interrupt hurt actions
+-- (SHAI) Add CopActionHurt.chk_block_client + allowed_client_act_variants: on clients the server drives hurt state, but we still want dodge and hands-up animations to interrupt locally so they appear responsive. Only the listed act variants (surrender poses) are whitelisted.
 CopActionHurt.allowed_client_act_variants = {
 	hands_up = true,
 	hands_back = true,

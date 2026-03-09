@@ -737,7 +737,7 @@ function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	return ammo
 end
 
--- Add chance to concussion effect to make it less obnoxious (SH)
+-- (SHAI) Override ConcussiveInstantBulletBase.give_impact_damage: reads an optional 'chance' field from the weapon's concussion tweak data (defaults to 1.0 = always). When the roll fails, falls back to the base class give_impact_damage skipping the concussion effect, letting designers tune how often grenades stun.
 local _give_impact_damage_conc_original = ConcussiveInstantBulletBase.give_impact_damage
 function ConcussiveInstantBulletBase:give_impact_damage(col_ray, weapon_unit, ...)
 	local conc_tweak = alive(weapon_unit) and weapon_unit:base().concussion_tweak and weapon_unit:base():concussion_tweak()
