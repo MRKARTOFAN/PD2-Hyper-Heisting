@@ -851,7 +851,8 @@ function CopLogicIntimidated._chk_begin_alarm_pager(data)
 	data.brain:begin_alarm_pager()
 end
 
--- (SHAI) Fix CopLogicIntimidated enter/on_intimidated: adds a 2-second grace period (surrender_break_delay_t) before the logic is allowed to exit surrender. Without this, enemies that are only barely in surrender range break out instantly on the same tick they entered, causing the "instant pop-up" bug.
+-- Fix and improve enemies breaking out of intimidated state
+-- Don't immediately break out of surrender when the conditions are met
 Hooks:PostHook(CopLogicIntimidated, "enter", "hh_enter", function(data)
 	data.internal_data.surrender_break_delay_t = TimerManager:game():time() + 2
 end)
@@ -860,7 +861,7 @@ Hooks:PostHook(CopLogicIntimidated, "on_intimidated", "hh_on_intimidated", funct
 	data.internal_data.surrender_break_delay_t = data.t + 2
 end)
 
--- (SHAI) PostHook CopLogicIntimidated._do_tied and on_rescue_SO_completed: when an enemy is tied, remove them from their group so the group no longer counts them in reinforcement calculations. When a tied enemy is rescued and their group is gone, reassign them to group AI and send them to retire rather than leaving them stranded.
+-- Remove surrendered enemies from their groups and make them retire if they are freed
 Hooks:PostHook(CopLogicIntimidated, "_do_tied", "hh__do_tied", function(data)
 	if data.group then
 		managers.groupai:state():unit_leave_group(data.unit)

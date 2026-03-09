@@ -2301,7 +2301,7 @@ function PlayerDamage:pre_destroy()
 end
 
 
--- (SHAI) PostHook PlayerDamage._send_damage_drama: if the player dodged damage (health_subtracted == 0) and the invulnerability timer is not already running, starts a grace period of dmg_interval + 0.15 s. Prevents the same projectile from dealing damage on two consecutive frames during a dodge.
+-- Add slightly longer grace period on dodge (repurposing Anarchist/Armorer damage timer)
 Hooks:PostHook(PlayerDamage, "_send_damage_drama", "sh__send_damage_drama", function (self, attack_data, health_subtracted)
 	if health_subtracted == 0 and self._can_take_dmg_timer and self._can_take_dmg_timer <= 0 then
 		self._can_take_dmg_timer = self._dmg_interval + 0.15
@@ -2309,7 +2309,7 @@ Hooks:PostHook(PlayerDamage, "_send_damage_drama", "sh__send_damage_drama", func
 end)
 
 
--- (SHAI) Override PlayerDamage._calc_armor_damage: if armor just broke (had armor before call, none after) and the invulnerability timer is not running, starts a dmg_interval + 0.15 s grace period. Prevents a follow-up bullet from dealing double-damage in the same frame the armor breaks.
+-- Add slightly longer grace period on armor break (repurposing Anarchist/Armorer damage timer)
 local _calc_armor_damage_sh_original = PlayerDamage._calc_armor_damage
 function PlayerDamage:_calc_armor_damage(...)
 	local had_armor = self:get_real_armor() > 0
@@ -2324,7 +2324,7 @@ function PlayerDamage:_calc_armor_damage(...)
 end
 
 
--- (SHAI) PostHook PlayerDamage.change_armor: when armor increases but is not yet full, forces _send_set_armor to sync the HUD. Anarchist perk regen calls change_armor but vanilla skips the sync for partial fills, causing the client's armor bar to lag behind actual values.
+-- Fix Anarchist regen not triggering HUD armor update for clients
 Hooks:PostHook(PlayerDamage, "change_armor", "sh_change_armor", function (self, change)
 	if change > 0 and self:armor_ratio() < 1 then
 		self:_send_set_armor()

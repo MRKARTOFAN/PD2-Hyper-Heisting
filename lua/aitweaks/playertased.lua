@@ -470,7 +470,7 @@ function PlayerTased:update(t, dt)
 	PlayerTased.super.update(self, t, dt)
 end
 
--- (SHAI) Override PlayerTased._check_action_shock: each time a taser shock fires, applies a small random camera pitch offset (±5°) and interpolates it to the new angle over 0.2 s. Adds subtle variation so repeated shocks feel less mechanical.
+-- Add random pitch variation when tased for more dynamic camera feel (SH)
 local _check_action_shock_original = PlayerTased._check_action_shock
 function PlayerTased:_check_action_shock(t, input, ...)
 	local do_shock = self._next_shock and self._next_shock < t

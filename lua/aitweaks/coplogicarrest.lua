@@ -1519,7 +1519,7 @@ function CopLogicArrest._ask_call_the_police(data)
 	end
 end
 
--- (SHAI) PostHook CopLogicArrest.enter: disables the unit's firing permission when they switch to arrest logic. Without this, enemies can fire during the arrest animation, which looks broken and deals unintended damage.
+-- Stop shooting when entering arrest logic
 Hooks:PostHook(CopLogicArrest, "enter", "hh_arrest_enter", function(data)
 	data.unit:movement():set_allow_fire(false)
 end)

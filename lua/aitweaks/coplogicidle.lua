@@ -2455,7 +2455,7 @@ function CopLogicIdle._start_idle_action_from_act(data)
 	})
 end
 
--- (SHAI) Add CopLogicIdle._get_attention_weight helper: adjusts threat priority based on target behaviour. Crouching-still players get a reduced weight matching the crouch-camouflage upgrade value; targets with the Chico injector active get weight ×1000, making them highest-priority. Applies to both local and husk (remote) players.
+-- Helper to calculate attention weight based on unit state (used in _get_priority_attention)
 function CopLogicIdle._get_attention_weight(attention_data, att_unit, distance)
 	local weight_mul = attention_data.settings.weight_mul or 1
 	if attention_data.is_local_player then
@@ -2483,14 +2483,14 @@ function CopLogicIdle._get_attention_weight(attention_data, att_unit, distance)
 	return 1 / weight_mul
 end
 
--- (SHAI) PostHook CopLogicIdle.queued_update: during cool (stealth) idle, fire the idle chatter event so guards occasionally say ambient lines. Without this hook, guards are silent during stealth regardless of their chatter tweak data.
+-- Play generic chatter during idle while unalerted
 Hooks:PostHook(CopLogicIdle, "queued_update", "hh_queued_update", function(data)
 	if data.cool and data.char_tweak.chatter and data.char_tweak.chatter.idle then
 		managers.groupai:state():chk_say_enemy_chatter(data.unit, data.m_pos, "idle")
 	end
 end)
 
--- (SHAI) Override CopLogicIdle.on_intimidated: wraps the original to detect when surrender legitimately cannot happen (window expired, hostage cap reached, unit never surrenders). In those cases, sends a "convert_enemy_failed" hint to the player who shouted so they get UI feedback rather than silently failing. Throttled by _skip_surrender_hints to avoid spamming.
+-- Show hint to player when surrender is impossible
 local _on_intimidated_original = CopLogicIdle.on_intimidated
 function CopLogicIdle.on_intimidated(data, amount, aggressor_unit, ...)
 	local surrender = _on_intimidated_original(data, amount, aggressor_unit, ...)
