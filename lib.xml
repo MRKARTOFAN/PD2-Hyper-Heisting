@@ -52,7 +52,7 @@
 	<post :script_path="mutators/mutatorsmanager.lua" :hook_id="managers/mutatorsmanager"/>
 	<post :script_path="mutators/mutatorenemyreplacer.lua" :hook_id="mutators/mutatorenemyreplacer"/>
 	
-	<post :script_path="networking/networkmatchmakingsteam.lua" :hook_id="network/matchmaking/networkmatchmakingsteam"/>
+	<post :script_path="networking/networkmanager.lua" :hook_id="network/base/networkmanager"/>
 	<post :script_path="networking/networkpeer.lua" :hook_id="network/base/networkpeer"/>
 	<post :script_path="networking/unitnetworkhandler.lua" :hook_id="network/handlers/unitnetworkhandler"/>
 	
