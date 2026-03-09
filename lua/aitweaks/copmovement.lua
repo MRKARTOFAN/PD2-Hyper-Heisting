@@ -638,33 +638,64 @@ function CopMovement:sync_action_act_start(index, blocks_hurt, clamp_to_graph, n
 	self:action_request(action_data)
 end
 
-function CopMovement:sync_action_dodge_start(body_part, var, side, rot, speed, shoot_acc)
+function CopMovement:sync_action_act_start(index, blocks_hurt, clamp_to_graph, needs_full_blend, start_yaw, start_pos)
 	if self._ext_damage:dead() then
 		return
 	end
 
-	local action_data = {
-		type = "dodge",
-		body_part = body_part,
-		variation = CopActionDodge.get_variation_name(var),
-		direction = Rotation(rot):y(),
-		side = CopActionDodge.get_side_name(side),
-		speed = speed,
-		shoot_accuracy = shoot_acc / 10,
+	local redir_name = self._actions.act:_get_act_name_from_index(index)
+	local body_part = 1
+	local blocks = nil
+
+	if redir_name == "suppressed_reaction" then
+		body_part = 2
+		blocks = {
+			walk = -1,
+			act = -1,
+			idle = -1,
+			dodge = -1
+		}
+	elseif redir_name == "gesture_stop" or redir_name == "arrest" or redir_name == "cmd_get_up" or redir_name == "cmd_down" or redir_name == "cmd_stop" or redir_name == "cmd_gogo" or redir_name == "cmd_point" then
+		body_part = 3
+		blocks = {
+			action = -1,
+			act = -1,
+			idle = -1
+		}
+	else
 		blocks = {
 			act = -1,
-			tase = -1,
-			bleedout = -1,
-			dodge = -1,
-			walk = -1,
-			action = body_part == 1 and -1 or nil,
-			aim = body_part == 1 and -1 or nil
+			idle = -1,
+			action = -1,
+			walk = -1
 		}
+	end
+	
+	
+	local actual_start_rot = nil
+	if type(start_yaw) == "number" and start_yaw ~= 0 then
+		actual_start_rot = Rotation(start_yaw * 360 / 255, 0, 0)
+	elseif type(start_yaw) == "userdata" and start_yaw.yaw then
+		actual_start_rot = start_yaw
+	end
+
+	local action_data = {
+		type = "act",
+		body_part = body_part,
+		variant = redir_name,
+		blocks = blocks,
+		start_rot = actual_start_rot,
+		start_pos = start_pos,
+		clamp_to_graph = clamp_to_graph,
+		needs_full_blend = needs_full_blend
 	}
 
-	if action_data.variation ~= "side_step" then
+	if blocks_hurt then
+		action_data.blocks.light_hurt = -1
 		action_data.blocks.hurt = -1
 		action_data.blocks.heavy_hurt = -1
+		action_data.blocks.expl_hurt = -1
+		action_data.blocks.fire_hurt = -1
 	end
 
 	self:action_request(action_data)
