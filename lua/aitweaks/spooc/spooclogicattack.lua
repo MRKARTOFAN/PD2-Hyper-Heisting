@@ -300,7 +300,7 @@ function SpoocLogicAttack._upd_spooc_attack(data, my_data)
 
 			if action then
 			
-				if data.tactics then
+				if data.tactics and CopLogicBase.do_grenade then
 					if data.tactics.smoke_grenade or data.tactics.flash_grenade then
 						local flash = not data.tactics.smoke_grenade or data.tactics.flash_grenade and math.random() < 0.5
 						
