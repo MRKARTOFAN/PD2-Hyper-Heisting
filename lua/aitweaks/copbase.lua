@@ -109,7 +109,11 @@ function CopBase:set_visibility_state(stage)
 
 	if state then
 		self:set_anim_lod(stage)
-		self._unit:movement():enable_update(true)
+		
+		local mov_ext = self._unit:movement()
+		if mov_ext and mov_ext.enable_update then
+			mov_ext:enable_update(true)
+		end
 
 		if stage == 1 then
 			self._unit:set_animatable_enabled(ids_lod1, true)
