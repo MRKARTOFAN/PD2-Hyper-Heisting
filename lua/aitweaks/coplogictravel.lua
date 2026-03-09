@@ -2290,10 +2290,10 @@ function CopLogicTravel.get_pathing_prio(data)
 	return prio
 end
 
--- Reuse idle logic function to make enemies in an area aware of a player entering
+-- (SHAI) Alias CopLogicTravel.on_area_safety to CopLogicIdle.on_area_safety: travel logic didn't implement area-safety callbacks, so patrolling enemies ignored area intrusions. Forwarding to the idle implementation keeps detection consistent.
 CopLogicTravel.on_area_safety = CopLogicIdle.on_area_safety
 
--- Update pathing immediately when receiving travel logic or pathing results
+-- (SHAI) PostHook CopLogicTravel.enter + override on_pathing_results: calls upd_advance immediately when travel logic is entered and when a path search completes. Removes the up-to-one-tick delay before movement starts.
 Hooks:PostHook(CopLogicTravel, "enter", "hh_travel_enter", CopLogicTravel.upd_advance)
 
 local _on_pathing_results_original = CopLogicTravel.on_pathing_results
@@ -2306,10 +2306,14 @@ function CopLogicTravel.on_pathing_results(data)
 		return
 	end
 
-	_on_pathing_results_original(data)
+	if _on_pathing_results_original then
+		_on_pathing_results_original(data)
+	else
+		CopLogicTravel.upd_advance(data)
+	end
 end
 
--- Follow pathing improvement: use continuous instead of segmented path
+-- (SHAI) Add CopLogicTravel._use_segmented_coarse_path override: disables segmented pathing for follow objectives so the bot traces a single continuous path to the follow unit rather than hopping between coarse waypoints. Falls back to segmented after two consecutive path failures.
 function CopLogicTravel._use_segmented_coarse_path(data)
 	return not data.objective or data.objective.type ~= "follow" or data.path_fail_t and data.t - data.path_fail_t < 2
 end
