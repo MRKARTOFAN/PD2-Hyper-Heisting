@@ -3389,7 +3389,7 @@ function GroupAIStateBase:_determine_objective_for_criminal_AI(unit, ...)
 	return _determine_obj_orig(self, unit, ...)
 end
 
--- Adjust objective data for rescue and steal SOs (SH)
+-- (SHAI) PreHook GroupAIStateBase.add_special_objective for carrysteal/rescue IDs: standardises SO parameters — 4 s retry interval, 2000-unit search radius (sq), 800-unit interrupt distance, 0.8 health interrupt threshold, no forced pose. Prevents enemies ignoring steal objectives because the search radius was too small.
 Hooks:PreHook(GroupAIStateBase, "add_special_objective", "hh_add_special_objective_sh", function(self, id, objective_data)
 	if type(id) ~= "string" or not id:match("^carrysteal") and not id:match("^rescue") then
 		return
@@ -3403,12 +3403,12 @@ Hooks:PreHook(GroupAIStateBase, "add_special_objective", "hh_add_special_objecti
 	end
 end)
 
--- Fully count all criminals for the balancing multiplier (SH)
+-- (SHAI) Fix GroupAIStateBase._get_balancing_multiplier: counts all criminals in _char_criminals (clamped to table size) instead of just players in certain states, so the spawn multiplier scales correctly in all player configurations.
 function GroupAIStateBase:_get_balancing_multiplier(balance_multipliers)
 	return balance_multipliers[math.clamp(table.size(self._char_criminals), 1, #balance_multipliers)]
 end
 
--- Set a minimum gunshot and bullet impact alert range in loud (SH)
+-- (SHAI) PreHook GroupAIStateBase.propagate_alert: in loud assault, clamps bullet alert range to at least 800 units. Vanilla could produce sub-100-unit bullet alerts when the attacker is suppressed, making nearby enemies react as if the shot was silent.
 Hooks:PreHook(GroupAIStateBase, "propagate_alert", "hh_propagate_alert_sh", function(self, alert_data)
 	if alert_data[1] == "bullet" and alert_data[3] and self:enemy_weapons_hot() then
 		alert_data[3] = math.max(alert_data[3], 800)

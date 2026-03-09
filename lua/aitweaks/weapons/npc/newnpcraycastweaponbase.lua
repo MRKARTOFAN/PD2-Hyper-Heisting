@@ -495,7 +495,7 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 end
 
 
--- Make team AI weapons alert enemies (SH — oversight fix for bots with player weapons)
+-- (SHAI) PostHook NewNPCRaycastWeaponBase.set_user_is_team_ai (server only): when a bot equips a player-type weapon, alert_AI is not set because the init path differs from NPC weapons. Sets alert_AI = true and fills alert_filter from the bot's SO access mask so bot gunfire properly alerts nearby enemies.
 if not Network:is_client() then
 	Hooks:PostHook(NewNPCRaycastWeaponBase, "set_user_is_team_ai", "sh_set_user_is_team_ai", function (self)
 		if not self._setup or not alive(self._setup.user_unit) then
@@ -509,7 +509,7 @@ if not Network:is_client() then
 end
 
 
--- Prevent player skills and ammo types from affecting NPC weapons (SH)
+-- (SHAI) Override NewNPCRaycastWeaponBase._update_stats_values: snapshots NPC-specific weapon properties (bullet class, slot masks, pierce flags) before calling the base stats update, then restores them. The base update copies player skill upgrades onto the weapon; for NPCs these are incorrect and cause bots to pierce walls or use wrong ammo types.
 local _update_stats_values_original = NewNPCRaycastWeaponBase._update_stats_values
 function NewNPCRaycastWeaponBase:_update_stats_values(...)
 	local can_shoot_through_shield = self._can_shoot_through_shield

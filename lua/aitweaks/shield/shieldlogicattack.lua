@@ -756,7 +756,7 @@ function ShieldLogicAttack.action_complete_clbk(data, action)
 	end
 end
 
--- Stop walking action upon entering or leaving attack logic (SH)
+-- (SHAI) PreHook ShieldLogicAttack.enter/exit: cancels any in-progress advance walk on entry (so the shield immediately follows the new path) and cancels the optimal-position walk on exit (so the shield stops moving toward a position that is no longer relevant).
 Hooks:PreHook(ShieldLogicAttack, "enter", "sh_enter", function(data)
 	CopLogicTravel.cancel_advance(data)
 end)
@@ -766,7 +766,7 @@ Hooks:PreHook(ShieldLogicAttack, "exit", "sh_exit", function(data)
 end)
 
 
--- Only allow optimal positioning when group is fully spawned (SH)
+-- (SHAI) Override ShieldLogicAttack._chk_request_action_walk_to_optimal_pos: skips positioning while the group is still spawning (has_spawned == false). Without this, shields walk to formation positions before all group members exist, causing the group to scatter on arrival.
 local _chk_request_action_walk_to_optimal_pos_original = ShieldLogicAttack._chk_request_action_walk_to_optimal_pos
 function ShieldLogicAttack._chk_request_action_walk_to_optimal_pos(data, ...)
 	if not data.group or data.group.has_spawned then

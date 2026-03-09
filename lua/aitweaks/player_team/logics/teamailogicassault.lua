@@ -739,7 +739,7 @@ function TeamAILogicAssault._chk_exit_assault_logic(data, new_reaction)
 	end
 end
 
--- Prevent reverting to hostile stance when bot enters assault from combat stance (SH)
+-- (SHAI) Override TeamAILogicAssault.enter: temporarily replaces set_stance with a guard that is a no-op when the unit is already in combat stance (code 1). The original enter may force hostile stance for certain objectives; this preserves combat stance for bots already engaging. The original set_stance is restored immediately after enter returns.
 local _enter_assault_original = TeamAILogicAssault.enter
 function TeamAILogicAssault.enter(data, ...)
 	local movement = data.unit:movement()
