@@ -2982,6 +2982,11 @@ function GroupAIStateBase:chk_say_enemy_chatter(unit, unit_pos, chatter_type)
 	end
 
 	local chatter_tweak = tweak_data.group_ai.enemy_chatter[chatter_type]
+
+	if not chatter_tweak then
+		return
+	end
+
 	local chatter_type_hist = self._enemy_chatter[chatter_type]
 
 	if not chatter_type_hist then
