@@ -857,10 +857,6 @@ function PlayerManager:upd_style(t, dt)
 			drain = drain * 2
 		end
 		
-		if managers.groupai:state():chk_heat_bonus_retreat() then
-			drain = drain * 0.25
-		end
-		
 		if player_dmg_ext._supperssion_data.value then
 			drain = drain * 0.75
 		end
@@ -906,10 +902,6 @@ function PlayerManager:add_style(event)
 	local t = Application:time()
 	local event_data = self._style_data[event]
 	local amount = style_tweak.amount
-	
-	if managers.groupai:state():chk_heat_bonus_retreat() then
-		amount = amount * 2
-	end
 	
 	if event_data then
 		if event_data.expire_t < t then

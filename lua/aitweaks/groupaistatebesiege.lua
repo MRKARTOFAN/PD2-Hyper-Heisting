@@ -1154,9 +1154,6 @@ function GroupAIStateBesiege:get_hostage_count_for_chatter()
 	return 0
 end
 
-function GroupAIStateBesiege:chk_heat_bonus_retreat()
-	return self._activeassaultbreak
-end
 
 function GroupAIStateBesiege:_upd_assault_areas(current_area)
 	local all_areas = self._area_data

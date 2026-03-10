@@ -2755,10 +2755,6 @@ function CopLogicAttack._chk_wants_to_take_cover(data, my_data)
 			return true
 		end
 		
-		if groupai:chk_heat_bonus_retreat() then
-			return true
-		end
-		
 		return
 	end
 	
@@ -2820,9 +2816,6 @@ function CopLogicAttack._chk_wants_to_take_cover(data, my_data)
 		end
 	end
 	
-	if groupai:chk_heat_bonus_retreat() then
-		return true
-	end
 end
 
 function CopLogicAttack._set_best_cover(data, my_data, cover_data)
