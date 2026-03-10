@@ -528,6 +528,9 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 	self.values.player.cool_hunting_basic = {
 		1.25
 	}
+	self.values.shotgun.armor_piercing_chance = {
+		0.5 
+	}
 	self.values.player.cool_hunting_aced = {
 		true
 	}
@@ -538,6 +541,15 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			value = 1,
 			upgrade = "cool_hunting_basic",
 			category = "player"
+		}
+	}
+	self.definitions.shotgun_armor_piercing_chance_1 = {
+		name_id = "menu_shotgun_armor_piercing_chance",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "armor_piercing_chance",
+			category = "shotgun"
 		}
 	}
 	self.definitions.player_cool_hunting_aced = {

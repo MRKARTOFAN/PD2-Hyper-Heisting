@@ -156,7 +156,7 @@ function SkillTreeTweakData:init()
 	}
 			
 	self.skills.overkill[2].upgrades = {"player_overkill_damage_multiplier"}
-	self.skills.overkill[1].upgrades = {"player_killshot_close_panic_chance"}
+	self.skills.overkill[1].upgrades = {"shotgun_armor_piercing_chance_1"}
 
 	self.skills.heavy_impact[1].upgrades = {"player_muscle_memory_basic"}	
 	self.skills.heavy_impact[2].upgrades = {"player_muscle_memory_aced"}

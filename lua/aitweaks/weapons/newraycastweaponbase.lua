@@ -300,6 +300,17 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		end
 	end
 
+	
+	self._armor_piercing_chance = self._armor_piercing_chance + managers.player:upgrade_value("weapon", "armor_piercing_chance", 0)
+	
+	if self:weapon_tweak_data().categories then
+		for _, category in ipairs(self:weapon_tweak_data().categories) do
+			self._armor_piercing_chance = self._armor_piercing_chance + managers.player:upgrade_value(category, "armor_piercing_chance", 0)
+		end
+	end
+	
+	self._armor_piercing_chance = math.clamp(self._armor_piercing_chance, 0, 1)
+
 	if self._silencer then
 		self._muzzle_effect = Idstring(self:weapon_tweak_data().muzzleflash_silenced or "effects/payday2/particles/weapons/9mm_auto_silence_fps")
 	elseif self._ammo_data and self._ammo_data.muzzleflash ~= nil then
@@ -507,4 +518,17 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	end
 
 	clbk()
+end
+
+-- Force the weapon to evaluate the Overkill AP Shotgun Skill natively on trigger pull
+function NewRaycastWeaponBase:check_armor_piercing()
+	self._use_armor_piercing = math.random() < self:armor_piercing_chance()
+	
+	if self:is_category("shotgun") and managers.player:has_category_upgrade("shotgun", "armor_piercing_chance") then
+		local ap_chance = managers.player:upgrade_value("shotgun", "armor_piercing_chance", 0)
+		
+		if math.random() < ap_chance then
+			self._use_armor_piercing = true
+		end
+	end
 end
