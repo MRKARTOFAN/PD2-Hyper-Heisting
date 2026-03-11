@@ -63,15 +63,16 @@
 
 
 	<!-- Gensec Security: Beret Poppin' -->
-	<unit path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1" load="true" force="true" />
-	<unit path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1_husk" load="true" force="true" />	
+	<!-- DISABLED: custom tweak table "gensec" causes crash without AI tweaks -->
+	<!--<unit path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1" load="true" force="true" />-->
+	<!--<unit path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1_husk" load="true" force="true" />-->	
 	<object path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1" force="true" />	
 	<model path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1" force="true" />	
 	<material_config path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1" force="true" />	
 	<material_config path="units/pd2_dlc1/characters/ene_security_gensec_1/ene_security_gensec_1_contour" force="true" />	
 
-	<unit path="units/pd2_dlc1/characters/ene_security_gensec_2/ene_security_gensec_2" load="true" force="true" />
-	<unit path="units/pd2_dlc1/characters/ene_security_gensec_2/ene_security_gensec_2_husk" load="true" force="true" />	
+	<!--<unit path="units/pd2_dlc1/characters/ene_security_gensec_2/ene_security_gensec_2" load="true" force="true" />-->
+	<!--<unit path="units/pd2_dlc1/characters/ene_security_gensec_2/ene_security_gensec_2_husk" load="true" force="true" />-->	
 	<object path="units/pd2_dlc1/characters/ene_security_gensec_2/ene_security_gensec_2" force="true" />	
 	<model path="units/pd2_dlc1/characters/ene_security_gensec_2/ene_security_gensec_2" force="true" />	
 	
@@ -118,19 +119,19 @@
 	<!--enemy bullet impact fixes-->	
 	<object path="units/pd2_dlc_flat/characters/npc_chavez/npc_chavez" force="true" />
 	
-	<!--you're that ninja!-->	
-	<unit path="units/pd2_dlc_flat/characters/npc_jamaican/npc_jamaican" force="true" />		
-	<object path="units/pd2_dlc_flat/characters/npc_jamaican/npc_jamaican" force="true" />		
-	<unit path="units/pd2_dlc_flat/characters/npc_jamaican/npc_jamaican_husk" force="true" />	
+	<!--you're that ninja! DISABLED: custom tweak table "gangster_ninja" causes crash without AI tweaks -->
+	<!--<unit path="units/pd2_dlc_flat/characters/npc_jamaican/npc_jamaican" force="true" />-->
+	<object path="units/pd2_dlc_flat/characters/npc_jamaican/npc_jamaican" force="true" />
+	<!--<unit path="units/pd2_dlc_flat/characters/npc_jamaican/npc_jamaican_husk" force="true" />-->	
 	
-	<!-- scarface fuckers -->
+	<!-- scarface fuckers — DISABLED: custom tweak tables cause crash without AI tweaks -->
 	<object path="units/pd2_dlc_friend/characters/ene_drug_lord_boss/ene_drug_lord_boss" force="true" />
-	<unit path="units/pd2_dlc_friend/characters/ene_drug_lord_boss/ene_drug_lord_boss" force="true" />	
-	<unit path="units/pd2_dlc_friend/characters/ene_drug_lord_boss/ene_drug_lord_boss_husk" force="true" />
+	<!--<unit path="units/pd2_dlc_friend/characters/ene_drug_lord_boss/ene_drug_lord_boss" force="true" />-->
+	<!--<unit path="units/pd2_dlc_friend/characters/ene_drug_lord_boss/ene_drug_lord_boss_husk" force="true" />-->
 
 	<object path="units/pd2_dlc_friend/characters/ene_security_manager/ene_security_manager" force="true" />
-	<unit path="units/pd2_dlc_friend/characters/ene_security_manager/ene_security_manager" force="true" />	
-	<unit path="units/pd2_dlc_friend/characters/ene_security_manager/ene_security_manager_husk" force="true" />
+	<!--<unit path="units/pd2_dlc_friend/characters/ene_security_manager/ene_security_manager" force="true" />-->
+	<!--<unit path="units/pd2_dlc_friend/characters/ene_security_manager/ene_security_manager_husk" force="true" />-->
 	
 	<object path="units/pd2_dlc_friend/characters/ene_bolivian_thug_outdoor_01/ene_bolivian_thug_outdoor_01" force="true" />
 	<object path="units/pd2_dlc_friend/characters/ene_bolivian_thug_outdoor_02/ene_bolivian_thug_outdoor_02" force="true" />	
@@ -228,9 +229,9 @@
 	
 	<texture path="units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun_df" />	
 
-	<!--25 8 TWELVE GAUGE PUNK WEIGHT-->	
-	<unit path="units/payday2/characters/ene_cop_3/ene_cop_3" load="true" force="true"/>
-	<unit path="units/payday2/characters/ene_cop_3/ene_cop_3_husk" load="true" force="true"/>
+	<!--25 8 TWELVE GAUGE PUNK WEIGHT — DISABLED: custom tweak table "cop_moss" causes crash without AI tweaks -->
+	<!--<unit path="units/payday2/characters/ene_cop_3/ene_cop_3" load="true" force="true"/>-->
+	<!--<unit path="units/payday2/characters/ene_cop_3/ene_cop_3_husk" load="true" force="true"/>-->
 
 	<!--Light SWAT MP5	
 	<unit path="units/payday2/characters/ene_cop_5/ene_cop_5" load="true"/>
@@ -1043,9 +1044,9 @@
 	<model path="units/pd2_mod_ftsu/characters/ene_gensec_punk_mp5/ene_gensec_punk_mp5" />	
 	<cooked_physics path="units/pd2_mod_ftsu/characters/ene_gensec_punk_mp5/ene_gensec_punk_mp5"/>
 	
-	<!--gangster ninja m4-->
-	<unit path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4" force="true"/>
-	<unit path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4_husk" force="true"/>
+	<!--gangster ninja m4 — DISABLED: custom tweak table "gangster_ninja" causes crash without AI tweaks -->
+	<!--<unit path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4" force="true"/>-->
+	<!--<unit path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4_husk" force="true"/>-->
 	<object path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4"/>
 	<model path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4"/>
 	<material_config path="units/payday2/characters/ene_gangster_ninja_m4/ene_gangster_ninja_m4"/>
@@ -1189,9 +1190,9 @@
 	<material_config path="units/pd2_dlc_mad/characters/ene_acc_shield_akan_shield_small/ene_acc_shield_akan_small" force="false"/>
 	<cooked_physics path="units/pd2_dlc_mad/characters/ene_acc_shield_akan_shield_small/ene_acc_shield_akan_small" force="false"/>	
 	
-	<!--Fuck you. Here's your difficulty spike.-->
-	<unit path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween" load="true" force="true"/>
-	<unit path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween_husk" load="true" force="true"/>
+	<!--Fuck you. Here's your difficulty spike. — DISABLED: custom tweak table "tank_hw" causes crash without AI tweaks -->
+	<!--<unit path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween" load="true" force="true"/>-->
+	<!--<unit path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween_husk" load="true" force="true"/>-->
 	<material_config path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween" load="true" force="true"/>
 	<material_config path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween_contour" load="true" force="true"/>
 	<sequence_manager path="units/pd2_dlc_help/characters/ene_zeal_bulldozer_halloween/ene_zeal_bulldozer_halloween" force="true"/>
