@@ -8519,126 +8519,8 @@ Hooks:PostHook(CharacterTweakData, "_init_heavy_swat", "hhpost_hswat", function(
 
 end)
 
-Hooks:PostHook(CharacterTweakData, "_init_marshal_marksman", "hhpost_MMarksman", function(self, presets)
-	self.marshal_marksman.weapon = deep_clone(presets.weapon.civil)
-	self.marshal_marksman.HEALTH_INIT = 8
-	self.marshal_marksman.headshot_dmg_mul = 2
-	self.marshal_marksman.move_speed = presets.move_speed.simple_consistency
-	self.marshal_marksman.weapon.is_rifle = {
-		melee_speed = 1,
-		miss_dis = 40,
-		RELOAD_SPEED = 1,
-		spread = 5,
-		melee_dmg = 1,
-		focus_dis = 100,
-		focus_delay = 5,
-		aim_delay = {
-			1,
-			2
-		},
-		melee_retry_delay = {
-			1,
-			2
-		},
-		range = {
-			optimal = 4500,
-			far = 7000,
-			close = 3000
-		},
-		FALLOFF = {
-			{
-				dmg_mul = 4,
-				r = 500,
-				acc = {
-					0,
-					0.1
-				},
-				recoil = {
-					0.5,
-					0.5
-				},
-				mode = {
-					1,
-					0,
-					0,
-					0
-				}
-			},
-			{
-				dmg_mul = 4,
-				r = 1000,
-				acc = {
-					0.1,
-					0.4
-				},
-				recoil = {
-					1.3,
-					1.6
-				},
-				mode = {
-					1,
-					0,
-					0,
-					0
-				}
-			},
-			{
-				dmg_mul = 4,
-				r = 2000,
-				acc = {
-					0.8,
-					1
-				},
-				recoil = {
-					1.4,
-					1.6
-				},
-				mode = {
-					1,
-					0,
-					0,
-					0
-				}
-			},
-			{
-				dmg_mul = 4,
-				r = 4000,
-				acc = {
-					0.5,
-					1
-				},
-				recoil = {
-					1.5,
-					2
-				},
-				mode = {
-					1,
-					0,
-					0,
-					0
-				}
-			},
-			{
-				dmg_mul = 4,
-				r = 6000,
-				acc = {
-					0,
-					1
-				},
-				recoil = {
-					1.5,
-					2
-				},
-				mode = {
-					1,
-					0,
-					0,
-					0
-				}
-			}
-		}
-	}
-end)
+-- Marshal PostHooks removed: units disabled via groupaitweakdata
+
 
 Hooks:PostHook(CharacterTweakData, "_init_fbi_swat", "hhpost_fswat", function(self, presets)
 	self.fbi_swat.tags = {
@@ -10878,7 +10760,6 @@ function CharacterTweakData:character_map()
 	}	
 	return char_map
 end
-
 function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	--punks
 	self.security.HEALTH_INIT = self.security.HEALTH_INIT * hp_mul
@@ -10938,6 +10819,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.shield.HEALTH_INIT = self.shield.HEALTH_INIT * hp_mul
 	self.phalanx_minion.HEALTH_INIT = self.phalanx_minion.HEALTH_INIT * hp_mul
 	self.phalanx_vip.HEALTH_INIT = self.phalanx_vip.HEALTH_INIT * hp_mul
+
 	
 	--taser
 	self.taser.HEALTH_INIT = self.taser.HEALTH_INIT * hp_mul
@@ -10945,6 +10827,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.biker_escape.HEALTH_INIT = self.biker_escape.HEALTH_INIT * hp_mul
 	
 	self.medic.HEALTH_INIT = self.medic.HEALTH_INIT * hp_mul
+
 	
 	--misc
 	self.drug_lord_boss.HEALTH_INIT = self.drug_lord_boss.HEALTH_INIT * hp_mul
@@ -10987,7 +10870,6 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	
 	--ninjas
 	self.fbi.headshot_dmg_mul = self.fbi.headshot_dmg_mul * hs_mul
-	
 	self.cop_female.headshot_dmg_mul = self.fbi.headshot_dmg_mul
 	self.fbi_girl.headshot_dmg_mul = self.fbi.headshot_dmg_mul
 	self.gangster_ninja.headshot_dmg_mul = self.fbi.headshot_dmg_mul
@@ -11050,6 +10932,8 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		self.phalanx_vip.headshot_dmg_mul = self.phalanx_vip.headshot_dmg_mul * hs_mul
 	end
 
+
+
 	--taser
 	if self.taser.headshot_dmg_mul then
 		self.taser.headshot_dmg_mul = self.taser.headshot_dmg_mul * hs_mul
@@ -11059,6 +10943,8 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	if self.medic.headshot_dmg_mul then
 		self.medic.headshot_dmg_mul = self.medic.headshot_dmg_mul * hs_mul
 	end
+
+
 
 	if self.biker_escape.headshot_dmg_mul then
 		self.biker_escape.headshot_dmg_mul = self.biker_escape.headshot_dmg_mul * hs_mul
