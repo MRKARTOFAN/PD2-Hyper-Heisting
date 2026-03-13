@@ -295,7 +295,7 @@ function LevelsTweakData:get_ai_group_type()
 	return self.ai_groups.america
 end
 
-Hooks:PostHook(LevelsTweakData, "init", "NMEUSMod_TweakDataInit", function(td)
+Hooks:PostHook(LevelsTweakData, "init", "init__levelstweakdata_disable_marshals", function(td)
     local level_id = Global.game_settings and Global.game_settings.level_id
 
     if type(td[level_id]) == "table" then
