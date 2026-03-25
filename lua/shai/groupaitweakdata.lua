@@ -47,9 +47,9 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 	-- Assault delay (Vanilla DS8: {20,15,10})
 	self.besiege.assault.delay = { 20, 15, 10 }
 
-	-- Assault sustain duration - SH values (longer assaults)
-	self.besiege.assault.sustain_duration_min = { 180, 240, 300 }
-	self.besiege.assault.sustain_duration_max = { 180, 240, 300 }
+	-- Assault sustain duration - SH-style lerp scaling by difficulty
+	self.besiege.assault.sustain_duration_min = { math.lerp(60, 120, f), math.lerp(120, 180, f), math.lerp(180, 240, f) }
+	self.besiege.assault.sustain_duration_max = self.besiege.assault.sustain_duration_min
 
 	-- Hostage hesitation delay (Vanilla: none | SH: {10,7.5,5})
 	self.besiege.assault.hostage_hesitation_delay = { 15, 15, 15 }
