@@ -2,11 +2,11 @@
 local _original_init = CopActionHurt.init
 
 function CopActionHurt.init(self, action_desc, common_data)
+    local unit = common_data.unit
     local hurt_type = action_desc.hurt_type
-    local brain = self._unit:brain()
-    local is_converted = brain and brain._logic_data and brain._logic_data.is_converted
+    local is_converted = unit and unit:brain() and unit:brain()._logic_data and unit:brain()._logic_data.is_converted
 
-    if hurt_type ~= "fatal" and hurt_type ~= "death" and is_converted then
+    if is_converted and hurt_type ~= "fatal" and hurt_type ~= "death" then
         return
     end
 
