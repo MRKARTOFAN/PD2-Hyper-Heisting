@@ -1,7 +1,3 @@
-Hooks:PostHook(GroupAITweakData, "init", "tick_rate", function(self)
-	self.ai_tick_rate = 0.008333333333333333
-end)
-
 -- Add grenade settings after HH's _init_task_data runs
 Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", function(self, difficulty_index)
 	local f = math.max(0, difficulty_index - 2) / 6
