@@ -110,30 +110,8 @@ function CopLogicTravel._chk_relocate(data, my_data, max_dis)
 end
 
 
--- Make groups move together (remove close to criminal check to avoid splitting groups)
+-- REAI Masochism: groups move instantly without waiting for each other
 function CopLogicTravel.chk_group_ready_to_move(data)
-	local my_objective = data.objective
-	if not my_objective.grp_objective or my_objective.type == "follow" then
-		return true
-	end
-
-	local my_dis = mvec3_dis_sq(my_objective.area.pos, data.m_pos)
-	if my_dis > 4000000 then
-		return true
-	end
-
-	my_dis = my_dis * (1.15 ^ 2)
-	for u_key, u_data in pairs(data.group.units) do
-		if u_key ~= data.key and alive(u_data.unit) then
-			local his_objective = u_data.unit:brain():objective()
-			if his_objective and his_objective.grp_objective == my_objective.grp_objective and not his_objective.in_place then
-				if my_dis < mvec3_dis_sq(his_objective.area.pos, u_data.m_pos) then
-					return false
-				end
-			end
-		end
-	end
-
 	return true
 end
 
@@ -396,121 +374,32 @@ function CopLogicTravel.get_pathing_prio(data)
 end
 
 
--- Enhanced enemy inspired from REAI movement: path ahead and no movement delays
--- Keeps enemies constantly on the move
+-- REAI Masochism-style movement: path ahead, zero cover wait, no movement delays
+-- Keeps enemies constantly advancing without idle pauses
 
--- Allow enemies to path ahead (queue next path before finishing current)
-Hooks:PostHook(CopLogicTravel, "enter", "shai_travel_enter", function(arg_1_0)
-	local internal_data = arg_1_0.internal_data
-
-	-- Enable path ahead behavior
-	internal_data.path_ahead = true
-
-	-- Remove cover seeking delays
-	internal_data.cover_leave_t = nil
+-- Enable path-ahead on travel enter so enemies queue their next path before finishing current
+Hooks:PostHook(CopLogicTravel, "enter", "shai_travel_enter", function(data)
+	local my_data = data.internal_data
+	my_data.path_ahead = true
+	my_data.cover_leave_t = nil
 end)
 
--- Remove movement action delays
+-- Zero cover wait time: override SH's action_complete_clbk cover delay with immediate departure
+Hooks:PostHook(CopLogicTravel, "action_complete_clbk", "shai_zero_cover_wait", function(data, action)
+	if action:type() == "walk" then
+		local my_data = data.internal_data
+		my_data.cover_leave_t = nil
+	end
+end)
+
+-- Remove walk action start delays
 Hooks:PreHook(CopActionWalk, "init", "shai_no_walk_delay", function(self, action_desc, common_data)
-	-- Remove any walk start delays
 	if action_desc.delay then
 		action_desc.delay = 0
 	end
 
-	-- Remove run start restrictions
+	-- Allow run starts (matches SH no_run_start = false, keep no_run_stop as SH sets it)
 	if common_data and common_data.char_tweak then
 		common_data.char_tweak.no_run_start = false
-		common_data.char_tweak.no_run_stop = false
-	end
-end)
-
--- Keep enemies moving - reduce idle time between actions
-Hooks:PostHook(CopLogicTravel, "update", "shai_constant_movement", function(data)
-	if not data.objective or not data.unit then
-		return
-	end
-
-	local internal_data = data.internal_data
-
-	-- Reduce idle check intervals
-	data.idle_chk_t = data.idle_chk_t or 0
-	if data.t - data.idle_chk_t > 0.3 then
-		data.idle_chk_t = data.t
-
-		-- Force movement update if moving
-		if data.unit:movement() and data.unit:movement():is_moving() then
-			data.unit:movement():set_anim_speed(1.15)
-		end
-	end
-
-	-- Clear any path waiting timers
-	if internal_data and internal_data.path_data then
-		internal_data.path_data.wait_t = nil
-		internal_data.path_data.delay_t = nil
-	end
-end)
-
--- Reduce turn delays during movement
-Hooks:PreHook(CopActionTurn, "init", "shai_faster_turn", function(self, action_desc, common_data)
-	-- Reduce turn time by 40%
-	if action_desc.turn_time then
-		action_desc.turn_time = action_desc.turn_time * 0.6
-	end
-end)
-
--- Prevent enemies from stopping unnecessarily in attack logic
-Hooks:PostHook(CopLogicAttack, "update", "shai_attack_movement", function(data)
-	if not data.objective or not data.unit then
-		return
-	end
-
-	local anim_data = data.unit:movement():anim_data()
-
-	-- Keep moving even in attack logic when not shooting/reloading
-	if anim_data and not anim_data.reload and not anim_data.shoot then
-		-- Allow movement during attack
-		if data.objective.attitude ~= "engage" then
-			data.objective.attitude = "engage"
-		end
-	end
-end)
-
--- Make group movement instant (no waiting for group)
-function CopLogicTravel.chk_group_ready_to_move(arg_1_0, arg_1_1)
-	return true
-end
-
--- Clear path delays when pathing completes
-Hooks:PostHook(CopBrain, "clbk_pathing_results", "shai_fast_pathing", function(self)
-	local logic_data = self._logic_data
-
-	if logic_data and logic_data.path_data then
-		-- Clear any path waiting timers
-		logic_data.path_data.wait_t = nil
-		logic_data.path_data.delay_t = nil
-	end
-
-	-- Start next path immediately if path_ahead is enabled
-	if logic_data.path_ahead and logic_data.objective then
-		logic_data.path_ahead = false  -- Reset flag
-	end
-end)
-
--- Make enemies more aggressive in pursuit
-Hooks:PostHook(CopLogicAttack, "_chk_request_charge", "shai_aggressive_pursuit", function(data)
-	-- Lower charge threshold to 0.25 (charge more easily)
-	if data.char_tweak and data.char_tweak.dodge then
-		data.char_tweak.dodge.charge_threshold = 0.25
-	end
-end)
-
--- Remove hesitation when starting movement from cover
-Hooks:PreHook(CopLogicTravel, "_chk_begin_advance", "shai_no_cover_delay", function(arg_1_0)
-	local internal_data = arg_1_0.internal_data
-
-	-- Clear cover exit delays
-	if internal_data then
-		internal_data.cover_leave_t = nil
-		internal_data.processing_coarse_path = nil
 	end
 end)
