@@ -86,7 +86,7 @@
 	
 	<post :script_path="gameplaycentralmanager.lua" :hook_id="managers/gameplaycentralmanager"/>
 	
-	<post :script_path="skirmishmanager.lua" :hook_id="managers/skirmishmanager	"/>
+	<post :script_path="skirmishmanager.lua" :hook_id="managers/skirmishmanager"/>
 <!-->	<post :script_path="enemymanager.lua" :hook_id="managers/enemymanager"/> <!-->
 	<post :script_path="playermanager.lua" :hook_id="managers/playermanager"/>
 	<post :script_path="ammoclip.lua" :hook_id="units/pickups/ammoclip"/>
@@ -137,36 +137,36 @@
 	<post :script_path="shai/mapelements/elementspecialobjective.lua" :hook_id="managers/mission/elementspecialobjective"/>
 	
 	<!-- SHAI: Enemy AI - Cop Base -->
-	<post :script_path="shai/aitweaks/copbase.lua" :hook_id="cop/copbase"/>
-	<post :script_path="shai/aitweaks/copbrain.lua" :hook_id="cop/copbrain"/>
-	<post :script_path="shai/aitweaks/copdamage.lua" :hook_id="cop/copdamage"/>
-	<post :script_path="shai/aitweaks/copmovement.lua" :hook_id="cop/copmovement"/>
-	<post :script_path="shai/aitweaks/copsound.lua" :hook_id="cop/copsound"/>
-	<post :script_path="shai/aitweaks/copinventory.lua" :hook_id="cop/copinventory"/>
-	
+	<post :script_path="shai/aitweaks/copbase.lua" :hook_id="units/enemies/cop/copbase"/>
+	<post :script_path="shai/aitweaks/copbrain.lua" :hook_id="units/enemies/cop/copbrain"/>
+	<post :script_path="shai/aitweaks/copdamage.lua" :hook_id="units/enemies/cop/copdamage"/>
+	<post :script_path="shai/aitweaks/copmovement.lua" :hook_id="units/enemies/cop/copmovement"/>
+	<post :script_path="shai/aitweaks/copsound.lua" :hook_id="units/enemies/cop/copsound"/>
+	<post :script_path="shai/aitweaks/copinventory.lua" :hook_id="units/enemies/cop/copinventory"/>
+
 	<!-- SHAI: Enemy AI - Cop Logics -->
-	<post :script_path="shai/aitweaks/cop/logics/coplogicbase.lua" :hook_id="cop/logics/coplogicbase"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogicidle.lua" :hook_id="cop/logics/coplogicidle"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogicattack.lua" :hook_id="cop/logics/coplogicattack"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogictravel.lua" :hook_id="cop/logics/coplogictravel"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogicinactive.lua" :hook_id="cop/logics/coplogicinactive"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogicintimidated.lua" :hook_id="cop/logics/coplogicintimidated"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogicarrest.lua" :hook_id="cop/logics/coplogicarrest"/>
-	<post :script_path="shai/aitweaks/cop/logics/coplogicsniper.lua" :hook_id="cop/logics/coplogicsniper"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicbase.lua" :hook_id="units/enemies/cop/logics/coplogicbase"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicidle.lua" :hook_id="units/enemies/cop/logics/coplogicidle"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicattack.lua" :hook_id="units/enemies/cop/logics/coplogicattack"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogictravel.lua" :hook_id="units/enemies/cop/logics/coplogictravel"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicinactive.lua" :hook_id="units/enemies/cop/logics/coplogicinactive"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicintimidated.lua" :hook_id="units/enemies/cop/logics/coplogicintimidated"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicarrest.lua" :hook_id="units/enemies/cop/logics/coplogicarrest"/>
+	<post :script_path="shai/aitweaks/cop/logics/coplogicsniper.lua" :hook_id="units/enemies/cop/logics/coplogicsniper"/>
 
 	<!-- SHAI: Enemy AI - Cop Actions -->
-	<post :script_path="shai/aitweaks/cop/actions/copactionidle.lua" :hook_id="cop/actions/lower_body/copactionidle"/>
-	<post :script_path="shai/aitweaks/cop/actions/copactionwalk.lua" :hook_id="cop/actions/lower_body/copactionwalk"/>
-	<post :script_path="shai/aitweaks/cop/actions/copactionshoot.lua" :hook_id="cop/actions/upper_body/copactionshoot"/>
-	<post :script_path="shai/aitweaks/cop/actions/copactionhurt.lua" :hook_id="cop/actions/full_body/copactionhurt"/>
-	<post :script_path="shai/aitweaks/cop/actions/copactiontase.lua" :hook_id="cop/actions/upper_body/copactiontase"/>
-	
+	<post :script_path="shai/aitweaks/cop/actions/copactionidle.lua" :hook_id="units/enemies/cop/actions/lower_body/copactionidle"/>
+	<post :script_path="shai/aitweaks/cop/actions/copactionwalk.lua" :hook_id="units/enemies/cop/actions/lower_body/copactionwalk"/>
+	<post :script_path="shai/aitweaks/cop/actions/copactionshoot.lua" :hook_id="units/enemies/cop/actions/upper_body/copactionshoot"/>
+	<post :script_path="shai/aitweaks/cop/actions/copactionhurt.lua" :hook_id="units/enemies/cop/actions/full_body/copactionhurt"/>
+	<post :script_path="shai/aitweaks/cop/actions/copactiontase.lua" :hook_id="units/enemies/cop/actions/upper_body/copactiontase"/>
+
 	<!-- SHAI: Enemy AI - Special Enemies -->
-	<post :script_path="shai/aitweaks/shieldlogicattack.lua" :hook_id="shield/logics/shieldlogicattack"/>
-	<post :script_path="shai/aitweaks/taserlogicattack.lua" :hook_id="taser/logics/taserlogicattack"/>
-	<post :script_path="shai/aitweaks/tankcoplogicattack.lua" :hook_id="tank/logics/tankcoplogicattack"/>
-	<post :script_path="shai/aitweaks/spooclogicattack.lua" :hook_id="spooc/logics/spooclogicattack"/>
-	<post :script_path="shai/aitweaks/bosslogicattack.lua" :hook_id="boss/logics/bosslogicattack"/>
+	<post :script_path="shai/aitweaks/shieldlogicattack.lua" :hook_id="units/enemies/shield/logics/shieldlogicattack"/>
+	<post :script_path="shai/aitweaks/taserlogicattack.lua" :hook_id="units/enemies/taser/logics/taserlogicattack"/>
+	<post :script_path="shai/aitweaks/tankcoplogicattack.lua" :hook_id="units/enemies/tank/logics/tankcoplogicattack"/>
+	<post :script_path="shai/aitweaks/spooclogicattack.lua" :hook_id="units/enemies/spooc/logics/spooclogicattack"/>
+	<post :script_path="shai/aitweaks/bosslogicattack.lua" :hook_id="units/enemies/boss/logics/bosslogicattack"/>
 	
 	<!-- SHAI: Team AI -->
 	<post :script_path="shai/aitweaks/teamailogicidle.lua" :hook_id="units/player_team/logics/teamailogicidle"/>
