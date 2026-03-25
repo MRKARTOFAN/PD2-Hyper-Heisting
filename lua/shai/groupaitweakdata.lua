@@ -38,8 +38,8 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 	self.besiege.recon.force = { 2, 4, 6 }
 	self.besiege.recon.interval_variation = 30
 
-	-- Assault force settings - INCREASED for more density
-	self.besiege.assault.force = { 16, 18, 20 }
+	-- Assault force settings - target ~35 active cops solo at DS8
+	self.besiege.assault.force = { 24, 29, 35 }
 
 	-- Assault force pool - REDUCED for denser but shorter waves
 	self.besiege.assault.force_pool = { 120, 150, 180 }
