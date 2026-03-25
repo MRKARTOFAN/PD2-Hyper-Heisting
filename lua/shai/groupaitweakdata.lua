@@ -6,7 +6,7 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 	self.smoke_grenade_timeout = { 25, 35 }
 	self.smoke_grenade_lifetime = math.lerp(9, 15, f)
 	self.flash_grenade_timeout = { 15, 20 }
-	self.flash_grenade_timer = math.lerp(2, 1, f)
+	self.flash_grenade.timer = math.lerp(2, 1, f)
 	self.cs_grenade_timeout = { 60, 90 }
 	self.cs_grenade_lifetime = math.lerp(20, 40, f)
 	self.cs_grenade_chance_times = { 60, math.lerp(240, 180, f) }
@@ -119,6 +119,20 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 	-- Copy besiege settings to street and safehouse
 	self.street = deep_clone(self.besiege)
 	self.safehouse = deep_clone(self.besiege)
+end)
+
+-- Special unit spawn limits (SH-style, indexed by difficulty_index 1-8)
+Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "shai_special_limits", function(self, difficulty_index)
+	local limits_shield = { 0, 2, 2, 3, 3, 4, 4, 5 }
+	local limits_medic  = { 0, 0, 0, 0, 1, 2, 3, 4 }
+	local limits_taser  = { 0, 0, 1, 1, 2, 2, 3, 3 }
+	local limits_tank   = { 0, 0, 0, 1, 1, 2, 2, 3 }
+	local limits_spooc  = { 0, 0, 0, 1, 1, 2, 2, 3 }
+	self.special_unit_spawn_limits.shield = limits_shield[difficulty_index]
+	self.special_unit_spawn_limits.medic = limits_medic[difficulty_index]
+	self.special_unit_spawn_limits.taser = limits_taser[difficulty_index]
+	self.special_unit_spawn_limits.tank = limits_tank[difficulty_index]
+	self.special_unit_spawn_limits.spooc = limits_spooc[difficulty_index]
 end)
 
 -- Define SH-style spawn groups with tactics (required by SHAI besiege group weight tables)
