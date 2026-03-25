@@ -6,7 +6,7 @@ function GroupAITweakData:init(tweak_data)
 
 	--print("[GroupAITweakData:init] difficulty", difficulty, "difficulty_index", difficulty_index)
 
-	self.ai_tick_rate = 0.016666666666666666
+	self.ai_tick_rate = 0.008333333333333333
 	local level = Global.level_data and Global.level_data.level_id
 	local level_data = tweak_data.levels[level]
 	
@@ -7239,7 +7239,7 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "cock_init_task_data", funct
 		}
 	else
 		self.besiege.assault.delay = {
-			30,
+			30,  -- SH: { 30, 20, 15 }
 			30,
 			30
 		}
@@ -7267,23 +7267,23 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "cock_init_task_data", funct
 
 	if self.small_map or self.haunted then
 		self.besiege.assault.force = {
-			1,
+			1,  -- SH: { 8, 11, 14 }
 			1,
 			1
 		}
 		self.besiege.assault.force_pool = {
-			32,
+			32,  -- SH: { 60, 70, 80 }
 			32,
 			32
 		}
 	else
 		self.besiege.assault.force = {
-			1,
+			1,  -- SH: { 8, 11, 14 }
 			1,
 			1
 		}
 		self.besiege.assault.force_pool = {
-			64,
+			64,  -- SH: { 60, 70, 80 }
 			64,
 			64
 		}
