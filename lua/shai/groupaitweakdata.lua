@@ -41,11 +41,11 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 	-- Assault force settings - target ~35 active cops solo at DS8
 	self.besiege.assault.force = { 24, 29, 35 }
 
-	-- Assault force pool - REDUCED for denser but shorter waves
-	self.besiege.assault.force_pool = { 120, 150, 180 }
+	-- Assault force pool (Vanilla DS8: {150,175,225})
+	self.besiege.assault.force_pool = { 150, 175, 225 }
 
-	-- Assault delay - SHORTER for faster waves
-	self.besiege.assault.delay = { 15, 10, 5 }
+	-- Assault delay (Vanilla DS8: {20,15,10})
+	self.besiege.assault.delay = { 20, 15, 10 }
 
 	-- Assault sustain duration - SH values (longer assaults)
 	self.besiege.assault.sustain_duration_min = { 180, 240, 300 }
