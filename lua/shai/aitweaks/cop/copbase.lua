@@ -11,19 +11,19 @@ Hooks:PostHook(CopBase, "init", "sh_init", function(self)
 	local sprint_unit_name = tweak_entry.sprint_unit and Idstring(tweak_entry.sprint_unit)
 
 	if not PackageManager:has(unit_ids, unit_name) then
-		StreamHeist:log("Loading projectile unit %s", throwable)
+		log("[SHAI] Loading projectile unit " .. tostring(throwable))
 		managers.dyn_resource:load(unit_ids, unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
 	end
 
 	if sprint_unit_name and not PackageManager:has(unit_ids, sprint_unit_name) then
-		StreamHeist:log("Loading projectile sprint unit %s", throwable)
+		log("[SHAI] Loading projectile sprint unit " .. tostring(throwable))
 		managers.dyn_resource:load(unit_ids, sprint_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
 	end
 end)
 
 
 -- Check for weapon changes
-CopBase.unit_weapon_mapping = StreamHeist:require("unit_weapons")
+CopBase.unit_weapon_mapping = nil
 if Network:is_client() then
 	return
 end

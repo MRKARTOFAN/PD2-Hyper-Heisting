@@ -34,9 +34,9 @@ local function check_executed_objects(trigger, current, checked)
 			end
 			local type = element_class == ElementMissionEnd and "Escape" or "Loot secure"
 			if trigger._values.enabled then
-				StreamHeist:log("%s zone activated, enabling reinforce groups in its area", type)
+				log("[SHAI] " .. type .. " zone activated, enabling reinforce groups in its area")
 			else
-				StreamHeist:log("%s zone deactivated, disabling reinforce groups in its area", type)
+				log("[SHAI] " .. type .. " zone deactivated, disabling reinforce groups in its area")
 			end
 			return true
 		elseif check_executed_objects(trigger, element, checked) then

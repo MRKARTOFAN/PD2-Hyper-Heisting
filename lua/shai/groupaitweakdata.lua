@@ -1,7 +1,3 @@
--- SHAI: Cherry-picked tweak settings from Streamlined Heisting
--- Only adds missing values that SHAI requires, doesn't override HH's balance
-
--- Set AI tick rate (faster AI updates)
 Hooks:PostHook(GroupAITweakData, "init", "tick_rate", function(self)
 	self.ai_tick_rate = 0.008333333333333333
 end)
@@ -35,23 +31,23 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 		drama_time = 5
 	}
 
-	-- Reinforce interval (Vanilla: {10, 20, 30} | SH: {60, 45, 30})
-	self.besiege.reenforce.interval = { 10, 20, 30 }
+	-- Reinforce interval - FASTER for more tension (Vanilla: {10, 20, 30})
+	self.besiege.reenforce.interval = { 5, 10, 15 }
 
 	-- Recon settings
 	self.besiege.recon.force = { 2, 4, 6 }
 	self.besiege.recon.interval_variation = 30
 
-	-- Assault force settings (Vanilla DS8: {14,16,17} | SH DS8: {8,11,14})
-	self.besiege.assault.force = { 14, 16, 17 }
+	-- Assault force settings - INCREASED for more density
+	self.besiege.assault.force = { 16, 18, 20 }
 
-	-- Assault force pool (Vanilla DS8: {150,175,225} | SH DS8: {60,70,80})
-	self.besiege.assault.force_pool = { 150, 175, 225 }
+	-- Assault force pool - REDUCED for denser but shorter waves
+	self.besiege.assault.force_pool = { 120, 150, 180 }
 
-	-- Assault delay (Vanilla DS8: {20,15,10} | SH DS8: {30,20,15})
-	self.besiege.assault.delay = { 20, 15, 10 }
+	-- Assault delay - SHORTER for faster waves
+	self.besiege.assault.delay = { 15, 10, 5 }
 
-	-- Assault sustain duration (Vanilla: 0 | SH: {180,240,300})
+	-- Assault sustain duration - SH values (longer assaults)
 	self.besiege.assault.sustain_duration_min = { 180, 240, 300 }
 	self.besiege.assault.sustain_duration_max = { 180, 240, 300 }
 
@@ -63,15 +59,14 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 	self.besiege.assault.force_pool_balance_mul = { 1, 1.5, 2, 2.5 }
 	self.besiege.assault.sustain_duration_balance_mul = { 1, 1, 1, 1 }
 
-	-- Spawn group weights: which group types to spawn and how heavily
-	-- These names must match the enemy_spawn_groups defined in _init_enemy_spawn_groups below
-	local rifle_weight = 16
-	local rifle_flank_weight = 8
-	local shotgun_weight = 2
-	local shotgun_flank_weight = 1
-	local special_weight = math.lerp(3, 5, f)
-	local special_weight_tbl = { 0, special_weight * 0.5, special_weight }
-	local rare_special_weight_tbl = { 0, special_weight * 0.125, special_weight * 0.25 }
+	-- Spawn group weights: which group types to spawn and how heavily - AGGRESSIVE WEIGHTS
+	local rifle_weight = 10
+	local rifle_flank_weight = 12
+	local shotgun_weight = 6
+	local shotgun_flank_weight = 4
+	local special_weight = math.lerp(4, 6, f)
+	local special_weight_tbl = { 0, special_weight * 0.75, special_weight }
+	local rare_special_weight_tbl = { 0, special_weight * 0.25, special_weight * 0.5 }
 	local no_spawn_weight_tbl = { 0, 0, 0 }
 
 	self.besiege.assault.groups = {
@@ -134,11 +129,11 @@ end)
 Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups", function(self, difficulty_index)
 	local f = math.max(0, difficulty_index - 2) / 6
 
-	-- Tactics used by spawn groups
+	-- Tactics used by spawn groups - AGGRESSIVE (charge instead of ranged_fire)
 	self._tactics.swat_shotgun_rush = { "charge", "deathguard", "smoke_grenade", "flash_grenade" }
 	self._tactics.swat_shotgun_flank = { "charge", "flank", "deathguard", "flash_grenade" }
-	self._tactics.swat_rifle = { "ranged_fire", "smoke_grenade", "flash_grenade" }
-	self._tactics.swat_rifle_flank = { "flank", "deathguard", "flash_grenade" }
+	self._tactics.swat_rifle = { "charge", "smoke_grenade", "flash_grenade" }
+	self._tactics.swat_rifle_flank = { "charge", "flank", "deathguard", "flash_grenade" }
 	self._tactics.shield_wall_ranged = { "shield", "ranged_fire" }
 	self._tactics.shield_wall_charge = { "shield", "charge" }
 	self._tactics.tank_rush = { "shield", "charge", "smoke_grenade", "murder" }
@@ -152,7 +147,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 	local shield_support_ranged = self._tactics.shield_support_ranged or self._tactics.support_ranged
 	local shield_support_charge = self._tactics.shield_support_charge or self._tactics.support_charge
 
-	-- Shotgun rush groups
+	-- Shotgun rush groups - ADD DS VARIANTS (use existing FBI units)
 	self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 		amount = { 2, 3 },
 		spawn = {
@@ -164,7 +159,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 	self.enemy_spawn_groups.tac_swat_shotgun_rush_no_medic = deep_clone(self.enemy_spawn_groups.tac_swat_shotgun_rush)
 	table.remove(self.enemy_spawn_groups.tac_swat_shotgun_rush_no_medic.spawn)
 
-	-- Shotgun flank groups
+	-- Shotgun flank groups - ADD DS VARIANTS (use existing FBI units)
 	self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 		amount = { 2, 3 },
 		spawn = {
@@ -176,7 +171,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 	self.enemy_spawn_groups.tac_swat_shotgun_flank_no_medic = deep_clone(self.enemy_spawn_groups.tac_swat_shotgun_flank)
 	table.remove(self.enemy_spawn_groups.tac_swat_shotgun_flank_no_medic.spawn)
 
-	-- Rifle groups
+	-- Rifle groups - ADD DS SHOTGUN VARIANTS (use existing FBI units)
 	self.enemy_spawn_groups.tac_swat_rifle = {
 		amount = { 3, 4 },
 		spawn = {
@@ -188,7 +183,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 	self.enemy_spawn_groups.tac_swat_rifle_no_medic = deep_clone(self.enemy_spawn_groups.tac_swat_rifle)
 	table.remove(self.enemy_spawn_groups.tac_swat_rifle_no_medic.spawn)
 
-	-- Rifle flank groups
+	-- Rifle flank groups - ADD DS SHOTGUN VARIANTS (use existing FBI units)
 	self.enemy_spawn_groups.tac_swat_rifle_flank = {
 		amount = { 3, 4 },
 		spawn = {
@@ -200,7 +195,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 	self.enemy_spawn_groups.tac_swat_rifle_flank_no_medic = deep_clone(self.enemy_spawn_groups.tac_swat_rifle_flank)
 	table.remove(self.enemy_spawn_groups.tac_swat_rifle_flank_no_medic.spawn)
 
-	-- Shield groups
+	-- Shield groups - ADD DS SHOTGUN VARIANTS (use existing FBI units)
 	self.enemy_spawn_groups.tac_shield_wall_ranged = {
 		amount = { 4, 4 },
 		spawn = {
@@ -222,7 +217,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 		}
 	}
 
-	-- Dozer groups
+	-- Dozer groups - ADD DS SHOTGUN VARIANTS (use existing FBI units)
 	self.enemy_spawn_groups.tac_bull_rush = {
 		amount = { 3, 4 },
 		spawn = {

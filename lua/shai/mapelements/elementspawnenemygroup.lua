@@ -27,7 +27,7 @@ end)
 
 -- Don't replace spawns in editor mode
 if Global.editor_mode then
-	StreamHeist:log("Editor mode is active, spawn group changes disabled")
+	log("[SHAI] Editor mode is active, spawn group changes disabled")
 	return
 end
 
