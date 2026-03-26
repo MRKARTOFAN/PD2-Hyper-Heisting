@@ -87,7 +87,7 @@
 	<post :script_path="gameplaycentralmanager.lua" :hook_id="managers/gameplaycentralmanager"/>
 	
 	<post :script_path="skirmishmanager.lua" :hook_id="managers/skirmishmanager"/>
-<!-->	<post :script_path="enemymanager.lua" :hook_id="managers/enemymanager"/> <!-->
+	<post :script_path="enemymanager.lua" :hook_id="managers/enemymanager"/>
 	<post :script_path="playermanager.lua" :hook_id="managers/playermanager"/>
 	<post :script_path="ammoclip.lua" :hook_id="units/pickups/ammoclip"/>
 	
@@ -176,7 +176,7 @@
 	<post :script_path="shai/aitweaks/teamaidamage.lua" :hook_id="units/player_team/teamaidamage"/>
 	<post :script_path="shai/aitweaks/criminalactionwalk.lua" :hook_id="units/player_team/actions/lower_body/criminalactionwalk"/>
 
-	<!-- SHAI: LOD Optimization - Visibility Support (from REAI) -->
+	<!-- SHAI: LOD Optimization -->
 	<post :script_path="shai/aitweaks/huskcopbase_lod.lua" :hook_id="units/enemies/cop/huskcopbase"/>
 	<post :script_path="shai/aitweaks/civilianbase_lod.lua" :hook_id="units/civilians/civilianbase"/>
 	<post :script_path="shai/aitweaks/teamaibase_lod.lua" :hook_id="units/player_team/teamaibase"/>
@@ -194,7 +194,7 @@
 
 	<!-- SHAI: Weapons -->
 	<post :script_path="shai/aitweaks/weapons/raycastweaponbase.lua" :hook_id="units/weapons/raycastweaponbase"/>
-
+	<post :script_path="aitweaks/weapons/newraycastweaponbase.lua" :hook_id="units/weapons/newraycastweaponbase"/>
 	<post :script_path="aitweaks/weapons/projectileweaponbase.lua" :hook_id="units/weapons/projectileweaponbase"/>
 	<post :script_path="aitweaks/weapons/sawweaponbase.lua" :hook_id="units/weapons/sawweaponbase"/>
 	<!-- SHAI NPC weapons disabled - depends on StreamHeist settings -->
