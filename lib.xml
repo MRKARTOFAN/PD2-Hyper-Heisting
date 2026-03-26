@@ -175,7 +175,12 @@
 	<post :script_path="shai/aitweaks/teamailogicassault.lua" :hook_id="units/player_team/logics/teamailogicassault"/>
 	<post :script_path="shai/aitweaks/teamaidamage.lua" :hook_id="units/player_team/teamaidamage"/>
 	<post :script_path="shai/aitweaks/criminalactionwalk.lua" :hook_id="units/player_team/actions/lower_body/criminalactionwalk"/>
-	
+
+	<!-- SHAI: LOD Optimization - Visibility Support (from REAI) -->
+	<post :script_path="shai/aitweaks/huskcopbase_lod.lua" :hook_id="units/enemies/cop/huskcopbase"/>
+	<post :script_path="shai/aitweaks/civilianbase_lod.lua" :hook_id="units/civilians/civilianbase"/>
+	<post :script_path="shai/aitweaks/teamaibase_lod.lua" :hook_id="units/player_team/teamaibase"/>
+
 	<!-- SHAI: Props & Environment -->
 	<post :script_path="shai/aitweaks/characterattentionobject.lua" :hook_id="units/characters/characterattentionobject"/>
 	<post :script_path="shai/aitweaks/environmentfire.lua" :hook_id="units/environment/environmentfire"/>
