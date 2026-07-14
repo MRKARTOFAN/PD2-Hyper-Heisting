@@ -25,7 +25,6 @@ This overhaul is build on top of [Hyper Heisting](https://web.archive.org/web/20
 
 
 
-
 ## Credits
 - Fuglore - for permission to use HH code.
 - Hoppip - Streamlined Heisting code.
