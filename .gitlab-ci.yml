@@ -5,7 +5,7 @@ sync_to_github:
   stage: sync
   image: alpine:3.20
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "release" || $CI_COMMIT_BRANCH == "dev")'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
   script:
     - apk add --no-cache git
     - git config user.name "Fray Sync"
@@ -18,7 +18,7 @@ sync_to_github:
     - |
       git ls-remote --heads github | cut -f2 | sed 's#refs/heads/##' | while read -r branch; do
         case "$branch" in
-          release|dev) ;;
+          master) ;;
           *) git push github ":refs/heads/$branch" ;;
         esac
       done
