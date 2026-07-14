@@ -12,8 +12,13 @@ This overhaul is build on top of [Hyper Heisting](https://web.archive.org/web/20
 #### Regenerating throwables
 #### Bunny-hopping
 - ###### bain he is doing it sideways
-##### Dozer faceplates are tanky
+#### Armor Suppresion
+- Armor suppresion now simply "slows down" the armor regen, and not fully resetting like in vanilla. You may enable a setting in the mod that adds effects on having supression building up. The more is suppression - the heavier are effects. (Mainly sharpness and chromatic aberration, don't worry.)
+##### Bulldozers
 - Bulldozers have tanky faceplates, minigun dozers has x2 of the base dozers faceplate durability. However, using AP rounds can easily destroy dozer faceplate. Using HE or explosives is not advised - they using EOD suit after all, they are resistant to explosives.
+- Armor plates fully stop damage now, so either aim for faceplate, or shoots legs to deal hp damage.
+#### Medic
+- Medics provide temporal damage resistance on heal. Makes enemies bullet-spongy for a second.
 #### Cloakers
 - They are scary. They can send you to the moon if they jump kicked you. They teleport on each jump kick to confuse you. They can jump on you in solo, be wary!
 #### Tazers
