@@ -8,11 +8,11 @@ This overhaul is build on top of [Hyper Heisting](https://web.archive.org/web/20
 - Main diffuctly which Fray is balanced on is **Death Sentence**. While that sounds lame and lazy from our side, but there is no point of balancing other difficulties than DS and DW. You can play on lower difficulties just fine, but you **will** have watered-down experience.
 
 ## Mechanics 
-- #### Melees can headshot
-- #### Regenerating throwables
-- #### Bunny-hopping
+#### Melees can headshot
+#### Regenerating throwables
+#### Bunny-hopping
 - ###### bain he is doing it sideways
-- ##### Dozer faceplates are tanky
+##### Dozer faceplates are tanky
 - Bulldozers have tanky faceplates, minigun dozers has x2 of the base dozers faceplate durability. However, using AP rounds can easily destroy dozer faceplate. Using HE or explosives is not advised - they using EOD suit after all, they are resistant to explosives.
 #### Cloakers
 - They are scary. They can send you to the moon if they jump kicked you. They teleport on each jump kick to confuse you. They can jump on you in solo, be wary!
