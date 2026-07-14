@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<mod name="PD2FRAY" global_key="PD2FRAY">
+	<:include src="lib.xml" />
+	<:include src="corelib.xml" />
+	<tweak definition="tweaks.xml" />
+</mod>

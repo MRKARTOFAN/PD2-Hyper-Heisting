@@ -1,0 +1,35 @@
+<effect force_synch="false">
+    <atom name="symbol_x_1" min_size="100" max_size="100" lifetime="-1" random_start_time="false" start_time="0" preroll="0" inherit_velocity_multiplier="1" fade_in_start="-1" fade_in_length="2" fade_out_start="-1" spawn_cull_policy="initialize" cull_policy="freeze" cull_gracetime="0" max_particle_radius="-1" soundbank="efx_fire_sound" cue="efx_fire_small" ambient="true" grab_relative="effect" grab_pos="0 0 0" grab_radius="200" grab_backfacing="false" timeline="">
+        <initializerstack>
+            <localboxrandomposition min="0 0 0" max="0 0 0"/>
+            <boxrandomvelocity relative="effect" min="0 0 0" max="0 0 0"/>
+            <boxrandomaspectsize size="70 70" min="0.3" max="0.5"/>
+            <boxrandomage min="0" max="1"/>
+            <boxrandomangle min="0" max="0"/>
+        </initializerstack>
+        <simulatorstack>
+            <ager/>
+            <teleporter name="" trigger_teleport="frequency" frequency_input="constant" frequency="6" min_age="1" teleport_cap="6" current_position="false" channel="local" normal_variation="0" teleport_event="false" positioner="box">
+                <box min="-30 -100 -30" max="30 -100 40" min_normal="0 1 0" max_normal="0 1 0"/>
+                <normal min_velocity="80" max_velocity="90"/>
+            </teleporter>
+            <worldtransform transform_rotations="false"/>
+            <velocityintegrator channel="local"/>
+        </simulatorstack>
+        <visualizerstack>
+            <billboard texture="effects/particles/custom/symbol_x_1" intensity="dimlight" billboard_type="camera_facing" rotation_channel="world_rotation" blend_mode="normal" render_template="effect_op_glow" origo="0.5 0.5" per_particle_age="true" size_input="scaled_channel" color_input="constant" color="255 255 255" opacity_input="keys" rotation_input="channel" rotation_axis="0 0 0" uv_size="1 1" uv_offset_input="constant" uv_offset="0 0">
+                <size_scale_keys loop="false">
+                    <key t="0" v="0 0"/>
+                    <key t="0.24956971406937" v="1 1"/>
+                    <key t="2" v="1 1"/>
+                </size_scale_keys>
+                <opacity_keys loop="false">
+                    <key t="0" v="0"/>
+                    <key t="0.12392427027225" v="255"/>
+                    <key t="0.40619620680809" v="255"/>
+                    <key t="1.2392426729202" v="0"/>
+                </opacity_keys>
+            </billboard>
+        </visualizerstack>
+    </atom>
+</effect>

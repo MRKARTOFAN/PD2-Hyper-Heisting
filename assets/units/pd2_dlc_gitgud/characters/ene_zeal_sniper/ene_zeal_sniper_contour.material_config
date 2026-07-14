@@ -1,0 +1,66 @@
+<materials version="3" group="ene_sniper_2">
+
+    <material name="mtr_head" render_template="generic:CONTOUR:DIFFUSE_TEXTURE:NORMALMAP:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM:SKINNED_3WEIGHTS" unique="true" version="2" >
+       <bump_normal_texture 	file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_nm"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df"/>
+		<self_illumination_texture file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_il"/>
+		<variable type="scalar" name="il_bloom" value="10"/>
+        <variable type="scalar" name="il_multiplier" value="sun"/>
+        <variable value="1 1 1" type="vector3" name="contour_color"/>
+        <variable value="0" type="scalar" name="contour_opacity"/>
+    </material>
+    <material name="mtr_head_lod_1" render_template="generic:CONTOUR:DIFFUSE_TEXTURE:NORMALMAP:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM:SKINNED_3WEIGHTS" unique="true" version="2" >
+        <bump_normal_texture 	file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_nm" mip="1"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df" mip="1"/>
+		<self_illumination_texture file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_il"/>
+		<variable type="scalar" name="il_bloom" value="10"/>
+        <variable type="scalar" name="il_multiplier" value="sun"/>
+        <variable value="1 1 1" type="vector3" name="contour_color"/>
+        <variable value="0" type="scalar" name="contour_opacity"/>
+    </material>
+    <material name="mtr_head_lod_2" render_template="generic:CONTOUR:DIFFUSE_TEXTURE:NORMALMAP:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM:SKINNED_3WEIGHTS" unique="true" version="2" >
+        <bump_normal_texture 	file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_nm" mip="4"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df" mip="4"/>
+		<self_illumination_texture file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_il"/>
+		<variable type="scalar" name="il_bloom" value="10"/>
+        <variable type="scalar" name="il_multiplier" value="sun"/>
+        <variable value="1 1 1" type="vector3" name="contour_color"/>
+        <variable value="0" type="scalar" name="contour_opacity"/>
+    </material>
+
+    <material name="mtr_swat_fbi" render_template="generic:CONTOUR:DIFFUSE_TEXTURE:NORMALMAP:SKINNED_3WEIGHTS" unique="true" version="2" >
+       <bump_normal_texture 	file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_nm"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df"/>
+        <variable value="1 1 1" type="vector3" name="contour_color"/>
+        <variable value="0" type="scalar" name="contour_opacity"/>
+    </material>
+    <material name="mtr_swat_fbi_lod_1" render_template="generic:CONTOUR:DIFFUSE_TEXTURE:NORMALMAP:SKINNED_3WEIGHTS" unique="true" version="2" >
+       <bump_normal_texture 	file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_nm" mip="1"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df" mip="1"/>
+        <variable value="1 1 1" type="vector3" name="contour_color"/>
+        <variable value="0" type="scalar" name="contour_opacity"/>
+    </material>
+    <material name="mtr_swat_fbi_lod_2" render_template="generic:CONTOUR:DIFFUSE_TEXTURE:NORMALMAP:SKINNED_3WEIGHTS" unique="true" version="2" >
+        <bump_normal_texture 	file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_nm" mip="4"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df" mip="4"/>
+        <variable value="1 1 1" type="vector3" name="contour_color"/>
+        <variable value="0" type="scalar" name="contour_opacity"/>
+    </material>
+
+    <material name="mtr_helmet" render_template="opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE" unique="true" version="2" >
+		<opacity_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/opacity_op"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df"/>
+		<reflection_texture type="cubemap" global_texture="current_global_texture"/>
+    </material>
+    <material name="mtr_helmet_lod_1" render_template="opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE" unique="true" version="2" >
+		<opacity_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/opacity_op"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df" mip="1"/>
+		<reflection_texture type="cubemap" global_texture="current_global_texture"/>
+    </material>
+    <material name="mtr_helmet_lod_2" render_template="opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE" unique="true" version="2" >
+		<opacity_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/opacity_op"/>
+		<diffuse_texture 		file="units/pd2_dlc_gitgud/characters/ene_zeal_sniper/ene_zeal_sniper_atlas_df" mip="4"/>
+		<reflection_texture type="cubemap" global_texture="current_global_texture"/>
+    </material>
+	<material name="shadow_caster" render_template="shadow_caster_only:SKINNED_1WEIGHT" version="2"/>
+</materials>

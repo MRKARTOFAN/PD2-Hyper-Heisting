@@ -1,0 +1,20 @@
+<table>
+	
+	<table search="unit/body;name=[['body_helmet_plate']]/endurance" mode="set_values">
+		<table damage="200" explosion="650"/>
+	</table>
+	
+	<table search="unit/sequence;name=[['leg_arm_hitbox']]/body;name=[['head']]" mode="remove" />
+	
+	<table search="unit/body;name=[['body_helmet_glass']]" mode="replace">
+		<body name="'body_helmet_glass'">
+			<endurance damage="100" explosion="1300">
+				<run_sequence name="'int_seq_helmet_glass_01'"/>
+			</endurance>
+			<endurance damage="200" explosion="2600">
+				<run_sequence name="'int_seq_helmet_glass_02'"/>
+			</endurance>
+		</body>
+	</table>
+	
+</table>

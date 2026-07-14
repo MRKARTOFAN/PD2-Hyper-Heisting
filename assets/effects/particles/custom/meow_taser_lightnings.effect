@@ -1,0 +1,52 @@
+<effect force_synch="false">
+    <atom name="Sparks - Straight 10" min_size="6" max_size="6" lifetime="-1" random_start_time="false" start_time="0" preroll="0" inherit_velocity_multiplier="1" fade_in_start="-1" fade_in_length="0.5" fade_out_start="-1" spawn_cull_policy="initialize" cull_policy="update" cull_gracetime="0" max_particle_radius="-1" soundbank="" cue="" ambient="false" grab_relative="effect" grab_pos="0 0 0" grab_radius="200" grab_backfacing="false" timeline="">
+        <initializerstack>
+            <boxrandomposition relative="effect" min="0 0 10" max="0 0 10"/>
+            <boxrandomrotation relative="effect" min="0 0 0" max="0 0 0" min_rot="0" max_rot="0"/>
+            <trail size="6"/>
+            <boxrandomvelocity relative="effect" min="0 0 0" max="0 0 0"/>
+            <boxrandomage min="0.1" max="0.4"/>
+        </initializerstack>
+        <simulatorstack>
+            <scaledvelocityintegrator channel="world" per_particle_age="false">
+                <scale_keys loop="true">
+                    <key t="0" v="30"/>
+                    <key t="0.026755852624774" v="3"/>
+                    <key t="0.14285714924335" v="0.30000001192093"/>
+                </scale_keys>
+            </scaledvelocityintegrator>
+            <trail size="6" mode="distance" distance="12"/>
+            <ager/>
+            <teleporter name="" trigger_teleport="time" lifetime_input="constant" particle_lifetime="0.2" teleport_cap="1" current_position="true" channel="world" normal_variation="0" teleport_event="true" positioner="circle">
+                <circle radius="20" on_edge="true"/>
+                <normal min_velocity="8" max_velocity="8"/>
+            </teleporter>
+        </simulatorstack>
+        <visualizerstack>
+            <trail size="6" trail_type="custom_aligned" tesselation="2" curvature="1" tile_uv="false" tiles_per_meter="1" texture="effects/textures/effects_atlas" intensity="sun" blend_mode="normal" render_template="effect_op_glow" per_particle_age="true" color_input="keys" opacity_input="keys" width_input="keys" uv_size="0.0625 0.0625" uv_offset_input="constant" uv_offset="0 0.9315">
+                <color_keys loop="true">
+                    <key t="0" v="17 120 217"/>
+                    <key t="0.67150634527206" v="255 255 255"/>
+                </color_keys>
+                <color_multiplier_keys loop="true">
+                    <key t="0" v="0 36 69"/>
+                    <key t="0.15971000492573" v="0 0 3"/>
+                </color_multiplier_keys>
+                <opacity_keys loop="false">
+                    <key t="0" v="255"/>
+                    <key t="0.20000000298023" v="0"/>
+                </opacity_keys>
+                <opacity_multiplier_keys loop="false">
+                    <key t="0" v="255"/>
+                    <key t="0.19963702559471" v="100"/>
+                </opacity_multiplier_keys>
+                <width_keys loop="true">
+                    <key t="0" v="0.03999999910593"/>
+                    <key t="0.05081669613719" v="4"/>
+                    <key t="0.12341197580099" v="-1"/>
+                    <key t="0.19237749278545" v="2.5"/>
+                </width_keys>
+            </trail>
+        </visualizerstack>
+    </atom>
+</effect>

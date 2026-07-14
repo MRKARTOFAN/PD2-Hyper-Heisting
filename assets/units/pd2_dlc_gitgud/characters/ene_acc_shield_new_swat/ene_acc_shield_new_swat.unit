@@ -1,0 +1,7 @@
+<unit type="items" slot="8" >
+    <object file="units/pd2_dlc_gitgud/characters/ene_acc_shield_new_swat/ene_acc_shield_new_swat" />
+    <extensions>
+        <extension name="unit_data" class="ScriptUnitData" />
+        <extension name="damage" class="UnitDamage" />
+    </extensions>
+</unit>

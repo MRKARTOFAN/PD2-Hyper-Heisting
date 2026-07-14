@@ -1,0 +1,56 @@
+{
+	"menu_id" : "fray_options",
+	"parent_menu_id" : "blt_options",
+	"title" : "fray_options_title",
+	"back_callback" : "callback_fray_close",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "fray_toggle_hhassault",
+			"title" : "fray_toggle_hhassault_title",
+			"description" : "fray_toggle_hhassault_desc",
+			"callback" : "callback_fray_toggle_hhassault",
+			"value" : "toggle_hhassault"
+		},
+		{
+			"type" : "toggle",
+			"id" : "fray_toggle_hhskulldiff",
+			"title" : "fray_toggle_hhskulldiff_title",
+			"description" : "fray_toggle_hhskulldiff_desc",
+			"callback" : "callback_fray_toggle_hhskulldiff",
+			"value" : "toggle_hhskulldiff"
+		},
+		{
+			"type" : "toggle",
+			"id" : "fray_toggle_suppression",
+			"title" : "fray_toggle_suppression_title",
+			"description" : "fray_toggle_suppression_desc",
+			"callback" : "callback_fray_toggle_suppression",
+			"value" : "toggle_suppression"
+		},
+		{
+			"type" : "toggle",
+			"id" : "fray_toggle_health_effect",
+			"title" : "fray_toggle_health_effect_title",
+			"description" : "fray_toggle_health_effect_desc",
+			"callback" : "callback_fray_toggle_health_effect",
+			"value" : "toggle_health_effect"
+		},
+		{
+			"type" : "toggle",
+			"id" : "fray_toggle_blurzonereduction",
+			"title" : "fray_toggle_blurzonereduction_title",
+			"description" : "fray_toggle_blurzonereduction_desc",
+			"callback" : "callback_fray_toggle_blurzonereduction",
+			"value" : "toggle_blurzonereduction"
+		},
+		{
+			"type" : "toggle",
+			"id" : "fray_toggle_noweirddof",
+			"title" : "fray_toggle_noweirddof_title",
+			"description" : "fray_toggle_noweirddof_desc",
+			"callback" : "callback_fray_toggle_noweirddof",
+			"value" : "toggle_noweirddof"
+		},
+	]
+}
