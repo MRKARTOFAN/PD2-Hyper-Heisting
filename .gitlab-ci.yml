@@ -1,0 +1,24 @@
+stages:
+  - sync
+
+sync_to_github:
+  stage: sync
+  image: alpine:3.20
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "release" || $CI_COMMIT_BRANCH == "dev")'
+  script:
+    - apk add --no-cache git
+    - git config user.name "Fray Sync"
+    - git config user.email "fray-sync@users.noreply.github.com"
+    - git config credential.helper store
+    - printf "https://x-access-token:%s@github.com\n" "$GITHUB_SYNC_TOKEN" > "$HOME/.git-credentials"
+    - chmod 600 "$HOME/.git-credentials"
+    - git remote add github https://github.com/MRKARTOFAN/PD2-Hyper-Heisting.git
+    - git push github "HEAD:refs/heads/$CI_COMMIT_BRANCH" --force
+    - |
+      git ls-remote --heads github | cut -f2 | sed 's#refs/heads/##' | while read -r branch; do
+        case "$branch" in
+          release|dev) ;;
+          *) git push github ":refs/heads/$branch" ;;
+        esac
+      done

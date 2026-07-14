@@ -1,0 +1,47 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - release
+      - dev
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconcile with GitLab
+        env:
+          GITLAB_SYNC_USERNAME: ${{ secrets.GITLAB_SYNC_USERNAME }}
+          GITLAB_SYNC_TOKEN: ${{ secrets.GITLAB_SYNC_TOKEN }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "Fray Sync"
+          git config user.email "fray-sync@users.noreply.github.com"
+          git config credential.helper store
+          printf "https://%s:%s@gitlab.com\n" "$GITLAB_SYNC_USERNAME" "$GITLAB_SYNC_TOKEN" > "$HOME/.git-credentials"
+          chmod 600 "$HOME/.git-credentials"
+          git remote add gitlab https://gitlab.com/kartofan-workshop/fray.git
+          git fetch gitlab "$BRANCH"
+          gitlab_sha="$(git rev-parse FETCH_HEAD)"
+          github_sha="$(git rev-parse HEAD)"
+
+          if [ "$gitlab_sha" = "$github_sha" ]; then
+            exit 0
+          fi
+
+          if [ "$gitlab_sha" = "$BEFORE_SHA" ]; then
+            git push gitlab "HEAD:refs/heads/$BRANCH"
+          else
+            git push origin "$gitlab_sha:refs/heads/$BRANCH" --force
+          fi
