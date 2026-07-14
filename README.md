@@ -27,8 +27,8 @@ This overhaul is build on top of [Hyper Heisting](https://web.archive.org/web/20
 
 
 ## Credits
-Fuglore - for permission to use HH code.
-Hoppip - Streamlined Heisting code.
-Eclipse Team - mainly for "thanks for inspiration" moments in coding.
+- Fuglore - for permission to use HH code.
+- Hoppip - Streamlined Heisting code.
+- Eclipse Team - mainly for "thanks for inspiration" moments in coding.
 
 If I missed someone, let me know.
