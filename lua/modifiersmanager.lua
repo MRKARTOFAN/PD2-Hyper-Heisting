@@ -3,6 +3,38 @@ local level = Global.level_data and Global.level_data.level_id
 local difficulty = Global.game_settings and Global.game_settings.difficulty or "normal"
 local diff_index = tweak_data:difficulty_to_index(difficulty)
 local replacement_table = {}
+local trolliam_replacement_table = {
+	["units/payday2/characters/ene_swat_1/ene_swat_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_swat_2/ene_swat_2"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_swat_3/ene_swat_3"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_fbi_swat_1/ene_fbi_swat_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_mad/characters/ene_akan_fbi_swat_ak47_ass/ene_akan_fbi_swat_ak47_ass"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_mod_psc/characters/ene_murky_light_rifle/ene_murky_light_rifle"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_mod_psc/characters/ene_murky_heavy_scar/ene_murky_heavy_scar"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_bex/characters/ene_swat_policia_federale_fbi/ene_swat_policia_federale_fbi"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870_hh/ene_swat_heavy_policia_federale_fbi_r870_hh"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy_r870/ene_zeal_swat_heavy_r870"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_fbi_swat_3/ene_fbi_swat_3"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_fbi_swat_2/ene_fbi_swat_2"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_city_swat_1/ene_city_swat_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_city_swat_2/ene_city_swat_2"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_city_swat_3/ene_city_swat_3"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_gitgud/characters/ene_zeal_city_2/ene_zeal_city_2"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy_hh/ene_zeal_swat_heavy_hh"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_bex/characters/ene_swat_policia_federale_r870_hh/ene_swat_policia_federale_r870_hh"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_mod_psc/characters/ene_murky_NH_rifle/ene_murky_NH_rifle"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_1/ene_swat_heavy_hvh_1"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/payday2/characters/ene_city_heavy_r870/ene_city_heavy_r870"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_r870/ene_swat_heavy_hvh_r870"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun",
+	["units/pd2_mod_psc/characters/ene_murky_NH_r870/ene_murky_NH_r870"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun"
+}
 
 if level == "spa" or level == "glace" or level == "brb" or level == "red2" or level == "run" or level == "flat" or level == "dinner" then
 	replacement_table = {
@@ -105,11 +137,23 @@ for k,v in pairs(replacement_table) do
 end
 replacement_table = nil 
 
+local trolliam_unit_table = {}
+
+	for k, v in pairs(trolliam_replacement_table) do
+		trolliam_unit_table[tostring(Idstring(k))] = Idstring(v)
+	end
+
 local orig_modify = ModifiersManager.modify_value
 function ModifiersManager:modify_value(id, value, ...)
 	local result = orig_modify(self,id,value,...)
 	value = tostring(value)
 	if id == "GroupAIStateBesiege:SpawningUnit" then 
+		local nss_detected = _G.PD2FRAY_NSS and _G.PD2FRAY_NSS_LEVEL == Global.level_data
+
+		if nss_detected or PD2FRAY_CHECK_NSS and PD2FRAY_CHECK_NSS() then
+			return trolliam_unit_table[value] or unit_table[value] or result
+		end
+
 		return unit_table[value] or result 
 	end
 	return result

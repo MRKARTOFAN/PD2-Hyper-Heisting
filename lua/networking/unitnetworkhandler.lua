@@ -38,6 +38,15 @@ function UnitNetworkHandler:send_drama(drama, sender)
 	managers.groupai:state():_add_drama(drama)
 end
 
+function UnitNetworkHandler:fray_nss(sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	_G.PD2FRAY_NSS = true
+	_G.PD2FRAY_NSS_LEVEL = Global.level_data
+end
+
 function UnitNetworkHandler:sync_begin_hh_stealth_message()
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return

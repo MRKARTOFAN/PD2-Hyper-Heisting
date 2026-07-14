@@ -7,6 +7,122 @@ local world_g = World
 local temp_vec1 = Vector3()
 local mvec3_norm = mvector3.normalize
 local FRAY = PD2FRAY
+local fray_nss_result
+local fray_nss_weapon_scan_done
+local fray_nss_sent
+local fray_nss_level_data
+
+local function fray_reset_nss_state()
+	local level_data = Global.level_data
+
+	if level_data == fray_nss_level_data then
+		return
+	end
+
+	fray_nss_level_data = level_data
+	fray_nss_result = nil
+	fray_nss_weapon_scan_done = nil
+	fray_nss_sent = nil
+
+	if _G.PD2FRAY_NSS_LEVEL ~= level_data then
+		_G.PD2FRAY_NSS = nil
+	end
+end
+
+local function fray_mark_nss()
+	fray_nss_result = true
+	_G.PD2FRAY_NSS = true
+	_G.PD2FRAY_NSS_LEVEL = Global.level_data
+
+	if Network:is_client() and not fray_nss_sent then
+		local session = managers.network and managers.network:session()
+		if session then
+			session:send_to_host("fray_nss")
+			fray_nss_sent = true
+		end
+	end
+end
+
+local function fray_probe_shaker(camera, effect, offset)
+	local ok, result = pcall(camera.play_shaker, camera, effect, 0, 1, offset)
+
+	if ok and result and result ~= 0 and camera.stop_shaker then
+		pcall(camera.stop_shaker, camera, result)
+	end
+
+	return ok, result
+end
+
+function PD2FRAY_CHECK_NSS()
+	fray_reset_nss_state()
+
+	if _G.PD2FRAY_NSS and _G.PD2FRAY_NSS_LEVEL == Global.level_data then
+		return true
+	end
+
+	if fray_nss_result ~= nil then
+		return fray_nss_result
+	end
+
+	if _G.IS_VR then
+		fray_nss_result = false
+		return false
+	end
+
+	if not fray_nss_weapon_scan_done then
+		if not tweak_data.weapon then
+			return
+		end
+
+		local has_weapon_shake = false
+		local all_weapon_shake_disabled = true
+
+		for _, weapon_data in pairs(tweak_data.weapon) do
+			local shake = weapon_data.shake
+
+			if shake and shake.fire_multiplier ~= nil and shake.fire_steelsight_multiplier ~= nil then
+				has_weapon_shake = true
+
+				if shake.fire_multiplier ~= 0 or shake.fire_steelsight_multiplier ~= 0 then
+					all_weapon_shake_disabled = false
+					break
+				end
+			end
+		end
+
+		fray_nss_weapon_scan_done = true
+
+		if has_weapon_shake and all_weapon_shake_disabled then
+			fray_mark_nss()
+
+			return true
+		end
+	end
+
+	local player_unit = managers.player and managers.player:player_unit()
+	local camera = alive(player_unit) and player_unit:camera()
+
+	if not camera or not camera.play_shaker then
+		return
+	end
+
+	local rot_ok, rot_result = fray_probe_shaker(camera, "fire_weapon_rot", 0)
+	local kick_ok, kick_result = fray_probe_shaker(camera, "fire_weapon_kick", 0.15)
+
+	if not rot_ok or not kick_ok then
+		return
+	end
+
+	if (not rot_result or rot_result == 0) and (not kick_result or kick_result == 0) then
+		fray_mark_nss()
+
+		return true
+	end
+
+	fray_nss_result = false
+
+	return false
+end
 
 function PlayerManager:clbk_copr_ability_ended()
 	self:deactivate_temporary_upgrade("temporary", "copr_ability")
@@ -1358,6 +1474,7 @@ end
 local _hh_update_original = PlayerManager.update
 function PlayerManager:update(t, dt)
 	_hh_update_original(self, t, dt)
+	PD2FRAY_CHECK_NSS()
 
 	if not self:has_category_upgrade("player", "hh_muscle_regen") then
 		return
