@@ -30,7 +30,7 @@ jobs:
           git config credential.helper store
           printf "https://%s:%s@gitlab.com\n" "$GITLAB_SYNC_USERNAME" "$GITLAB_SYNC_TOKEN" > "$HOME/.git-credentials"
           chmod 600 "$HOME/.git-credentials"
-          git remote add gitlab https://gitlab.com/kartofan-workshop/fray.git
+          git remote add gitlab https://gitlab.com/kartofan-workshop/payday-2/fray.git
           git fetch gitlab "$BRANCH"
           gitlab_sha="$(git rev-parse FETCH_HEAD)"
           github_sha="$(git rev-parse HEAD)"
