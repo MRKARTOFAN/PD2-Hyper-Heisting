@@ -39,7 +39,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			0.10,
 			0.05,
 			0,
-			-0.1,
+			-0.05,
 			-0.2,
 			-0.3,
 			-0.5
