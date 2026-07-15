@@ -30,7 +30,8 @@ This overhaul is built on top of [Hyper Heisting](https://web.archive.org/web/20
 - Notice to see enemy assets? Or rather, absence of them? Yes, there is none. Why, you may ask? Simple.
 We wanted to use [Cruel Trance](https://modworkshop.net/mod/44480) as our new enemy assets instead of using Hyper Heisting assets, but later on, author of CT revoked our permission to use it. We don't know the reason for it and don't care about it now.
 - Since we do not use any enemy assets (minus zeal shotgunner), you are free to use any enemy asset mod there is on the internet. You can use [Hyper Zeals](https://modworkshop.net/mod/43959), [Resmod Zeals](https://modworkshop.net/mod/50255), [Crackdown Zeals](https://modworkshop.net/mod/50138), hell, you can even use Cruel Trance, who stops you **personally**?
-- As of 14.07.2026, CT assets are STILL present in this repo, they WILL BE removed later, but much, much later. 
+- Stuff written above is just future-proofing of what will be done later in the development.
+- And as of 14.07.2026, CT assets are STILL present in this repo, they WILL BE removed later, but much, much later. 
 ##### there are just more things worth doing than removing assets.
 
 ## Credits
