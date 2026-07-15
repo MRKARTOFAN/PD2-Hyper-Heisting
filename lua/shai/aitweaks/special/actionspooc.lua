@@ -94,8 +94,8 @@ function ActionSpooc:_shai_hh_apply_non_lethal_kick(target_unit)
 	return true
 end
 
-function ActionSpooc:anim_act_clbk(unit, action_type)
-	local common_data = self._common_data
+--[[function ActionSpooc:anim_act_clbk(unit, action_type) [Karto] Breaks intended half HP damage of cloaker. Back to be evil.
+	local common_data = self._common_data 
 	local char_tweak = common_data and common_data.char_tweak or nil
 	if not char_tweak or not char_tweak.non_lethal_kick_damage then
 		return shai_hh_original_actionspooc_anim_act_clbk(self, unit, action_type)
@@ -123,3 +123,4 @@ function ActionSpooc:anim_act_clbk(unit, action_type)
 		self:_expire()
 	end
 end
+--]] 

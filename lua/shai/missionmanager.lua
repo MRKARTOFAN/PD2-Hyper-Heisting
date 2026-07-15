@@ -16,7 +16,7 @@ local function sh_error(str, ...)
 	log("[sh][Error] " .. str:format(...))
 end
 
-local sh_mod_path = ModPath
+local sh_mod_path = PD2FRAY._mod_path
 local function sh_require(file)
 	local path = sh_mod_path .. "req/" .. file .. ".lua"
 	if io.file_is_readable(path) then

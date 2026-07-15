@@ -485,6 +485,7 @@ function PlayerDamage:damage_melee(attack_data)
 		
 		--log("damage became " .. tostring(attack_data.damage) .. "")
 	else
+		self._old_last_received_dmg = nil
 		local damage = self:_max_health() / 2
 		if managers.modifiers and managers.modifiers:check_boolean("woahtheyjomp") then
 			damage = damage * 1.5
