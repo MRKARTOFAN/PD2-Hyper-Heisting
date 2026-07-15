@@ -36,10 +36,10 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			9
 		},
 		dodge = {
+			0.10,
+			0.05,
 			0,
-			-0.05,
 			-0.1,
-			-0.15,
 			-0.2,
 			-0.3,
 			-0.5
