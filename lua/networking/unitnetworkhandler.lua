@@ -47,6 +47,15 @@ function UnitNetworkHandler:fray_nss(sender)
 	_G.PD2FRAY_NSS_LEVEL = Global.level_data
 end
 
+function UnitNetworkHandler:fray_lvm(sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	_G.PD2FRAY_LVM = true
+	_G.PD2FRAY_LVM_LEVEL = Global.level_data
+end
+
 function UnitNetworkHandler:sync_begin_hh_stealth_message()
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return

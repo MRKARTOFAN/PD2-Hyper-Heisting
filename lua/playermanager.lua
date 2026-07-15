@@ -11,6 +11,9 @@ local fray_nss_result
 local fray_nss_weapon_scan_done
 local fray_nss_sent
 local fray_nss_level_data
+local lvm
+local lvm_sent
+local lvm_level
 
 local function fray_reset_nss_state()
 	local level_data = Global.level_data
@@ -122,6 +125,61 @@ function PD2FRAY_CHECK_NSS()
 	fray_nss_result = false
 
 	return false
+end
+
+local function fray_mark_lvm()
+	lvm = true
+	_G.PD2FRAY_LVM = true
+	_G.PD2FRAY_LVM_LEVEL = Global.level_data
+
+	if Network:is_client() and not lvm_sent then
+		local session = managers.network and managers.network:session()
+		if session then
+			session:send_to_host("fray_lvm")
+			lvm_sent = true
+		end
+	end
+end
+
+function PD2FRAY_CHECK_LVM()
+	local level_data = Global.level_data
+
+	if lvm_level ~= level_data then
+		lvm_level = level_data
+		lvm = nil
+		lvm_sent = nil
+
+		if _G.PD2FRAY_LVM_LEVEL ~= level_data then
+			_G.PD2FRAY_LVM = nil
+		end
+	end
+
+	if _G.PD2FRAY_LVM and _G.PD2FRAY_LVM_LEVEL == level_data then
+		return true
+	end
+
+	if lvm ~= nil then
+		return lvm
+	end
+
+	local enemy = managers.enemy
+	local gameplay = managers.game_play_central
+
+	if not enemy or not gameplay then
+		return
+	end
+
+	lvm = enemy:corpse_limit() == 0
+		and enemy:shield_limit() == 0
+		and enemy._shield_disposal_lifetime == 0
+		and gameplay._block_bullet_decals == true
+		and gameplay._block_blood_decals == true
+
+	if lvm then
+		fray_mark_lvm()
+	end
+
+	return lvm
 end
 
 function PlayerManager:clbk_copr_ability_ended()
@@ -1475,6 +1533,7 @@ local _hh_update_original = PlayerManager.update
 function PlayerManager:update(t, dt)
 	_hh_update_original(self, t, dt)
 	PD2FRAY_CHECK_NSS()
+	PD2FRAY_CHECK_LVM()
 
 	if not self:has_category_upgrade("player", "hh_muscle_regen") then
 		return
