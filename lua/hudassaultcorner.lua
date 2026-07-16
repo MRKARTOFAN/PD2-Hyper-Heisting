@@ -161,7 +161,6 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	})
 	self._noreturn_data = self:_get_noreturn_data()
 	local icon_noreturnbox = point_of_no_return_panel:bitmap({
-		texture = "guis/textures/pd2/hud_icon_noreturnbox",
 		name = "icon_noreturnbox",
 		h = 24,
 		layer = 0,

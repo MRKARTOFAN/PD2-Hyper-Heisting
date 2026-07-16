@@ -4,7 +4,7 @@ ModifierShieldPhalanx.name_id = "none"
 ModifierShieldPhalanx.desc_id = "menu_cs_modifier_shield_phalanx"
 
 function ModifierShieldPhalanx:init(data)
-	ModifierShieldPhalanx.super.init(data)
+	ModifierShieldPhalanx.super.init(self, data)
 	
 	table.insert(tweak_data.group_ai.unit_categories.FBI_swat_R870.unit_types.america, Idstring("units/pd2_dlc_drm/characters/ene_city_swat_saiga/ene_city_swat_saiga"))
 	

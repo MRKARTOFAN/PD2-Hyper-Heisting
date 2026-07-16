@@ -101,19 +101,6 @@ function UnitNetworkHandler:set_client_groupai_ecm_data(call, camera, pager)
 	managers.groupai:state():_set_client_groupai_ecm_data(ecm_settings)
 end
 
-function UnitNetworkHandler:sync_alarm_to_host(camera_unit, detected_unit)
-	log("cuck")
-	
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-	
-	if alive(camera_unit) then
-		camera_unit:base():_sound_the_alarm(detected_unit)
-	end
-end
-
-
 --[[function UnitNetworkHandler:sync_add_doted_enemy(enemy_unit, variant, weapon_unit, dot_length, dot_damage, user_unit, is_molotov_or_hurt_animation, rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
@@ -158,7 +145,12 @@ function UnitNetworkHandler:request_throw_projectile(projectile_type_index, posi
 
 	local peer_id = peer:id()
 	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
-	local no_cheat_count = true
+
+	if not projectile_type then
+		return
+	end
+
+	local no_cheat_count = tweak_data.blackmarket.projectiles[projectile_type].no_cheat_count
 
 	if not no_cheat_count and not managers.player:verify_grenade(peer_id) then
 		return
@@ -203,22 +195,22 @@ function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike
 	unit:movement():action_request(action_desc)
 end
 
-function UnitNetworkHandler:action_aim_state(unit, state)
-    if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
-        return
-    end
+function UnitNetworkHandler:action_aim_state(unit, state, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) or not self._verify_sender(sender_rpc) then
+		return
+	end
 
-    if state then
-        local shoot_action = {
-            block_type = "action",
-            body_part = 3,
-            type = "shoot"
-        }
+	if state then
+		local shoot_action = {
+			block_type = "action",
+			body_part = 3,
+			type = "shoot"
+		}
 
-        unit:movement():action_request(shoot_action)
-    else
-        unit:movement():sync_action_aim_end()
-    end
+		unit:movement():action_request(shoot_action)
+	else
+		unit:movement():sync_action_aim_end()
+	end
 end
 
 function UnitNetworkHandler:m79grenade_explode_on_client(position, normal, user, damage, range, curve_pow, sender)
@@ -397,21 +389,16 @@ function UnitNetworkHandler:sync_medic_heal(unit, sender)
 		return
 	end
 
-	MedicActionHeal:check_achievements()
+	MedicActionHeal.check_achievements()
 
-	if self._verify_character(unit) then
-		unit:character_damage()._heal_cooldown_t = Application:time()
+	if not self._verify_character(unit) then
+		return
+	end
 
-		if unit:anim_data() and unit:anim_data().act then --do not try to play the anim redirect if acting, just play the voiceline
-			unit:sound():say("heal")
-		else
-			local redir_res = unit:movement():play_redirect("cmd_get_up")
+	local char_dmg_ext = unit:character_damage()
 
-			if redir_res then
-				unit:sound():say("heal")
-				unit:anim_state_machine():set_speed(redir_res, 0.5)
-			end
-		end
+	if char_dmg_ext and char_dmg_ext.sync_heal_action then
+		char_dmg_ext:sync_heal_action()
 	end
 end
 function UnitNetworkHandler:reload_weapon_cop(cop, sender)

@@ -55,7 +55,6 @@ function FirstAidKitBase:setup(bits, peer_id)
 	if auto_recovery == 1 then
 		self._min_distance = tweak_data.upgrades.values.first_aid_kit.first_aid_kit_auto_recovery[1]
 
-		print("min distance ", self._min_distance)
 		FirstAidKitBase.Add(self, self._unit:position(), self._min_distance)
 	end
 end

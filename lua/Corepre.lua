@@ -68,9 +68,17 @@ end
 
 function PD2FRAY:LoadSettings()
 	local file = io.open(self._save_path, "r")
-	
-	if (file) then
-		for k, v in pairs(json.decode(file:read("*all"))) do
+
+	if file then
+		local contents = file:read("*all")
+		file:close()
+
+		local success, settings = pcall(json.decode, contents)
+		if not success or type(settings) ~= "table" then
+			return
+		end
+
+		for k, v in pairs(settings) do
 			self.settings[k] = v
 			self.session_settings[k] = v
 		end
@@ -148,24 +156,6 @@ if not _G.voiceline_framework then
 end
 
 Hooks:Add("NetworkReceivedData", "fray_receive_network_data", function(sender, message, data)
-
-	if message == "fray_sync_post_assault_replenish" then
-		local pm = managers.player
-						
-		if pm then
-			if pm:player_unit() and alive(pm:player_unit()) then
-				local player = pm:player_unit()
-				local dmg_ext = player:character_damage()
-				
-				if not dmg_ext:dead() then
-					if not dmg_ext:need_revive() then --if your team didnt revive you in the first place, go eat a medic bag
-						dmg_ext:replenish() 
-					end
-				end
-			end
-		end
-	end
-
 	if managers and managers.groupai then	
 		if message == "fray_sync_hud_assault_color" then 
 			if sender == 1 then

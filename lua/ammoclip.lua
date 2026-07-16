@@ -99,8 +99,6 @@ function AmmoClip:_pickup(unit)
 						restore_value = restore_value * (tweak_data.upgrades.loose_ammo_restore_health_values.multiplier or 0.1)
 						local percent_inc = player_manager:upgrade_value("player", "gain_life_per_players", 0) * num_more_hp + 1
 
-						print("[AmmoClip:_pickup] Percent increase for health pickup is: ", percent_inc - 1)
-
 						restore_value = restore_value * percent_inc
 						local damage_ext = unit:character_damage()
 

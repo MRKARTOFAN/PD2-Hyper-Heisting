@@ -123,7 +123,6 @@
 		["hud_assault_FG_cover99"] = "SHUT THE FUCK UP EAT COVER",
 		["hud_assault_FG_cover100"] = "SHOW ME YOUR MOVES",
 		["hud_assault_FG_cover101"] = "GET PSYCHED",
-		["hud_assault_FG_cover102"] = "ADRENALINE IS PUMPING",
 		["hud_assault_FG_cover102"] = "ATOMIC OVERDRIVE",
 		["hud_assault_FG_cover103"] = "THERE IS NO FATE",
 		["hud_assault_FG_cover104"] = "LET THE HEIST BEGIN",
@@ -555,27 +554,11 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 
 			["menu_deck17_9"] = "Push It To The Limit",
 			
-			["menu_deck2_1_desc"] = "You gain ##5%## more health.",
-			
-			["menu_deck2_3_desc"] = "You are ##15%## more likely to be targeted by enemies when you are close to your crew members.\n\nYou gain ##5%## more health.",
-			
-			["menu_deck2_5_desc"] = "You gain ##5%## more health.",
-			
-			["menu_deck2_7_desc"] = "On killing an enemy, you have a ##50%## chance to spread ##Panic## amongst enemies within a ##6m## radius of the victim.\n\n##Panic## will make enemies go into ##bursts of uncontrollable fear.##",
-			
-			["menu_deck2_9_desc"] = "You gain an additional ##5%## more health.\n\nYou regenerate ##1%## of your health every ##5## seconds.",
-			
 			["menu_deck10_3_desc"] = "When you pick up ammo, you trigger an ammo pickup for ##50%## of normal pickup to other players in your team.\n\nCannot occur more than once every ##5## seconds.\n\nYou gain ##10%## more health.",
 
 			["menu_deck10_5_desc"] = "When you get healed from picking up ammo packs, your teammates also get healed for ##50%## of the amount.\n\nYou gain ##5%## more health.",
 			
 			--Grinder
-			["menu_deck11_1_desc"] = "You start with ##50%## of your Maximum Health and cannot heal above that.\n\nDamaging an enemy heals ##1## life points every ##0.3## seconds for ##3## seconds.\n\nThis effect stacks but cannot occur more than once every ##1.5## seconds, and only while wearing the ##Two-Piece Suit## or ##Lightweight Ballistic Vest##.\n\nNOTE: The health limit stacks with ##Something To Prove##.",
-			
-			["menu_deck11_3_desc"] = "Damaging an enemy now heals ##2## life points every ##0.3## seconds for ##3## seconds.\n\nYou gain ##10%## more health.",
-			
-			["menu_deck11_7_desc"] = "Damaging an enemy now heals ##4## life points every ##0.3## seconds for ##3## seconds.\n\nYou gain ##5%## more health.",
-			
 			["menu_deck17_3_desc"] = "You gain ##5%## more health.",
 			["menu_deck17_5_desc"] = "You gain ##5%## more health.\n\nEnemies nearby will prefer targeting you, whenever possible, while the Injector effect is active.",
 			["menu_deck17_7_desc"] = "You gain ##5%## more health.\n\nThe amount of health received during the Injector effect is increased by ##25%## while below ##50%## health.",
@@ -798,7 +781,6 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			["bm_menu_damage_falloff_lol_12"] = "LOADS",
 			["bm_menu_damage_falloff_lol_13"] = "HUGE",
 			["bm_menu_damage_falloff_lol_14"] = "HATE",
-			["bm_menu_damage_falloff_lol_15"] = "LARGE",
 			["bm_menu_damage_falloff_lol_15"] = "NYOOM",
 			["bm_menu_damage_falloff_lol_16"] = "SWOLE",
 			["bm_menu_damage_falloff_lol_17"] = "LOVE",
@@ -808,7 +790,6 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			["bm_menu_damage_falloff_lol_21"] = "TACO",
 			["bm_menu_damage_falloff_lol_22"] = "CANDY",
 			["bm_menu_damage_falloff_lol_23"] = "NITRO",
-			["bm_menu_damage_falloff_lol_24"] = "YEAH!",
 			["bm_menu_damage_falloff_lol_24"] = "VERY",
 			["bm_menu_damage_falloff_lol_25"] = "+++++",
 			["bm_menu_damage_falloff_lol_26"] = "WOW",

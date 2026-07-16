@@ -511,8 +511,9 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	self._lut_modifier_material:set_variable(ids_LUT_contrast, flashbang * 0.5)
 end
 
-function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration)
-	local concussion = self:test_line_of_sight(flashbang_pos + flashbang_test_offset, 200, 1500, 3000, true)
+function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration, no_offset, no_effect)
+	local test_pos = no_offset and flashbang_pos or flashbang_pos + flashbang_test_offset
+	local concussion = self:test_line_of_sight(test_pos, 200, 1500, 3000, true)
 	
 	self._concussion_duration = duration
 	
@@ -548,11 +549,13 @@ function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_s
 		end
 	end
 	
-	self._effect_manager:spawn({
-		effect = Idstring("effects/particles/explosions/explosion_grenade"),
-		position = flashbang_pos,
-		normal = Vector3(0, 0, 1)
-	})
+	if not no_effect then
+		self._effect_manager:spawn({
+			effect = Idstring("effects/particles/explosions/explosion_grenade"),
+			position = flashbang_pos,
+			normal = Vector3(0, 0, 1)
+		})
+	end
 end
 
 -- Make flashbangs scale with look direction instead of a flat reduction at some certain angle

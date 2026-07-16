@@ -80,6 +80,8 @@ function ArrowBase:add_trail_effect()
 end
 
 function ArrowBase:throw(params)
+	self:_tweak_data_play_sound("flyby")
+	self._requires_stop_flyby_sound = true
 	self._owner = params.owner
 	local velocity = params.dir
 	local adjust_z = 50
@@ -115,9 +117,14 @@ function ArrowBase:throw(params)
 
 	if params.projectile_entry and tweak_data.blackmarket.projectiles[params.projectile_entry] then
 		local tweak_entry = tweak_data.blackmarket.projectiles[params.projectile_entry]
+		local physic_effect = tweak_entry.physic_effect
+
+		if physic_effect then
+			World:play_physic_effect(physic_effect, self._unit)
+		end
 
 		if tweak_entry.add_trail_effect then
-			self:add_trail_effect()
+			self:add_trail_effect(tweak_entry.add_trail_effect)
 		end
 
 		local unit_name = tweak_entry.sprint_unit
@@ -137,6 +144,8 @@ function ArrowBase:throw(params)
 
 		self:set_projectile_entry(params.projectile_entry)
 	end
+
+	self:reload_contour()
 end
 
 local medic_tag = "medic"
@@ -437,8 +446,8 @@ function ArrowBase:_on_collision(col_ray)
 		if alive(col_ray.unit) then
 			self._ignore_units = self._ignore_units or {}
 		
-			has_destroy_listener = false
-			listener_class = col_ray.unit:base()
+			local has_destroy_listener = false
+			local listener_class = col_ray.unit:base()
 
 			if listener_class and listener_class.add_destroy_listener then
 				has_destroy_listener = true
@@ -450,12 +459,10 @@ function ArrowBase:_on_collision(col_ray)
 				end
 			end
 
-			if has_destroy_listener then
-				listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "_clbk_ignore_unit_destroyed"))
-				table.insert(self._ignore_units, col_ray.unit)
-			else
-				log("i am inside your home :)")
-			end
+				if has_destroy_listener then
+					listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "_clbk_ignore_unit_destroyed"))
+					table.insert(self._ignore_units, col_ray.unit)
+				end
 		end
 	end
 end

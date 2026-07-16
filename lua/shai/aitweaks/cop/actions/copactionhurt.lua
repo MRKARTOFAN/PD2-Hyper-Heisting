@@ -66,6 +66,8 @@ CopActionHurt.hurt_blocks = {
 Hooks:OverrideFunction(CopActionHurt, "chk_block", function (self, action_type, t)
 	if self._hurt_type == "death" then
 		return true
+	elseif action_type == "heavy_hurt" and self._hurt_type ~= "taser_tased" and self._unit:character_damage():tased() then
+		return false
 	elseif self.hurt_blocks[action_type] and not self._ext_anim.hurt_exit then
 		return true
 	elseif action_type == "turn" then

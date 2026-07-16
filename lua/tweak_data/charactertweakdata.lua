@@ -4065,6 +4065,7 @@ function CharacterTweakData:_set_overkill_145()
 
 	if managers.modifiers and managers.modifiers:check_boolean("telespooc") then
 		self.spooc.move_speed = self.presets.move_speed.speedofsoundsonic
+		self.spooc.spooc_sound_events = {}
 	end
 	FRAYSetMinObjInterruptDistances(self)
 end

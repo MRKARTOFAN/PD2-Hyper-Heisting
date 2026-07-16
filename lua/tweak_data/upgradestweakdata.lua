@@ -92,7 +92,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			-0.2,
 			-0.5
 		}
-		stamina = {
+		self.values.player.body_armor.stamina = {
 			2,
 			1.75,
 			1.5,

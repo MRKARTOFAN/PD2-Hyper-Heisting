@@ -64,6 +64,7 @@ function PlayerDamage:init(unit)
 	self._can_take_dmg_timer = 0
 	self._regen_on_the_side_timer = 0
 	self._regen_on_the_side = false
+	self._slowdowns = {}
 	self._interaction = managers.interaction
 	self._armor_regen_mul = managers.player:upgrade_value("player", "armor_regen_time_mul", 1)
 	self._dire_need = managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot")
@@ -1529,6 +1530,15 @@ function PlayerDamage:_send_damage_drama(attack_data, health_subtracted, armor)
 end
 
 function PlayerDamage:_calc_health_damage(attack_data)
+	if attack_data.weapon_unit then
+		local weap_base = alive(attack_data.weapon_unit) and attack_data.weapon_unit:base()
+		local weap_tweak_data = weap_base and weap_base.weapon_tweak_data and weap_base:weapon_tweak_data()
+
+		if weap_tweak_data and weap_tweak_data.slowdown_data then
+			self:apply_slowdown(weap_tweak_data.slowdown_data)
+		end
+	end
+
 	attack_data.damage = attack_data.damage - (self._old_last_received_dmg or 0)
 	
 	if self._unit then
@@ -1779,7 +1789,7 @@ function PlayerDamage:_set_health_effect()
 		hp = hp - 0.5
 	end
 
-	math.clamp(hp, 0, 1)
+	hp = math.clamp(hp, 0, 1)
 	managers.environment_controller:set_health_effect_value(hp)
 end
 
@@ -1849,6 +1859,7 @@ function PlayerDamage:update(unit, t, dt)
 	self:_check_update_max_armor()
 	self:_update_can_take_dmg_timer(dt)
 	self:_update_regen_on_the_side(dt)
+	self:_update_slowdowns(dt)
 	
 	if managers.player:has_category_upgrade("player", "melee_damage_health_ratio_multiplier") and self:health_ratio() <= 0.5 then
 		if not self._unit:movement():next_reload_speed_multiplier() or self._unit:movement():next_reload_speed_multiplier() < 1.5 then
@@ -1992,7 +2003,7 @@ function PlayerDamage:update(unit, t, dt)
 	end
 
 	if self._auto_revive_timer then
-		if not managers.platform:presence() == "Playing" or not self._bleed_out or self._dead or self:incapacitated() or self:arrested() or self._check_berserker_done then
+		if managers.platform:presence() ~= "Playing" or not self._bleed_out or self._dead or self:incapacitated() or self:arrested() or self._check_berserker_done then
 			self._auto_revive_timer = nil
 		else
 			self._auto_revive_timer = self._auto_revive_timer - dt
@@ -2275,6 +2286,7 @@ function PlayerDamage:pre_destroy()
 	managers.environment_controller:set_last_life(false)
 	managers.environment_controller:set_downed_value(0)
 	SoundDevice:set_rtpc("downed_state_progression", 0)
+	SoundDevice:set_rtpc("concussion", 0)
 	SoundDevice:set_rtpc("shield_status", 100)
 	if managers.environment_controller.kill_player_hurt_screen then
 		managers.environment_controller:kill_player_hurt_screen()
@@ -2282,11 +2294,20 @@ function PlayerDamage:pre_destroy()
 	managers.environment_controller:set_hurt_value(1)
 	managers.environment_controller:set_health_effect_value(1)
 	managers.environment_controller:set_suppression_value(0)
+	managers.environment_controller:set_flashbang_value(0)
+	managers.environment_controller:set_concussion_value(0)
 	managers.sequence:remove_inflict_updator_body("fire", self._unit:key(), self._inflict_damage_body:key())
 	CopDamage.unregister_listener("on_damage")
 	managers.mission:remove_global_event_listener("player_regenerate_armor")
 	managers.mission:remove_global_event_listener("player_force_bleedout")
-	self._unit:sound():play("concussion_effect_off")
+	self:_stop_tinnitus()
+	self:_stop_concussion()
+
+	if self._can_play_tinnitus_clbk_func then
+		managers.user:remove_setting_changed_callback("accessibility_sounds_tinnitus", self._can_play_tinnitus_clbk_func)
+
+		self._can_play_tinnitus_clbk_func = nil
+	end
 end
 
 

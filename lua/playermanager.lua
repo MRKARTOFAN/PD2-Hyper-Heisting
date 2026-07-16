@@ -630,9 +630,6 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	local equipped_unit = self:get_current_state()._equipped_unit:base()
 		
 	if self:has_category_upgrade("player", "panic_suppression") then --let's make this fuckin' happen
-		-- HH FIX: panic_chance=50 requires sup_tweak.panic_chance_mul > 0, which is 0 for most
-		-- cops (they resist suppression-based panic). Use -1 for guaranteed panic like Sociopath.
-		-- Also guard suppression_amount nil (not all weapons set _suppression).
 		local suppression_amount = equipped_unit._suppression or 0
 		local pos = killed_unit:position()
 		local enemies = world_g:find_units_quick(killed_unit, "sphere", pos, 600, 12, 21)

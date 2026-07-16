@@ -11,8 +11,8 @@ function ModifierCloakerTearGas:OnEnemyDied(unit, damage_info)
 	--nothing, gone
 end
 
-function ModifierCloakerTearGas:check_boolean()
-	if id == "telespooc" and self:value("boolean") ~= nil then
+function ModifierCloakerTearGas:check_boolean(id)
+	if id == "telespooc" then
 		return true
 	else
 		return nil

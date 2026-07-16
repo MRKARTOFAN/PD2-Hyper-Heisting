@@ -17,10 +17,11 @@ local draw_obstructed_splinters = nil
 local draw_splinter_hits = nil
 
 function TripMineBase:_explode(col_ray)
-	if not managers.network:session() then
+	if not managers.network:session() or self._detonated then
 		return
 	end
 
+	self._detonated = true
 	local damage_size = tweak_data.weapon.trip_mines.damage_size * managers.player:upgrade_value("trip_mine", "explosion_size_multiplier_1", 1) * managers.player:upgrade_value("trip_mine", "damage_multiplier", 1)
 	local player = managers.player:player_unit()
 	local my_pos = self._ray_from_pos
@@ -183,13 +184,15 @@ function TripMineBase:_explode(col_ray)
 
 	managers.explosion:units_to_push(units_to_push, det_pos, 300)
 
+	local destruction_delay = nil
+
 	if managers.network:session() then
 		if managers.player:has_category_upgrade("trip_mine", "fire_trap") then
 			local fire_trap_data = managers.player:upgrade_value("trip_mine", "fire_trap", nil)
 
 			if fire_trap_data then
 				managers.network:session():send_to_peers_synched("sync_trip_mine_explode_spawn_fire", self._unit, player, self._ray_from_pos, self._forward, damage_size, damage, fire_trap_data[1], fire_trap_data[2])
-				self:_spawn_environment_fire(player, fire_trap_data[1], fire_trap_data[2])
+				destruction_delay = self:_spawn_environment_fire(player, fire_trap_data[1], fire_trap_data[2])
 			end
 		elseif player then
 			managers.network:session():send_to_peers_synched("sync_trip_mine_explode", self._unit, player, self._ray_from_pos, self._forward, damage_size, damage)
@@ -213,13 +216,17 @@ function TripMineBase:_explode(col_ray)
 
 	if Network:is_server() then
 		managers.mission:call_global_event("tripmine_exploded")
-		Application:error("TRIPMINE EXPLODED")
 	end
 
-	self._unit:set_slot(0)
+	self:_handle_hiding_and_destroying(true, destruction_delay)
 end
 
-function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
+function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage, destruction_delay)
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 	local range = damage_size
 	local my_pos = ray_from
 	local my_fwd = ray_to
@@ -265,10 +272,9 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 
 	if Network:is_server() then
 		managers.mission:call_global_event("tripmine_exploded")
-		--Application:error("TRIPMINE EXPLODED")
 	end
 
-	self._unit:set_slot(0)
+	self:_handle_hiding_and_destroying(true, destruction_delay)
 end
 
 function TripMineBase:_play_sound_and_effects(range)

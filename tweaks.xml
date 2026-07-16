@@ -220,10 +220,6 @@
 				<param type="bool" /> <!-- camera moment -->
 			</message>
 			
-			<message name="sync_alarm_to_host" delivery="ordered" receiver="unit" check="client_to_server">
-				<param type="unit" /> <!--camera unit-->
-				<param type="unit" /> <!--player unit-->
-			</message>
         </target>
     </tweak>
 

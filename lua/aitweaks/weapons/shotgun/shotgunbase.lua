@@ -9,6 +9,22 @@ local math_clamp = math.clamp
 local math_tan = math.tan
 
 local mvec3_dis = mvector3.distance
+
+local fray_shotgun_fire_rate_multiplier = ShotgunBase.fire_rate_multiplier
+
+function ShotgunBase:fire_rate_multiplier()
+	local multiplier = fray_shotgun_fire_rate_multiplier(self)
+
+	if managers.player._magic_bullet_aced_t then
+		multiplier = multiplier * 1.2
+	end
+
+	if managers.player._pop_pop_mul then
+		multiplier = multiplier * (1 + math.abs(managers.player._pop_pop_mul))
+	end
+
+	return multiplier
+end
 local mvec3_dis_sq = mvector3.distance_sq
 local mvec3_set = mvector3.set
 local mvec3_add = mvector3.add
@@ -18,6 +34,10 @@ local mvec3_set_static = mvector3.set_static
 local mvec3_divide = mvector3.divide
 
 function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, ...)
+	if self:gadget_overrides_weapon_functions() then
+		return self:gadget_function_override("_fire_raycast", self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, ...)
+	end
+
 	local rays = self._rays or 1
 
 	if rays <= 1 then
@@ -66,8 +86,6 @@ function ShotgunBase:get_damage_falloff(damage, col_ray, user_unit)
 	spread_mul = spread_mul - spread_mul_reduction
 	inc_range_mul = math.max(1, spread_mul * inc_range_mul)
 	
-	-- HH FIX: _damage_near/_damage_far are nil for weapons without range stats defined.
-	-- Fall back to full damage (no falloff) rather than crashing.
 	if not self._damage_near or not self._damage_far or self._damage_far == 0 then
 		return damage
 	end

@@ -22,7 +22,7 @@ Hooks:Add("BeardLibPreProcessScriptData", "FRAYCreateEnvironment", function(Pack
 			
         }
         for i = 1, #skies do
-			sky = skies[i]
+            local sky = skies[i]
             if not managers.dyn_resource:has_resource(Idstring("scene"), Idstring("core/environments/skies/" .. sky .. "/" .. sky), managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
                 managers.dyn_resource:load(Idstring("scene"), Idstring("core/environments/skies/" .. sky .. "/" .. sky), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
             end
