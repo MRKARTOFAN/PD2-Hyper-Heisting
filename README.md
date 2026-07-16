@@ -38,5 +38,6 @@ We wanted to use [Cruel Trance](https://modworkshop.net/mod/44480) as our new en
 - Fuglore - for permission to use HH code.
 - Hoppip - Streamlined Heisting code.
 - Eclipse Team - mainly for "thanks for inspiration" moments in coding.
+- Metal/Nazuna - Cruel Trance assets. **14.07.2026**, assets are still in yet set to be removed in the distant future, but the credit is still needed.
 
 If I missed someone, let me know.
