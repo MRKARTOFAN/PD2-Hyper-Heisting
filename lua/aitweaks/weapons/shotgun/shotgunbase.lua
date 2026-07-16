@@ -1,13 +1,6 @@
 local math_min = math.min
 local math_max = math.max
 
-local math_random = math.random
-local math_sin = math.sin
-local math_cos = math.cos
-local math_rad = math.rad
-local math_clamp = math.clamp
-local math_tan = math.tan
-
 local mvec3_dis = mvector3.distance
 
 local fray_shotgun_fire_rate_multiplier = ShotgunBase.fire_rate_multiplier
@@ -25,13 +18,6 @@ function ShotgunBase:fire_rate_multiplier()
 
 	return multiplier
 end
-local mvec3_dis_sq = mvector3.distance_sq
-local mvec3_set = mvector3.set
-local mvec3_add = mvector3.add
-local mvec3_mul = mvector3.multiply
-local mvec3_cpy = mvector3.copy
-local mvec3_set_static = mvector3.set_static
-local mvec3_divide = mvector3.divide
 
 function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, ...)
 	if self:gadget_overrides_weapon_functions() then

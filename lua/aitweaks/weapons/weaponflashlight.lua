@@ -78,7 +78,6 @@ function WeaponFlashLight:update_flicker_safehouse_nightmare(t, dt)
 	self._light:set_multiplier(self._current_light_multiplier)
 end
 
-local mvec1 = Vector3()
 local mrot1 = Rotation()
 local mrot2 = Rotation()
 WeaponFlashLight.HALLOWEEN_FLICKER = 1

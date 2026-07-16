@@ -1,24 +1,18 @@
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 local mrot1 = Rotation()
-local ids_pickup = Idstring("pickup")
 
 local tmp_vec1 = Vector3()
-local tmp_vec2 = Vector3()
 
 local world_g = World
 
 local mvec3_dir = mvector3.direction
-local mvec3_dot = mvector3.dot
-local mvec3_dis = mvector3.distance
 local mvec3_angle = mvector3.angle
 local mvec3_dis_sq = mvector3.distance_sq
 local mvec3_step = mvector3.step
 local mvec3_set = mvector3.set
 local mvec3_set_z = mvector3.set_z
 local mvec3_norm = mvector3.normalize
-
-local math_lerp = math.lerp
 
 local anti_gravitate_idstr = Idstring("physic_effects/anti_gravitate")
 
@@ -154,7 +148,7 @@ function ArrowBase:_calculate_homing_dir()
 	local m_unit = self._unit
 	local pos = m_unit:position()
 	local dir = m_unit:rotation():y()
-	local closest_dis, closest_pos, homing_into, best_angle, has_medic = nil
+	local closest_dis, closest_pos, best_angle, has_medic = nil
 	
 	local enemies = world_g:find_units_quick(m_unit, "sphere", pos, 400, managers.slot:get_mask("enemies"))
 	local obstruction_mask = managers.slot:get_mask("world_geometry", "vehicles", "enemy_shield_check")
@@ -308,7 +302,7 @@ function ArrowBase:update(unit, t, dt)
 				self._homing_physics_t = t + 5
 			end
 		
-			local autohit_dir, target_dis = self:_calculate_homing_dir()
+			local autohit_dir = self:_calculate_homing_dir()
 			
 			if autohit_dir then
 				if not self._homing_physics then

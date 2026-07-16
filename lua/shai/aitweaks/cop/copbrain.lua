@@ -1,39 +1,23 @@
 -- Set up logics and needed data
-local function HHEnsureLogicVariants()
-	local variants = CopBrain._logic_variants
-	local security_variant = variants.security
-	local triad_variant = variants.triad_boss or security_variant
-	local tank_variant = variants.tank or security_variant
-	local spooc_variant = variants.spooc or security_variant
-
-	variants.mobster_boss = triad_variant
-	variants.chavez_boss = triad_variant
-	variants.hector_boss = triad_variant
-	variants.drug_lord_boss = triad_variant
-	variants.biker_boss = triad_variant
-	variants.heavy_swat_sniper = variants.marshal_marksman or variants.sniper or security_variant
-	variants.cop_moss = security_variant
-	variants.shadow_swat = security_variant
-	variants.shadow_taser = variants.taser or security_variant
-	variants.fbi_girl = security_variant
-	variants.armored_swat = security_variant
-	variants.fbi_xc45 = security_variant
-	variants.fbi_pager = security_variant
-	variants.gangster_ninja = security_variant
-	variants.armored_sniper = variants.sniper or security_variant
-	variants.spooc_heavy = spooc_variant
-	variants.tank_ftsu = tank_variant
-	variants.trolliam_epicson = spooc_variant
-end
-
-HHEnsureLogicVariants()
-
-local post_init_original = CopBrain.post_init
-function CopBrain:post_init(...)
-	HHEnsureLogicVariants()
-
-	return post_init_original(self, ...)
-end
+local variants = CopBrain._logic_variants
+variants.mobster_boss = variants.triad_boss
+variants.chavez_boss = variants.triad_boss
+variants.hector_boss = variants.triad_boss
+variants.drug_lord_boss = variants.triad_boss
+variants.biker_boss = variants.triad_boss
+variants.heavy_swat_sniper = variants.marshal_marksman
+variants.cop_moss = variants.security
+variants.shadow_swat = variants.security
+variants.shadow_taser = variants.taser
+variants.fbi_girl = variants.security
+variants.armored_swat = variants.security
+variants.fbi_xc45 = variants.security
+variants.fbi_pager = variants.security
+variants.gangster_ninja = variants.security
+variants.armored_sniper = variants.sniper
+variants.spooc_heavy = variants.spooc
+variants.tank_ftsu = variants.tank
+variants.trolliam_epicson = variants.spooc
 
 CopBrain._next_cover_grenade_chk_t = 0
 CopBrain._next_logic_upd_t = 0

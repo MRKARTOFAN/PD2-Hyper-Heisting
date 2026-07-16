@@ -1,15 +1,7 @@
 local mvec3_set = mvector3.set
 local mvec3_add = mvector3.add
 local mvec3_mul = mvector3.multiply
-local mvec3_dis_sq = mvector3.distance_sq
-local mvec3_lerp = mvector3.lerp
 local mvec3_dir = mvector3.direction
-local mvec3_cpy = mvector3.copy
-local tmp_vec1 = Vector3()
-local mrot_set_look_at = mrotation.set_look_at
-local tmp_rot = Rotation()
-local math_up = math.UP
-local math_lerp = math.lerp
 
 function NewFlamethrowerBase:_update_stats_values()
 	self._bullet_class = nil
@@ -53,8 +45,6 @@ function NewFlamethrowerBase:_update_stats_values()
 end
 
 local mvec_to = Vector3()
-local mvec_direction = Vector3()
-local mvec_spread_direction = Vector3()
 
 function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data)
 	local result = {}

@@ -5,7 +5,6 @@ local ids_dof_near_plane = Idstring("near_plane")
 local ids_dof_far_plane = Idstring("far_plane")
 local ids_dof_settings = Idstring("settings")
 local mvec1 = Vector3()
-local mvec2 = Vector3()
 local temp_vec_1 = Vector3()
 local temp_vec_2 = Vector3()
 
@@ -266,19 +265,9 @@ function CoreEnvironmentControllerManager:update(t, dt)
 	end
 end
 
-local ids_radial_pos = Idstring("radial_pos")
 local ids_radial_offset = Idstring("radial_offset")
-local ids_tgl_r = Idstring("tgl_r")
-local hit_feedback_rlu = Idstring("hit_feedback_rlu")
-local hit_feedback_d = Idstring("hit_feedback_d")
 local ids_hdr_post_processor = Idstring("hdr_post_processor")
 local ids_hdr_post_composite = Idstring("post_DOF")
-local ids_anti_aliasing_processor = Idstring("anti_aliasing_post_processor")
-local ids_ao_post_processor = Idstring("ao_post_processor")
-local ids_ao_mask_post_processor = Idstring("ao_mask_post_processor")
-local new_cam_fwd = Vector3()
-local new_cam_up = Vector3()
-local new_cam_right = Vector3()
 local ids_LUT_post = Idstring("color_grading_post")
 local ids_LUT_settings = Idstring("lut_settings")
 local ids_LUT_settings_a = Idstring("LUT_settings_a")
@@ -327,7 +316,6 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	end
 
 	local camera = vp:camera()
-	local color_tweak = mvec1
 
 	if camera then
 		-- Nothing
@@ -360,7 +348,6 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	local flashbang_flash = 0
 
 	if self._current_flashbang > 0 then
-		local flsh = self._current_flashbang
 		self._current_flashbang = math.max(self._current_flashbang - dt * 0.08 * self._flashbang_multiplier * self._flashbang_duration, 0)
 		flashbang = math.min(self._current_flashbang, 1)
 		self._current_flashbang_flash = math.max(self._current_flashbang_flash - dt * 0.9, 0)
@@ -384,7 +371,6 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	hit_some_mod = hit_some_mod * hit_some_mod * hit_some_mod
 	hit_some_mod = 1 - hit_some_mod
 	local downed_value = self._downed_value / 100
-	local death_mod = math.max(1 - self._health_effect_value - 0.5, 0) * 2
 	local blur_zone_flashbang = blur_zone_val + flashbang
 	local flash_1 = math.pow(flashbang, 0.4)
 	flash_1 = flash_1 + math.pow(concussion, 0.4)
@@ -505,7 +491,13 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	local anti_mul = -1 + (math.clamp(hit_some_mod * 2, 0, 1) * 0.25)
 	
 	local intensity_mul = exposure * anti_mul
-	mvector3.set(temp_vec_2, Vector3(last_life, flash_2 + math.clamp(hit_some_mod * 2, 0, 1) * 0.25 + blur_zone_val * 0.15, intensity_mul))
+
+	if not self._screenflash_colors_setup then
+		self:set_screenflash_colors_clbks()
+	end
+
+	self:_handle_screenflash(flash_2, hit_some_mod, blur_zone_val)
+	mvector3.set(temp_vec_2, Vector3(last_life, 0, intensity_mul))
 	
 	self._lut_modifier_material:set_variable(ids_LUT_settings_b, temp_vec_2)
 	self._lut_modifier_material:set_variable(ids_LUT_contrast, flashbang * 0.5)

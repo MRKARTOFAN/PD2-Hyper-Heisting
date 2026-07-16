@@ -4,9 +4,7 @@ PlayerManager._style_tier = 0
 PlayerManager._style_pause = nil
 
 local world_g = World
-local temp_vec1 = Vector3()
 local mvec3_norm = mvector3.normalize
-local FRAY = PD2FRAY
 local fray_nss_result
 local fray_nss_weapon_scan_done
 local fray_nss_sent
@@ -1092,7 +1090,6 @@ function PlayerManager:add_style(event)
 	local style_tweak = tweak_data.style_meter_events[event]
 	
 	if not style_tweak then
-		log("you're a bingus")
 		return
 	end
 	

@@ -3,7 +3,6 @@ function Drill:_register_sabotage_SO()
 		return
 	end
 
-	local field_pos = self._nav_tracker:field_position()
 	local field_z = self._nav_tracker:field_z() - 25
 	local height = self._pos.z - field_z
 	local act_anim = "sabotage_device_" .. (height > 100 and "high" or height > 60 and "mid" or "low")
@@ -11,14 +10,6 @@ function Drill:_register_sabotage_SO()
 	local objective_rot = align_obj:rotation()
 	local objective_pos = align_obj:position()
 	self._SO_area = managers.groupai:state():get_area_from_nav_seg_id(self._nav_tracker:nav_segment())
-	local followup_objective = {
-		attitude = "avoid",
-		scan = true,
-		stance = "hos",
-		type = "free",
-		interrupt_health = 1,
-		interrupt_dis = -1
-	}
 	local objective = {
 		type = "act",
 		stance = "hos",

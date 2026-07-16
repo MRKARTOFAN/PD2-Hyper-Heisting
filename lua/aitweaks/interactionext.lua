@@ -3,7 +3,6 @@ function IntimitateInteractionExt:interact(player)
 		return
 	end
 
-	local player_manager = managers.player
 	local has_equipment = managers.player:has_special_equipment(self._tweak_data.special_equipment)
 
 	if self._tweak_data.equipment_consume and has_equipment then
@@ -311,7 +310,7 @@ if Global.game_settings and Global.game_settings.single_player then
 	local can_interact=BaseInteractionExt.can_interact
 	local can_interact_multi=MultipleChoiceInteractionExt.can_interact
 	
-	function can_pickup(player, item)
+	local function can_pickup(player, item)
 		return Network:is_server() and item
 			and managers.player:player_unit()==player
 			and managers.player:can_pickup_equipment(item)

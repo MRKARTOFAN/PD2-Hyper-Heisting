@@ -108,7 +108,6 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 
 	self._items = {}
 	local item = nil
-	local tab_height = 0
 	local show_summary = true
 
 	if managers.crime_spree:is_active() then
@@ -209,7 +208,7 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 
 	self._next_page = next_page
 	scroll_w = scroll_w - next_page:w() - 5
-	local ix, iy, iw, ih = self._items[#self._items]:tab_text_shape()
+	local ix, _, iw, ih = self._items[#self._items]:tab_text_shape()
 
 	self._tab_panel:set_w(ix + iw + 5)
 	self._tab_panel:set_h(ih)

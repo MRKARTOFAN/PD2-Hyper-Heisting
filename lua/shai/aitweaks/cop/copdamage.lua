@@ -52,12 +52,14 @@ end)
 
 
 -- Fixed critical hit multiplier
-function CopDamage:roll_critical_hit(attack_data)
+function CopDamage:roll_critical_hit(attack_data, damage)
+	damage = damage or attack_data.damage
+
 	if self:can_be_critical(attack_data) and math.random() < managers.player:critical_hit_chance() then
-		return true, attack_data.damage * 3
+		return true, damage * 3
 	end
 
-	return false, attack_data.damage
+	return false, damage
 end
 
 
@@ -339,8 +341,8 @@ local function _spawn_melee_headshot_effect(self)
 
 	self._unit:sound():play("expl_gen_head", nil, nil)
 end
+-- [Karto] It's called thanks for inspiration.
 
--- it's called thanks for inspiration
 Hooks:PreHook(CopDamage, "damage_melee", "hh_melee_headshot_damage", function(self, attack_data)
 	local head = self._head_body_name
 		and attack_data.col_ray

@@ -29,7 +29,6 @@ function BowWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, sh
 
 	mvec_spread_direction = mvec_spread_direction * speed_mul
 	
-	local spawn_offset = self:_get_spawn_offset()
 	self._dmg_mul = dmg_mul or 1
 
 	if not self._client_authoritative then

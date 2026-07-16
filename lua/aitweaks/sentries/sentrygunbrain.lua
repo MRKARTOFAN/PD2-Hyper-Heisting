@@ -22,11 +22,8 @@ function SentryGunBrain:_upd_detection(t)
 		return
 	end
 
-	local delay = 1
 	local my_SO_access_str = self._SO_access_str
 	local my_SO_access = self._SO_access
-	local my_tracker = self._unit:movement():nav_tracker()
-	local chk_vis_func = my_tracker.check_visibility
 	local detected_objects = self._detected_attention_objects
 	local my_key = self._unit:key()
 	local my_team = self._ext_movement:team()

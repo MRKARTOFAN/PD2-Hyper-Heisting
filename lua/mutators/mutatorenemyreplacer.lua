@@ -1,6 +1,3 @@
-local access_type_walk_only = {
-	walk = true
-}
 local access_type_all = {
 	acrobatic = true,
 	walk = true

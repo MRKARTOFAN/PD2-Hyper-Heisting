@@ -153,7 +153,7 @@ function PlayerTased:_update_check_actions(t, dt)
 
 	managers.environment_controller:set_taser_value(self._taser_value)
 
-	local shooting = self:_check_action_primary_attack(t, input)
+	self:_check_action_primary_attack(t, input)
 
 	if self._unequip_weapon_expire_t and self._unequip_weapon_expire_t <= t then
 		self._unequip_weapon_expire_t = nil

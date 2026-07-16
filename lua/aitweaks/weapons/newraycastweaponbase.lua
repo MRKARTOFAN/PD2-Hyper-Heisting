@@ -116,20 +116,6 @@ function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
 	return damage * damage_mul
 end
 
-function NewRaycastWeaponBase:is_weak_hit(distance, user_unit, damage_dealt)
-	if not damage_dealt then
-		return 1
-	end
-
-	local regular_damage = self._damage
-	local new_damage = damage_dealt
-	local scale = nil
-
-	scale = new_damage / regular_damage
-	
-	return scale
-end
-
 function NewRaycastWeaponBase:reload_speed_multiplier()
 	--if self._current_reload_speed_multiplier then
 		--return self._current_reload_speed_multiplier
@@ -284,7 +270,6 @@ function NewRaycastWeaponBase:calculate_ammo_max_per_clip()
 end
 
 local math_clamp = math.clamp
-local math_lerp = math.lerp
 local ids_single = Idstring("single")
 local ids_auto = Idstring("auto")
 local ids_burst = Idstring("burst")

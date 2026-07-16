@@ -79,8 +79,6 @@ function AmmoClip:_pickup(unit)
 			end
 			
 			if not self._projectile_id and not self._weapon_category then
-				local restored_health = nil
-
 				if not unit:character_damage():is_downed() and player_manager:has_category_upgrade("temporary", "loose_ammo_restore_health") and not player_manager:has_activate_temporary_upgrade("temporary", "loose_ammo_restore_health") then
 					player_manager:activate_temporary_upgrade("temporary", "loose_ammo_restore_health")
 

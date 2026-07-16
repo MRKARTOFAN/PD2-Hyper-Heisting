@@ -1,7 +1,3 @@
-local idstr_contour = Idstring("contour")
-local idstr_material = Idstring("material")
-local idstr_contour_color = Idstring("contour_color")
-local idstr_contour_opacity = Idstring("contour_opacity")
 ContourExt._types = {
 	teammate = {
 		persistence = 0.3,

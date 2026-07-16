@@ -125,7 +125,7 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	hostages_icon:set_center_y(self._hostages_bg_box:h() / 2)
 	self._hostages_bg_box:set_right(hostages_icon:left())
 
-	local num_hostages = self._hostages_bg_box:text({
+	self._hostages_bg_box:text({
 		layer = 1,
 		vertical = "center",
 		name = "num_hostages",
@@ -731,7 +731,6 @@ function HUDAssaultCorner:_start_assault(text_list)
 		""
 	}
 	local assault_panel = self._hud_panel:child("assault_panel")
-	local text_panel = assault_panel:child("text_panel")
 
 	self:_set_text_list(text_list)
 

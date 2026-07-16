@@ -28,7 +28,6 @@ function ProjectileWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 	self:_adjust_throw_z(mvec_spread_direction)
 
 	mvec_spread_direction = mvec_spread_direction * self:projectile_speed_multiplier()
-	local spawn_offset = self:_get_spawn_offset()
 	self._dmg_mul = dmg_mul or 1
 
 	if not self._client_authoritative then

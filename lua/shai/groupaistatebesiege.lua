@@ -53,7 +53,6 @@ Hooks:PostHook(GroupAIStateBesiege, "init", "fray_level_ai_flags", function(self
 	local level_id = Global.level_data and Global.level_data.level_id
 	local level_data = level_id and tweak_data.levels[level_id]
 
-	self._small_map = level_data and level_data.meatgrinder
 	self._street = level_data and level_data.street
 end)
 
@@ -413,7 +412,7 @@ Hooks:OverrideFunction(GroupAIStateBesiege, "_set_assault_objective_to_group", f
 	local current_objective = group.objective
 	local approach, open_fire, pull_back
 	local obstructed_area = self:_chk_group_areas_tresspassed(group)
-	local group_leader_u_key, group_leader_u_data = self._determine_group_leader(group.units)
+	local _, group_leader_u_data = self._determine_group_leader(group.units)
 	local tactics_map = group_leader_u_data and group_leader_u_data.tactics_map or {}
 	local in_place_duration = group.in_place_t and self._t - group.in_place_t or 0
 	local objective_area = current_objective.area

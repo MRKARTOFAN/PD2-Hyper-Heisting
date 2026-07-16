@@ -1140,21 +1140,3 @@ Hooks:PostHook(GroupAITweakData, "_init_chatter_data", "shai_chatter_settings", 
 		self.enemy_chatter.detect.duration = { 5, 10 }
 	end
 end)
-
---[[Per-heist assault tuning
-Hooks:PostHook(GroupAITweakData, "_init_task_data", "hh_bomb_forest_assault_tuning", function(self)
-	local level_id = Global.game_settings and Global.game_settings.level_id or Global.level_data and Global.level_data.level_id
-	if level_id ~= "crojob3" and level_id ~= "crojob3_night" then
-		return
-	end
-
-	for _, state_name in ipairs({ "besiege", "street", "safehouse" }) do
-		local state = self[state_name]
-		if state and state.assault then
-			state.assault.force = { 6, 10, 14 }
-			state.assault.force_balance_mul = { 1, 1.5, 2, 2.5 }
-		end
-	end
-
-end)
---]]

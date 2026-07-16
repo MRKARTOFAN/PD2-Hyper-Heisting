@@ -1,5 +1,5 @@
 local security_variant = CopMovement._action_variants.security
-local tank_variant = clone(CopMovement._action_variants.tank or security_variant)
+local tank_variant = clone(CopMovement._action_variants.tank)
 
 CopMovement._action_variants.fbi_girl = security_variant
 CopMovement._action_variants.cop_moss = security_variant

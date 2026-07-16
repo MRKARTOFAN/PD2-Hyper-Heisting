@@ -3,12 +3,10 @@ local temp_vec1 = Vector3()
 
 local mvec3_dis_sq = mvector3.distance_sq
 local mvec3_set = mvector3.set
-local mvec3_set_z = mvector3.set_z
 local mvec3_sub = mvector3.subtract
 local mvec3_add = mvector3.add
 local mvec3_mul = mvector3.multiply
 local mvec3_norm = mvector3.normalize
-local mvec3_dis_sq = mvector3.distance_sq
 
 Hooks:PostHook(PlayerStandard, "_calculate_standard_variables", "FRAY__calculate_standard_variables", function(self, t, dt)
 	self._setting_hold_to_jump = managers.user:get_setting("hold_to_jump")
@@ -117,7 +115,6 @@ end
 
 function PlayerStandard:_find_pickups(t)
 	local pickups = World:find_units_quick("sphere", self._unit:movement():m_pos(), self._pickup_area, self._slotmask_pickups)
-	local grenade_tweak = tweak_data.blackmarket.projectiles[managers.blackmarket:equipped_grenade()]
 	local may_find_grenade = nil --blech, theres already a 5% chance now, so i dont think fully loaded needs this anymore
 
 	for _, pickup in ipairs(pickups) do
@@ -308,34 +305,6 @@ function PlayerStandard:_check_action_melee(t, input)
 	self:_start_action_melee(t, input, instant)
 
 	return true
-end
-
-function PlayerStandard:_play_distance_interact_redirect(t, variant)
-	managers.network:session():send_to_peers_synched("play_distance_interact_redirect", self._unit, variant)
-
-	if self._state_data.in_steelsight then
-		return
-	end
-	
-	if self._melee_stunned then
-		return
-	end
-
-	if self._shooting or not self._equipped_unit:base():start_shooting_allowed() then
-		return
-	end
-
-	if self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t then
-		return
-	end
-
-	if self._running then
-		return
-	end
-
-	self._state_data.interact_redirect_t = t + 1
-
-	self._ext_camera:play_redirect(Idstring(variant))
 end
 
 function PlayerStandard:_update_running_timers(t)
@@ -812,18 +781,6 @@ local melee_vars = {
 	"player_melee",
 	"player_melee_var2"
 }
-
-local function HHUpgradeValue(category, upgrade, fallback_upgrade, default)
-	if managers.player:has_category_upgrade(category, upgrade) then
-		return managers.player:upgrade_value(category, upgrade, default)
-	end
-
-	if fallback_upgrade and managers.player:has_category_upgrade(category, fallback_upgrade) then
-		return managers.player:upgrade_value(category, fallback_upgrade, default)
-	end
-
-	return default
-end
 
 local function HHUpgradeValueAny(category, upgrade, fallback_upgrade, second_fallback_upgrade, default)
 	if managers.player:has_category_upgrade(category, upgrade) then
@@ -1524,7 +1481,7 @@ function PlayerStandard:_update_foley(t, input)
 		if t - self._state_data.in_air_enter_t > 0.1 then
 			local from = self._pos + math.UP * 10
 			local to = self._pos - math.UP * 60
-			local material_name, pos, norm = World:pick_decal_material(from, to, self._slotmask_bullet_impact_targets)
+			local material_name, pos = World:pick_decal_material(from, to, self._slotmask_bullet_impact_targets)
 			local height = self._state_data.enter_air_pos_z - self._pos.z
 			
 			self._unit:sound():play_land(material_name)
@@ -2368,7 +2325,6 @@ function PlayerStandard:_get_input(t, dt, paused)
 		return input
 	end
 
-	local pressed = self._controller:get_any_input_pressed()
 	local released = self._controller:get_any_input_released()
 	local downed = self._controller:get_any_input()
 
