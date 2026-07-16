@@ -49,6 +49,25 @@ Hooks:PreHook(CopBrain, "convert_to_criminal", "sh_convert_to_criminal", functio
 	self._logic_data.combat_chatter_cooldown_t = self._logic_data.t + math.rand(30, 90)
 end)
 
+Hooks:PostHook(CopBrain, "convert_to_criminal", "fray_convert_to_criminal", function(self)
+	local char_tweak = deep_clone(self._unit:base()._char_tweak)
+	char_tweak.damage.hurt_severity = deep_clone(tweak_data.character.presets.hurt_severities.only_light_hurt)
+	char_tweak.damage.hurt_severity.explosion = {
+		health_reference = 1,
+		zones = {
+			{
+				light = 1
+			}
+		}
+	}
+
+	self._logic_data.char_tweak = char_tweak
+	self._unit:base()._char_tweak = char_tweak
+	self._unit:character_damage()._char_tweak = char_tweak
+	self._unit:movement()._tweak_data = char_tweak
+	self._unit:movement()._action_common_data.char_tweak = char_tweak
+end)
+
 
 -- Make surrender window slightly shorter and less random
 Hooks:OverrideFunction(CopBrain, "on_surrender_chance", function(self)
