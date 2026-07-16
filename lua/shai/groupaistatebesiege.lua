@@ -642,11 +642,6 @@ Hooks:OverrideFunction(GroupAIStateBesiege, "_set_assault_objective_to_group", f
 				interrupt_dis = tactics_map.charge and 0
 			})
 		elseif not current_objective.assigned_t and in_place_duration > 15 and not self:_can_group_see_target(group, nil, 5) then
-			-- Log and remove groups that get stuck
-			local element_id = group.spawn_group_element and group.spawn_group_element._id or 0
-			local element_name = group.spawn_group_element and group.spawn_group_element._editor_name or ""
-			log("[SHAI] Group " .. tostring(group.id) .. " spawned from element " .. tostring(element_id) .. " (" .. tostring(element_name) .. ") is stuck, removing it!")
-
 			for _, u_data in pairs(group.units) do
 				u_data.unit:brain():set_active(false)
 				u_data.unit:set_slot(0)
@@ -1054,7 +1049,6 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 	local function _try_spawn_unit(u_type_name, spawn_entry)
 		local u_category = unit_categories[u_type_name]
 		if not u_category then
-			log("[SHAI] Unit category " .. tostring(u_type_name) .. " does not exist")
 			return true
 		end
 
@@ -1065,33 +1059,15 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 				hopeless = false
 
 				if (skip_delays and sp_data.delay_t - sp_data.interval or sp_data.delay_t) < self._t then
-					local unit_type_list = u_category.unit_types[current_unit_type]
-					if not unit_type_list or #unit_type_list == 0 then
-						-- Fallback to america if current unit type has no units defined
-						unit_type_list = u_category.unit_types.america
-					end
-					if not unit_type_list or #unit_type_list == 0 then
-						-- Try any available unit type as last resort
-						for _, fallback_list in pairs(u_category.unit_types) do
-							if fallback_list and #fallback_list > 0 then
-								unit_type_list = fallback_list
-								break
-							end
-						end
-					end
-					if not unit_type_list or #unit_type_list == 0 then
-						log("[SHAI] No unit types available for category " .. tostring(u_type_name))
-						return true
-					end
-						produce_data.name = FRAYPickSpawnUnit(self, unit_type_list)
+					produce_data.name = FRAYPickSpawnUnit(self, u_category.unit_types[current_unit_type])
 
-						if not produce_data.name then
-							return
-						end
+					if not produce_data.name then
+						return
+					end
 
-						if not PackageManager:has(Idstring("unit"), produce_data.name) then
-							managers.dyn_resource:load(Idstring("unit"), produce_data.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
-						end
+					if not PackageManager:has(Idstring("unit"), produce_data.name) then
+						managers.dyn_resource:load(Idstring("unit"), produce_data.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
+					end
 
 					local spawned_unit = sp_data.mission_element:produce(produce_data)
 
@@ -1156,7 +1132,6 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 		end
 
 		if hopeless then
-			log("[SHAI] Spawn group " .. tostring(spawn_task.spawn_group.id) .. " failed to spawn unit " .. tostring(u_type_name))
 			return true
 		end
 	end
@@ -1172,8 +1147,6 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 					break
 				end
 			end
-		elseif not u_category then
-			log("[SHAI] Unknown unit category: " .. tostring(u_type_name))
 		end
 	end
 
@@ -1238,7 +1211,6 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 
 		if wanted_nr_units < add_amount then
 			add_amount = wanted_nr_units
-			log("[SHAI] Can not satisfy amount_min for unit category " .. tostring(spawn_entry.unit) .. " in spawn group type " .. tostring(spawn_group_type))
 		end
 
 		spawn_task.units_remaining[spawn_entry.unit] = spawn_task.units_remaining[spawn_entry.unit] or {

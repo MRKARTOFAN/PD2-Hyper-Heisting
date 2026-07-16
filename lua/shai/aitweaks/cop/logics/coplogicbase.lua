@@ -452,8 +452,6 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 	for reason, reason_data in pairs(surrender_tweak.reasons) do
 		if CopLogicBase.surrender_chk_funcs[reason] then
 			hold_chance = hold_chance * (CopLogicBase.surrender_chk_funcs[reason](data, aggressor_unit, reason_data) or 1)
-		else
-			log("[SHAI] CopLogicBase.surrender_chk_funcs." .. tostring(reason) .. " does not exist")
 		end
 	end
 
@@ -464,8 +462,6 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 	for factor, factor_data in pairs(surrender_tweak.factors) do
 		if CopLogicBase.surrender_chk_funcs[factor] then
 			hold_chance = hold_chance * (CopLogicBase.surrender_chk_funcs[factor](data, aggressor_unit, factor_data) or 1)
-		else
-			log("[SHAI] CopLogicBase.surrender_chk_funcs." .. tostring(factor) .. " does not exist")
 		end
 	end
 

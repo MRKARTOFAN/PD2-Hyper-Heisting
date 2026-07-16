@@ -11,12 +11,10 @@ Hooks:PostHook(CopBase, "init", "sh_init", function(self)
 	local sprint_unit_name = tweak_entry.sprint_unit and Idstring(tweak_entry.sprint_unit)
 
 	if not PackageManager:has(unit_ids, unit_name) then
-		log("[SHAI] Loading projectile unit " .. tostring(throwable))
 		managers.dyn_resource:load(unit_ids, unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
 	end
 
 	if sprint_unit_name and not PackageManager:has(unit_ids, sprint_unit_name) then
-		log("[SHAI] Loading projectile sprint unit " .. tostring(throwable))
 		managers.dyn_resource:load(unit_ids, sprint_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
 	end
 end)

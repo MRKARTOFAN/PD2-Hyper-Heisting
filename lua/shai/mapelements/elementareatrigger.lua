@@ -32,12 +32,6 @@ local function check_executed_objects(trigger, current, checked)
 			else
 				managers.groupai:state():set_area_min_police_force(trigger._id, force, trigger._values.position)
 			end
-			local type = element_class == ElementMissionEnd and "Escape" or "Loot secure"
-			if trigger._values.enabled then
-				log(string.format("[SHAI] %s zone activated, enabling reinforce groups in its area", type))
-			else
-				log(string.format("[SHAI] %s zone deactivated, disabling reinforce groups in its area", type))
-			end
 			return true
 		elseif check_executed_objects(trigger, element, checked) then
 			return true

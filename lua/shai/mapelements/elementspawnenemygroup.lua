@@ -27,7 +27,6 @@ end)
 
 -- Don't replace spawns in editor mode
 if Global.editor_mode then
-	log("[SHAI] Editor mode is active, spawn group changes disabled")
 	return
 end
 

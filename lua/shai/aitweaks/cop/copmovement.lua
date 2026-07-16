@@ -1,25 +1,5 @@
 local security_variant = CopMovement._action_variants.security
 local tank_variant = clone(CopMovement._action_variants.tank or security_variant)
-local action_variant_meta = getmetatable(CopMovement._action_variants) or {}
-local old_action_variant_index = action_variant_meta.__index
-local action_variants = {
-	security = {
-		warp = CopActionWarp,
-	}
-}
-action_variant_meta.__index = function(action_variants, key)
-	if old_action_variant_index then
-		local variant = type(old_action_variant_index) == "function" and old_action_variant_index(action_variants, key) or old_action_variant_index[key]
-
-		if variant then
-			return variant
-		end
-	end
-
-	return security_variant
-end
-
-setmetatable(CopMovement._action_variants, action_variant_meta)
 
 CopMovement._action_variants.fbi_girl = security_variant
 CopMovement._action_variants.cop_moss = security_variant
@@ -33,60 +13,6 @@ CopMovement._action_variants.shadow_taser = security_variant
 CopMovement._action_variants.shadow_swat = security_variant
 CopMovement._action_variants.tank_ftsu = tank_variant
 CopMovement._action_variants.trolliam_epicson = tank_variant
-
-local function sh_ensure_actions(self)
-	if not self._actions then
-		self._actions = CopMovement._action_variants[self._unit:base()._tweak_table] or security_variant
-	end
-end
-
-Hooks:PostHook(CopMovement, "init", "sh_init_action_variants", sh_ensure_actions)
-Hooks:PostHook(CopMovement, "_clbk_tweak_data_changed", "sh_tweak_action_variants", sh_ensure_actions)
-
-local action_request_original = CopMovement.action_request
-function CopMovement:action_request(...)
-	sh_ensure_actions(self)
-
-	return action_request_original(self, ...)
-end
-
-local sync_action_act_start_original = CopMovement.sync_action_act_start
-function CopMovement:sync_action_act_start(...)
-	sh_ensure_actions(self)
-
-	return sync_action_act_start_original(self, ...)
-end
-
-local sync_action_walk_nav_link_original = CopMovement.sync_action_walk_nav_link
-function CopMovement:sync_action_walk_nav_link(...)
-	sh_ensure_actions(self)
-
-	return sync_action_walk_nav_link_original(self, ...)
-end
-
-local sync_action_dodge_start_original = CopMovement.sync_action_dodge_start
-function CopMovement:sync_action_dodge_start(...)
-	sh_ensure_actions(self)
-
-	return sync_action_dodge_start_original(self, ...)
-end
-
--- [Karto] fix unitnetworkhandler crash when falling? I hope so.
-function CopMovement:sync_fall_position(pos, rot)
-	self._nr_synced = (self._nr_synced or 0) + 1
-
-	self:set_position(pos)
-	self:set_rotation(rot)
-
-	if self._nr_synced > 1 then
-		local death_action = self._active_actions[1]
-
-		if death_action and death_action:type() == "hurt" and death_action._ragdoll_freeze_clbk_id then
-			death_action._ragdoll_freeze_clbk_id = nil
-			death_action:_freeze_ragdoll()
-		end
-	end
-end
 
 -- Fix enemies playing the suppressed stand-to-crouch animation when shot even if they are already crouching
 local play_redirect_original = CopMovement.play_redirect
