@@ -114,7 +114,8 @@ function WeaponDescription.get_weapon_ammo_info(weapon_id, extra_ammo, total_amm
 	return ammo_max_per_clip, ammo_max, ammo_data
 end
 
-local get_skill_stats_original = WeaponDescription._get_skill_stats
+WeaponDescription._fray_get_skill_stats_original = WeaponDescription._fray_get_skill_stats_original or WeaponDescription._get_skill_stats
+local get_skill_stats_original = WeaponDescription._fray_get_skill_stats_original
 function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mods_stats, silencer, single_mod, auto_mod, blueprint)
 	local skill_stats = get_skill_stats_original(name, category, slot, base_stats, mods_stats, silencer, single_mod, auto_mod, blueprint)
 	local weapon_tweak = tweak_data.weapon[name]
