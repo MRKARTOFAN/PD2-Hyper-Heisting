@@ -27,8 +27,19 @@ Hooks:PostHook(IngameContractGui, "init", "hh_fray_ingame_contract_description",
 		return
 	end
 
-	local layout_move_y = text_panel:h() * 0.4 - tweak_data.menu.pd2_small_font_size - modifiers:bottom()
 	local modifier_top = modifiers:top()
+	local upper_bottom = 0
+	for _, child in ipairs(text_panel:children()) do
+		if child == modifiers then
+			break
+		end
+
+		upper_bottom = math.max(upper_bottom, child:bottom())
+	end
+
+	local font_size = tweak_data.menu.pd2_small_font_size - 3
+	local layout_top = text_panel:h() * 0.4 - font_size - modifiers:h()
+	local layout_move_y = math.max(layout_top, upper_bottom + 5) - modifier_top
 	for _, child in ipairs(text_panel:children()) do
 		if child:top() >= modifier_top or child:name() == "rewards_panel" then
 			child:move(0, layout_move_y)
@@ -46,7 +57,7 @@ Hooks:PostHook(IngameContractGui, "init", "hh_fray_ingame_contract_description",
 		blend_mode = "normal",
 		text = self:get_text("menu_fray_warning"),
 		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
+		font_size = font_size,
 		color = tweak_data.screen_colors.one_down
 	})
 
