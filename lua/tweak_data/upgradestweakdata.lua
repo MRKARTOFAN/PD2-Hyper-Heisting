@@ -418,7 +418,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 	self.max_total_cocaine_stacks = 600
 	self.max_cocaine_stacks_per_tick = 600
 	self.cocaine_stacks_convert_levels = {75, 75}
-	self.cocaine_stacks_dmg_absorption_value = 1
+	self.cocaine_stacks_dmg_absorption_value = 0.1
 	
 	--fuck you you piece of shit i'm not doing all this shit to make you function properly you fuck i hate your guts i hate you i hate you FUCK YOU
 	
