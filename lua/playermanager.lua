@@ -1126,8 +1126,8 @@ function PlayerManager:hh_maniac_damage()
 		if alive(player_unit) then
 			for _, enemy_data in pairs(managers.enemy:all_enemies()) do
 				local enemy = enemy_data.unit
-				local brain = alive(enemy) and enemy:brain()
-				local attention = brain and brain:attention_object()
+				local movement = alive(enemy) and enemy:movement()
+				local attention = movement and movement:attention()
 				if attention and attention.unit == player_unit then
 					delay = delay + 0.1
 				end
