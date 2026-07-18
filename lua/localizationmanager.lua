@@ -424,6 +424,9 @@
 		
 		["fray_toggle_suppression_title"] = "X-treme Visible Suppression!",
 		["fray_toggle_suppression_desc"] = "Adds a unique visual effect to your screen for when you are being suppressed by enemies!",
+
+		["fray_screenshakemult_title"] = "Screenshake Intensity",
+		["fray_screenshakemult_desc"] = "Change screenshake intensity if you feel it too much for you.",
 		
 		["fray_toggle_health_effect_title"] = "Low Health Visuals!",
 		["fray_toggle_health_effect_desc"] = "Adds a bloody screen border effect to indicate how low your health is! NOTE: Requires a heist restart to apply changes.",

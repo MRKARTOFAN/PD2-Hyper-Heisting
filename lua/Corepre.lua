@@ -13,6 +13,7 @@ PD2FRAY.settings = {
 	toggle_health_effect = true,
 	toggle_blurzonereduction = true,
 	toggle_noweirddof = false,
+	screenshakemult = 1,
 	first_launch = true
 }
 

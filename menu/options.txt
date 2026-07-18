@@ -29,6 +29,18 @@
 			"value" : "toggle_suppression"
 		},
 		{
+			"type" : "slider",
+			"id" : "fray_screenshakemult",
+			"title" : "fray_screenshakemult_title",
+			"description" : "fray_screenshakemult_desc",
+			"callback" : "callback_fray_screenshakemult",
+			"min" : "0.25",
+			"max" : "1",
+			"step" : "0.05",
+			"show_value" : "false",
+			"value" : "screenshakemult"
+		},
+		{
 			"type" : "toggle",
 			"id" : "fray_toggle_health_effect",
 			"title" : "fray_toggle_health_effect_title",
@@ -51,6 +63,6 @@
 			"description" : "fray_toggle_noweirddof_desc",
 			"callback" : "callback_fray_toggle_noweirddof",
 			"value" : "toggle_noweirddof"
-		},
+		}
 	]
 }

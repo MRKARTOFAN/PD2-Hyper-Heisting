@@ -76,10 +76,9 @@ function ModifiersManager:modify_value(id, value, ...)
 	local result = orig_modify(self,id,value,...)
 	value = tostring(value)
 	if id == "GroupAIStateBesiege:SpawningUnit" then 
-		local nss_detected = _G.PD2FRAY_NSS and _G.PD2FRAY_NSS_LEVEL == Global.level_data
 		local lvm = _G.PD2FRAY_LVM and _G.PD2FRAY_LVM_LEVEL == Global.level_data
 
-		if nss_detected or lvm or PD2FRAY_CHECK_NSS and PD2FRAY_CHECK_NSS() or PD2FRAY_CHECK_LVM and PD2FRAY_CHECK_LVM() then
+		if lvm or PD2FRAY_CHECK_LVM and PD2FRAY_CHECK_LVM() then
 			return trolliam_unit_table[value] or unit_table[value] or result
 		end
 

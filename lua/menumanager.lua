@@ -187,6 +187,10 @@ Hooks:Add("MenuManagerInitialize", "fray_initmenu", function(menu_manager)
 		PD2FRAY:ChangeSetting("toggle_suppression",item:value() == "on")
 		PD2FRAY.need_to_reset_visuals = true
 	end
+
+	MenuCallbackHandler.callback_fray_screenshakemult = function(self,item)
+		PD2FRAY:ChangeSetting("screenshakemult",tonumber(item:value()),true)
+	end
 	
 	MenuCallbackHandler.callback_fray_toggle_hhassault = function(self,item) --toggle
 		PD2FRAY:ChangeSetting("toggle_hhassault",item:value() == "on")
