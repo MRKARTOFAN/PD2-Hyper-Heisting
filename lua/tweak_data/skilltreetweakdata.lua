@@ -1173,6 +1173,24 @@ function SkillTreeTweakData:init(tweak_data)
 		"cooldown_armor_break_invulnerable"
 	}
 
+	self.specializations[10][1].upgrades = {
+		"temporary_hh_gambler_bonus"
+	}
+	self.specializations[10][3].upgrades = {
+		"temporary_loose_ammo_give_team"
+	}
+	self.specializations[10][5].upgrades = {
+		"player_hh_gambler_share"
+	}
+	self.specializations[10][7].upgrades = {
+		"player_hh_gambler_double",
+		"player_passive_health_multiplier_4"
+	}
+	self.specializations[10][9].upgrades = {
+		"player_passive_loot_drop_multiplier",
+		"player_hh_gambler_second"
+	}
+
 	self.specializations[11][1].upgrades = {
 		"player_hh_grinder_base"
 	}

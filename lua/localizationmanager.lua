@@ -557,9 +557,25 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 
 			["menu_deck17_9"] = "Push It To The Limit",
 			
-			["menu_deck10_3_desc"] = "When you pick up ammo, you trigger an ammo pickup for ##50%## of normal pickup to other players in your team.\n\nCannot occur more than once every ##5## seconds.\n\nYou gain ##10%## more health.",
+			["menu_deck10_1"] = "Medical Supplies",
+			["menu_deck10_1_desc"] = "Ammo packs you pick up grant one random bonus: restore ##20## health, restore ##20## armor, restore ##15## stamina, or gain ##5%## dodge for ##4## seconds.\n\nCannot occur more than once every ##3## seconds.",
+			["menu_deck10_1_short"] = "Ammo packs grant ##20## health or armor, ##15## stamina, or ##5%## dodge every ##3## seconds.",
 
-			["menu_deck10_5_desc"] = "When you get healed from picking up ammo packs, your teammates also get healed for ##50%## of the amount.\n\nYou gain ##5%## more health.",
+			["menu_deck10_3"] = "Ammo Give Out",
+			["menu_deck10_3_desc"] = "When you pick up ammo, other players in your team receive ##25%## of a normal ammo pickup.\n\nCannot occur more than once every ##5## seconds.",
+			["menu_deck10_3_short"] = "Ammo pickups give teammates ##25%## of a normal pickup every ##5## seconds.",
+
+			["menu_deck10_5"] = "Sharing is Caring",
+			["menu_deck10_5_desc"] = "When you gain a bonus from an ammo pack, your teammates gain the same bonus at ##50%## strength. Dodge duration is unchanged.",
+			["menu_deck10_5_short"] = "Teammates gain your ammo-pack bonuses at ##50%## strength.",
+
+			["menu_deck10_7"] = "Affordable Care Act",
+			["menu_deck10_7_desc"] = "Bonuses gained from ammo packs are increased by ##100%##.\n\nYou gain ##20%## more health.",
+			["menu_deck10_7_short"] = "Double ammo-pack bonuses and gain ##20%## more health.",
+
+			["menu_deck10_9"] = "Long Arm of the Crime",
+			["menu_deck10_9_desc"] = "Ammo packs grant a second independent random bonus at ##50%## strength. The same bonus can be rolled twice and stacks with itself.\n\nDeck Completion Bonus: Your chance of getting a higher quality item during a PAYDAY is increased by ##10%.##",
+			["menu_deck10_9_short"] = "Gain an independent half-strength second bonus. Duplicate bonuses stack.",
 			
 			--Grinder
 			["menu_deck17_3_desc"] = "You gain ##5%## more health.",
@@ -837,12 +853,12 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 
 			["menu_deck11_1_desc"] = "Your armor is fixed at ##1## and cannot be increased by skills.\n\nDamaging an enemy regenerates ##0.1## health every ##0.2## seconds for ##1## second. This effect stacks, with the stack cap set by equipped armor.",
 			["menu_deck11_1_short"] = "Armor is fixed at ##1##. Damage grants stacking health regeneration based on equipped armor tier.",
-			["menu_deck11_3_desc"] = "You gain ##30%## more health.\n\nKilling an enemy grants an additional heal stack.",
-			["menu_deck11_3_short"] = "Gain ##30%## health. Kills grant an extra heal stack.",
+			["menu_deck11_3_desc"] = "You gain ##15%## more health.\n\nKilling an enemy grants an additional heal stack.",
+			["menu_deck11_3_short"] = "Gain ##15%## health. Kills grant an extra heal stack.",
 			["menu_deck11_5_desc"] = "Scoring a headshot grants an additional heal stack.\n\nThis cannot occur more than once every ##3## seconds.",
 			["menu_deck11_5_short"] = "Headshots grant an extra heal stack every ##3## seconds.",
-			["menu_deck11_7_desc"] = "You gain an additional ##30%## more health.\n\nHeal duration is increased to ##2## seconds.",
-			["menu_deck11_7_short"] = "Gain another ##30%## health. Heal stacks last ##2## seconds.",
+			["menu_deck11_7_desc"] = "You gain an additional ##15%## more health.\n\nHeal duration is increased to ##2## seconds.",
+			["menu_deck11_7_short"] = "Gain another ##15%## health. Heal stacks last ##2## seconds.",
 			["menu_deck11_9_desc"] = "At maximum heal stacks, and for ##1.5## seconds after dropping them, gain ##0%## to ##30%## damage reduction based on equipped armor tier.",
 			["menu_deck11_9_short"] = "Maximum heal stacks grant armor-tier damage reduction, lingering for ##1.5## seconds.",
 			["menu_st_spec_11_desc"] = "Grinder trades armor for sustained healing. Deal damage to build short health-regeneration stacks, with stronger armor allowing more stacks.",

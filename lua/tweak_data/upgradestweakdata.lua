@@ -393,6 +393,30 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 		}
 	}
 
+	self.hh_gambler_bonuses = {
+		{name = "health", amount = 2},
+		{name = "stamina", amount = 15},
+		{name = "dodge", amount = 0.05},
+		{name = "armor", amount = 2}
+	}
+	self.hh_gambler_dodge_duration = 4
+	self.loose_ammo_give_team_ratio = 0.25
+	self.values.temporary.hh_gambler_bonus = {
+		{true, 3}
+	}
+	self.definitions.temporary_hh_gambler_bonus = {
+		name_id = "menu_deck10_1",
+		category = "temporary",
+		upgrade = {
+			value = 1,
+			upgrade = "hh_gambler_bonus",
+			category = "temporary"
+		}
+	}
+	add_perk_upgrade("hh_gambler_share", true)
+	add_perk_upgrade("hh_gambler_double", true)
+	add_perk_upgrade("hh_gambler_second", true)
+
 	add_perk_upgrade("hh_grinder_base", true)
 	add_perk_upgrade("hh_grinder_health_1", true)
 	add_perk_upgrade("hh_grinder_headshot", true)

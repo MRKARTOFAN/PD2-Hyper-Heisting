@@ -295,11 +295,11 @@ function PlayerManager:max_health()
 	end
 
 	if self:has_category_upgrade("player", "hh_grinder_health_1") then
-		bonus = bonus + 0.3
+		bonus = bonus + 0.15
 	end
 
 	if self:has_category_upgrade("player", "hh_grinder_health_2") then
-		bonus = bonus + 0.3
+		bonus = bonus + 0.15
 	end
 
 	return health * (1 + bonus)
