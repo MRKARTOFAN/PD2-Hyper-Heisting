@@ -355,10 +355,6 @@ function PlayerStandard:_get_total_max_speed()
 		multiplier = multiplier * 1.25
 	end
 	
-	if managers.player:has_category_upgrade("player", "perkdeck_movespeed_mult") then
-		multiplier = multiplier * managers.player:upgrade_value("player", "perkdeck_movespeed_mult", 1)
-	end
-	
 	local final_speed = movement_speed * multiplier
 	
 	if self._fall_damage_slow_t then

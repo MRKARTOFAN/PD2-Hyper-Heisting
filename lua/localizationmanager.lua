@@ -515,7 +515,8 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			
 			--Hacker
 			["menu_deck21_3_desc"] = "Your maximum health is increased by ##+10%##.",
-			["menu_deck21_5_desc"] = "Killing at least ##1## enemy while the feedback or jamming effect is active will grant ##+15%## dodge for ##30## seconds.",
+			["menu_deck21_5_desc"] = "Killing an enemy while the feedback effect is active restores ##20## health.",
+			["menu_deck21_7_desc"] = "Killing at least ##1## enemy while the feedback or jamming effect is active grants ##+15%## dodge for ##30## seconds.",
 		
 			--Anarchist
 			["menu_deck15_1"] = "Warrior Sound",
@@ -739,6 +740,7 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			["menu_deckall_2_desc"] = "You gain ##+50%## resistance to suppression.",
 			
 			["menu_deckall_6_desc"] = "Unlocks the ##Armor Bag## equipment for you to use.\n\nThe ##Armor Bag## can be used to change your armor during a heist.",
+			["menu_deckall_8_desc"] = "Your interaction speed with Doctor Bags is increased by ##20%##.",
 			
 			-- weapon stuff below
 			["bm_GEN_speed_strap"] = "Gonzalez Magazine",

@@ -1273,7 +1273,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 	self.weapon_movement_penalty.lmg = 0.8
 	self.weapon_movement_penalty.minigun = 0.6
 	
-	self.definitions.player_damage_dampener_outnumbered_strong = { --Infiltrator/Sociopath movement speed buff stuff
+	self.definitions.player_hh_perkdeck_movespeed_1 = {
 		name_id = "menu_player_infilpath_1",
 		category = "feature",
 		upgrade = {
@@ -1282,7 +1282,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			category = "player"
 		}
 	}
-	self.definitions.player_damage_dampener_close_contact_1 = {
+	self.definitions.player_hh_perkdeck_movespeed_2 = {
 		name_id = "menu_player_infilpath_2",
 		category = "feature",
 		upgrade = {
@@ -1291,7 +1291,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			category = "player"
 		}
 	}
-	self.definitions.player_damage_dampener_close_contact_2 = {
+	self.definitions.player_hh_perkdeck_movespeed_3 = {
 		name_id = "menu_player_infilpath_3",
 		category = "feature",
 		upgrade = {
@@ -1300,7 +1300,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 			category = "player"
 		}
 	}
-	self.definitions.player_damage_dampener_close_contact_3 = {
+	self.definitions.player_hh_perkdeck_movespeed_4 = {
 		name_id = "menu_player_infilpath_4",
 		category = "feature",
 		upgrade = {
@@ -1383,7 +1383,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 	
 	self.values.player.dodge_shot_gain = {
 		{
-			0.05,
+			0.1,
 			6
 		}
 	}

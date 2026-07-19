@@ -950,8 +950,7 @@ function SkillTreeTweakData:init(tweak_data)
 		desc_id = "menu_deckall_6_desc",
 		name_id = "menu_deckall_6",
 		upgrades = {
-			"armor_kit",
-			"player_pick_up_ammo_multiplier"
+			"armor_kit"
 		},
 		icon_xy = {
 			5,
@@ -963,7 +962,6 @@ function SkillTreeTweakData:init(tweak_data)
 		desc_id = "menu_deckall_8_desc",
 		name_id = "menu_deckall_8",
 		upgrades = {
-			"weapon_passive_damage_multiplier",
 			"passive_doctor_bag_interaction_speed_multiplier"
 		},
 		icon_xy = {
@@ -1171,6 +1169,30 @@ function SkillTreeTweakData:init(tweak_data)
 	self.specializations[3][9].upgrades = {
 		"player_passive_loot_drop_multiplier",
 		"cooldown_armor_break_invulnerable"
+	}
+
+	self.specializations[8][1].upgrades = {
+		"player_hh_perkdeck_movespeed_1",
+		"melee_stacking_hit_damage_multiplier_1"
+	}
+	self.specializations[8][3].upgrades = {
+		"player_hh_perkdeck_movespeed_2"
+	}
+	self.specializations[8][5].upgrades = {
+		"player_hh_perkdeck_movespeed_3",
+		"melee_stacking_hit_expire_t"
+	}
+	self.specializations[8][7].upgrades = {
+		"player_hh_perkdeck_movespeed_4"
+	}
+
+	self.specializations[9][1].upgrades = {
+		"player_hh_perkdeck_movespeed_1",
+		"melee_stacking_hit_damage_multiplier_1"
+	}
+	self.specializations[9][5].upgrades = {
+		"player_melee_kill_life_leech",
+		"player_hh_perkdeck_movespeed_2"
 	}
 
 	self.specializations[10][1].upgrades = {
