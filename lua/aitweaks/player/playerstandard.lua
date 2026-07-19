@@ -2138,6 +2138,18 @@ function PlayerStandard:_check_action_interact(t, input)
 	return new_action
 end
 
+local function spread_inspire_panic(unit)
+	local enemies = World:find_units_quick("sphere", unit:movement():m_pos(), tweak_data.upgrades.inspire_panic_range, managers.slot:get_mask("enemies"))
+
+	for _, enemy in ipairs(enemies) do
+		local damage_ext = alive(enemy) and enemy:character_damage()
+
+		if damage_ext and not damage_ext:dead() then
+			damage_ext:build_suppression(0, -1)
+		end
+	end
+end
+
 function PlayerStandard:_start_action_intimidate(t, secondary)
 	if not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t then
 		local skip_alert = managers.groupai:state():whisper_mode()
@@ -2217,6 +2229,7 @@ function PlayerStandard:_start_action_intimidate(t, secondary)
 
 			if math.random() < self._ext_movement:rally_skill_data().revive_chance then
 				prime_target.unit:interaction():interact(self._unit)
+				spread_inspire_panic(prime_target.unit)
 			end
 
 			self._ext_movement:rally_skill_data().morale_boost_delay_t = managers.player:player_timer():time() + (self._ext_movement:rally_skill_data().morale_boost_cooldown_t or 3.5)

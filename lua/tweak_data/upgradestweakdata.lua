@@ -181,9 +181,10 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 	self.values.cooldown.long_dis_revive = {
 		{
 			1,
-			30
+			60
 		}
 	}
+	self.inspire_panic_range = 900
 	self.morale_boost_speed_bonus = 1.3
 	self.morale_boost_reload_speed_bonus = 1.3
 	self.morale_boost_suppression_resistance = 0.5

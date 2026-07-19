@@ -600,7 +600,7 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			["menu_medic_2x_beta"] = "Vitamins",
 			["menu_medic_2x_beta_desc"] = "BASIC: ##$basic##\nYour doctor bags now have ##2## charges.\n\nACE: ##$pro##\nYou receive ##+25%## healing from all sources.\n\nYour Doctor Bags now grant the user the ability to resist one instance of ##lethal damage##.\n\n##The container's label has very visible quotation marks.##",
 			
-			["menu_inspire_beta_desc"] = "BASIC: ##$basic##\nShouting at your teammates will increase their movement, reload and interaction speed by ##30%## and enable them to resist suppression for ##10## seconds. \n\nACE: ##$pro##\nThere is a ##100%## chance that you can revive crew members at a distance of up to ##9## meters by shouting at them. This cannot occur more than once every ##30## seconds.",
+			["menu_inspire_beta_desc"] = "BASIC: ##$basic##\nShouting at your teammates will increase their movement, reload and interaction speed by ##30%## and enable them to resist suppression for ##10## seconds. \n\nACE: ##$pro##\nYou can revive crew members within ##9## meters by shouting at them. The revived player spreads ##Panic## among enemies within ##9## meters.\n\nThis cannot occur more than once every ##60## seconds.",
 			
 			["menu_martial_arts_beta"] = "Martial Master",			
 			["menu_martial_arts_beta_desc"] = "BASIC:##$basic##\nYou take ##50%## less damage from all melee attacks.\n\nACE: ##$pro##\nYou are ##100%## more likely to knock down enemies with a melee strike.",
