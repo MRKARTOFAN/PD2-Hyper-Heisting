@@ -10,6 +10,7 @@
 		["bm_grenade_sticky_grenade"] = "Impact Grenade",
 		["bm_grenade_sticky_grenade_desc"] = "A grenade that explode on impact with the surfaces or enemies.",
 		["bm_menu_pickup"] = "Ammo Pickup",
+		["bm_menu_hh_grinder_max_stacks"] = "The maximum number of health stacks that can be stored from the Grinder perk deck:\n$amount",
 		
 		["fraymenu_hold_to_jump"] = "AUTO-JUMP",
 		["fraymenu_hold_to_jump_help"] = "Allow consecutive jumps by simply holding the jump button.",

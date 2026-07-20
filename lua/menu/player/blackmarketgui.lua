@@ -311,6 +311,38 @@ function BlackMarketGui:_get_armor_stats(name)
 	return base_stats, mods_stats, skill_stats
 end
 
+Hooks:PostHook(BlackMarketGui, "update_info_text", "hh_show_grinder_stack_cap", function(self)
+	local tab = self._tabs and self._tabs[self._selected]
+	local identifier = tab and tab._data and tab._data.identifier
+	local slot_data = self._slot_data
+
+	if is_steam_inventory(self) or identifier ~= self.identifiers.armor or not slot_data or not slot_data.unlocked or not managers.player:has_category_upgrade("player", "hh_grinder_base") then
+		return
+	end
+
+	local armor_data = tweak_data.blackmarket.armors[slot_data.name]
+	local stack_cap = math.max(1, armor_data and armor_data.upgrade_level or 1)
+	local info_text = self._info_texts and self._info_texts[2]
+
+	if not alive(info_text) then
+		return
+	end
+
+	self:set_info_text(2, managers.localization:to_upper_text("bm_menu_hh_grinder_max_stacks", {
+		amount = stack_cap
+	}))
+
+	local _, _, _, text_height = info_text:text_rect()
+
+	info_text:set_h(text_height)
+
+	if slot_data.comparision_data and alive(self._stats_text_modslist) then
+		info_text:set_world_y(self._stats_text_modslist:world_top())
+	else
+		info_text:set_top(info_text:top() + 20)
+	end
+end)
+
 local set_info_text_original = BlackMarketGui.set_info_text
 function BlackMarketGui:set_info_text(id, text, resource_color)
 	local tab = self._tabs and self._tabs[self._selected]
