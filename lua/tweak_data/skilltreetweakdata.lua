@@ -1214,7 +1214,8 @@ function SkillTreeTweakData:init(tweak_data)
 	}
 
 	self.specializations[11][1].upgrades = {
-		"player_hh_grinder_base"
+		"player_hh_grinder_base",
+		"player_damage_to_hot_1"
 	}
 	self.specializations[11][3].upgrades = {
 		"player_hh_grinder_health_1"
@@ -1223,7 +1224,8 @@ function SkillTreeTweakData:init(tweak_data)
 		"player_hh_grinder_headshot"
 	}
 	self.specializations[11][7].upgrades = {
-		"player_hh_grinder_health_2"
+		"player_hh_grinder_health_2",
+		"player_damage_to_hot_extra_ticks"
 	}
 	self.specializations[11][9].upgrades = {
 		"player_passive_loot_drop_multiplier",

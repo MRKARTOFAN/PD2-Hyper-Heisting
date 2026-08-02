@@ -618,7 +618,7 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	end
 
 	if self:has_category_upgrade("player", "hh_grinder_health_1") then
-		damage_ext:add_hh_grinder_stack()
+		damage_ext:add_damage_to_hot()
 	end
 
 	if self:has_category_upgrade("player", "hh_biker_base") and (not self._hh_biker_lockout_t or self._hh_biker_lockout_t <= t) then
@@ -935,7 +935,7 @@ function PlayerManager:on_headshot_dealt()
 	end
 
 	if self:has_category_upgrade("player", "hh_grinder_headshot") and (not self._hh_grinder_headshot_t or self._hh_grinder_headshot_t <= t) then
-		damage_ext:add_hh_grinder_stack()
+		damage_ext:add_damage_to_hot()
 		self._hh_grinder_headshot_t = t + 3
 	end
 
@@ -976,26 +976,6 @@ function PlayerManager:do_comeback_blast()
 		end
 	end
 	
-end
-
-local _hh_on_damage_dealt_original = PlayerManager.on_damage_dealt
-function PlayerManager:on_damage_dealt(unit, damage_info)
-	_hh_on_damage_dealt_original(self, unit, damage_info)
-
-	if not self:has_category_upgrade("player", "hh_grinder_base") then
-		return
-	end
-
-	local player_unit = self:player_unit()
-	if not alive(player_unit) or not damage_info or damage_info.attacker_unit ~= player_unit or not alive(unit) or not unit:base() then
-		return
-	end
-
-	if CopDamage.is_civilian(unit:base()._tweak_table) then
-		return
-	end
-
-	player_unit:character_damage():add_hh_grinder_stack()
 end
 
 function PlayerManager:hh_maniac_damage()

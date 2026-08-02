@@ -2386,25 +2386,17 @@ function PlayerDamage:hh_grinder_stack_cap()
 	return math.max(1, armor_data and armor_data.upgrade_level or 1)
 end
 
-function PlayerDamage:add_hh_grinder_stack()
-	if self:need_revive() or self:dead() then
-		return
+local _hh_got_max_doh_stacks_original = PlayerDamage.got_max_doh_stacks
+function PlayerDamage:got_max_doh_stacks()
+	if managers.player:has_category_upgrade("player", "hh_grinder_base") then
+		return #self._damage_to_hot_stack >= self:hh_grinder_stack_cap()
 	end
 
-	self._hh_grinder_stacks = self._hh_grinder_stacks or {}
-	if #self._hh_grinder_stacks >= self:hh_grinder_stack_cap() then
-		return
-	end
-
-	local duration = managers.player:has_category_upgrade("player", "hh_grinder_health_2") and 2 or 1
-	table.insert(self._hh_grinder_stacks, {
-		next_tick = TimerManager:game():time() + 0.2,
-		ticks_left = duration / 0.2
-	})
+	return _hh_got_max_doh_stacks_original(self)
 end
 
 function PlayerDamage:hh_grinder_damage_reduction_active()
-	local stacks = self._hh_grinder_stacks or {}
+	local stacks = self._damage_to_hot_stack or {}
 	if #stacks >= self:hh_grinder_stack_cap() then
 		return true
 	end
@@ -2412,32 +2404,24 @@ function PlayerDamage:hh_grinder_damage_reduction_active()
 	return self._hh_grinder_max_t and self._hh_grinder_max_t > TimerManager:game():time() or false
 end
 
-local _hh_update_original = PlayerDamage.update
-function PlayerDamage:update(unit, t, dt)
-	_hh_update_original(self, unit, t, dt)
-
+Hooks:PostHook(PlayerDamage, "add_damage_to_hot", "fray_grinder_max_stack_linger", function(self)
 	if not managers.player:has_category_upgrade("player", "hh_grinder_base") then
 		return
 	end
 
-	local stacks = self._hh_grinder_stacks or {}
-	if #stacks >= self:hh_grinder_stack_cap() then
-		self._hh_grinder_max_t = t + 1.5
+	local stacks = self._damage_to_hot_stack or {}
+	if #stacks < self:hh_grinder_stack_cap() then
+		return
 	end
 
-	for index = #stacks, 1, -1 do
-		local stack = stacks[index]
-		while stack.ticks_left > 0 and stack.next_tick <= t do
-			self:restore_health(0.1 / (tweak_data.gui.stats_present_multiplier or 10), true)
-			stack.ticks_left = stack.ticks_left - 1
-			stack.next_tick = stack.next_tick + 0.2
-		end
-
-		if stack.ticks_left <= 0 then
-			table.remove(stacks, index)
-		end
+	local tick_time = self._doh_data.tick_time or 1
+	local expires_t = math.huge
+	for _, stack in ipairs(stacks) do
+		expires_t = math.min(expires_t, stack.next_tick + math.max(0, stack.ticks_left - 1) * tick_time)
 	end
-end
+
+	self._hh_grinder_max_t = expires_t + 1.5
+end)
 
 local _hh_calc_armor_damage_original = PlayerDamage._calc_armor_damage
 function PlayerDamage:_calc_armor_damage(attack_data)

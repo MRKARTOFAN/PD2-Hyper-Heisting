@@ -423,6 +423,19 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 	add_perk_upgrade("hh_grinder_headshot", true)
 	add_perk_upgrade("hh_grinder_health_2", true)
 	add_perk_upgrade("hh_grinder_reduction", true)
+	self.damage_to_hot_data.tick_time = 0.2
+	self.damage_to_hot_data.total_ticks = 5
+	self.damage_to_hot_data.stacking_cooldown = 0
+	self.damage_to_hot_data.armors_allowed = {
+		"level_1",
+		"level_2",
+		"level_3",
+		"level_4",
+		"level_5",
+		"level_6",
+		"level_7"
+	}
+	self.values.player.damage_to_hot_extra_ticks[1] = 5
 
 	add_perk_upgrade("hh_maniac_base", true)
 	add_perk_upgrade("hh_maniac_delay", true)

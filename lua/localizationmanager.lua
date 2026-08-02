@@ -854,7 +854,7 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			["menu_deck3_9_desc"] = "When your armor is depleted, you are immune to health damage for ##2## seconds.\n\nThis cannot occur more than once every ##60## seconds.",
 			["menu_deck3_9_short"] = "Armor break grants ##2## seconds of health-damage immunity every ##60## seconds.",
 
-			["menu_deck11_1_desc"] = "Your armor is fixed at ##1## and cannot be increased by skills.\n\nDamaging an enemy regenerates ##0.1## health every ##0.2## seconds for ##1## second. This effect stacks, with the stack cap set by equipped armor.",
+			["menu_deck11_1_desc"] = "Your armor is fixed at ##1## and cannot be increased by skills.\n\nDamaging an enemy regenerates ##1## health every ##0.2## seconds for ##1## second. This effect stacks, with the stack cap set by equipped armor.",
 			["menu_deck11_1_short"] = "Armor is fixed at ##1##. Damage grants stacking health regeneration based on equipped armor tier.",
 			["menu_deck11_3_desc"] = "You gain ##15%## more health.\n\nKilling an enemy grants an additional heal stack.",
 			["menu_deck11_3_short"] = "Gain ##15%## health. Kills grant an extra heal stack.",

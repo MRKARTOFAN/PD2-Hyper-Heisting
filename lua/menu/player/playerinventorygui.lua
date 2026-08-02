@@ -77,6 +77,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 
 	base_stats.health.value = health_base * stats_multiplier
 	skill_stats.health.value = health_skill * stats_multiplier
+	skill_stats.health.skill_in_effect = health_skill ~= 0
 
 	local movement_base = tweak_data.player.movement_state.standard.movement.speed.RUNNING_MAX * 1.1 / 100
 	local movement_penalty = managers.player:body_armor_value("movement", upgrade_level)
