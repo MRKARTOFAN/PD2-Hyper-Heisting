@@ -1,6 +1,6 @@
 local ids_unit = Idstring("unit")
 
-local shai_custom_units = {
+local fray_custom_units = {
 	"units/pd2_dlc_bex/characters/ene_bex_ninja_c45/ene_bex_ninja_c45",
 	"units/pd2_dlc_bex/characters/ene_medic_federale_r870_hh/ene_medic_federale_r870_hh",
 	"units/pd2_dlc_bex/characters/ene_medic_federale_rifle_hh/ene_medic_federale_rifle_hh",
@@ -34,10 +34,17 @@ local shai_custom_units = {
 	"units/pd2_mod_psc/characters/ene_murkywater_medic_r870/ene_murkywater_medic_r870"
 }
 
-Hooks:PostHook(DynamicResourceManager, "preload_units", "shai_preload_custom_units", function(self)
+local fray_custom_weapon_units = {
+	"units/pd2_dlc_gitgud/weapons/wpn_npc_m4_(cooler)/wpn_npc_m4_(cooler)",
+	"units/pd2_dlc_gitgud/weapons/wpn_npc_s553/wpn_npc_s553",
+	"units/pd2_dlc_gitgud/weapons/wpn_npc_lazer/wpn_npc_lazer",
+	"units/pd2_dlc_gitgud/weapons/wpn_npc_blazter/wpn_npc_blazter"
+}
+
+Hooks:PostHook(DynamicResourceManager, "preload_units", "fray_preload_custom_units", function(self)
 	local dyn_package = self.DYN_RESOURCES_PACKAGE
 
-	for _, path in ipairs(shai_custom_units) do
+	for _, path in ipairs(fray_custom_units) do
 		local unit = Idstring(path)
 		if PackageManager:has(ids_unit, unit) and not self:has_resource(ids_unit, unit, dyn_package) then
 			self:load(ids_unit, unit, dyn_package)
@@ -46,6 +53,13 @@ Hooks:PostHook(DynamicResourceManager, "preload_units", "shai_preload_custom_uni
 		local husk = Idstring(path .. "_husk")
 		if PackageManager:has(ids_unit, husk) and not self:has_resource(ids_unit, husk, dyn_package) then
 			self:load(ids_unit, husk, dyn_package)
+		end
+	end
+
+	for _, path in ipairs(fray_custom_weapon_units) do
+		local unit = Idstring(path)
+		if PackageManager:has(ids_unit, unit) and not self:has_resource(ids_unit, unit, dyn_package) then
+			self:load(ids_unit, unit, dyn_package)
 		end
 	end
 end)

@@ -1,4 +1,4 @@
-Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", function(self, difficulty_index)
+Hooks:PostHook(GroupAITweakData, "_init_task_data", "fray_grenade_settings", function(self, difficulty_index)
 	local f = math.max(0, difficulty_index - 2) / 6
 	self.smoke_grenade_timeout = { 25, 35 }
 	self.smoke_grenade_lifetime = math.lerp(9, 15, f)
@@ -117,7 +117,7 @@ Hooks:PostHook(GroupAITweakData, "_init_task_data", "shai_grenade_settings", fun
 end)
 
 -- Special unit spawn limits
-Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "shai_special_limits", function(self, difficulty_index)
+Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits", function(self, difficulty_index)
 	local limits_shield = { 0, 2, 2, 3, 3, 4, 4, 5 }
 	local limits_medic  = { 0, 0, 0, 0, 1, 2, 3, 4 }
 	local limits_taser  = { 0, 0, 1, 1, 2, 2, 3, 3 }
@@ -878,7 +878,7 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "shai_special_limits",
 	end
 end)
 
-Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups", function(self, difficulty_index)
+Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "fray_spawn_groups", function(self, difficulty_index)
 	local f = math.max(0, difficulty_index - 2) / 6
 
 	-- Tactics used by spawn groups
@@ -1081,7 +1081,7 @@ Hooks:PostHook(GroupAITweakData, "_init_enemy_spawn_groups", "shai_spawn_groups"
 		}
 	}
 end)
-Hooks:PostHook(GroupAITweakData, "_init_chatter_data", "shai_chatter_settings", function(self, difficulty_index)
+Hooks:PostHook(GroupAITweakData, "_init_chatter_data", "fray_chatter_settings", function(self, difficulty_index)
 	if self.enemy_chatter.go_go then
 		self.enemy_chatter.push = clone(self.enemy_chatter.go_go)
 		self.enemy_chatter.push.queue = "pus"

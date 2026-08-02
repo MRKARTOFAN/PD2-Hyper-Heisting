@@ -5,13 +5,13 @@ local _activate_original = QuickSmokeGrenade._activate
 local _activate_normal_original = QuickSmokeGrenade.activate
 local _activate_immediately_original = QuickSmokeGrenade.activate_immediately
 
-local function shai_hh_smoke_effect()
+local function fray_hh_smoke_effect()
 	local diff_index = tweak_data:difficulty_to_index(Global.game_settings.difficulty)
 
 	return diff_index <= 7 and "effects/pd2_mod_hh/particles/weapons/explosion/smoke_hh_complex" or "effects/pd2_mod_hh/particles/weapons/explosion/smoke_hh_anarchy"
 end
 
-local function shai_ground_smoke_unit(unit, preferred_pos)
+local function fray_ground_smoke_unit(unit, preferred_pos)
 	if not alive(unit) then
 		return
 	end
@@ -48,31 +48,31 @@ local function shai_ground_smoke_unit(unit, preferred_pos)
 end
 
 function QuickSmokeGrenade:activate(position, duration)
-	shai_ground_smoke_unit(self._unit, position)
+	fray_ground_smoke_unit(self._unit, position)
 
 	local result = _activate_normal_original(self, position, duration)
 
-	shai_ground_smoke_unit(self._unit, position)
+	fray_ground_smoke_unit(self._unit, position)
 
 	return result
 end
 
 function QuickSmokeGrenade:activate_immediately(position, duration)
-	shai_ground_smoke_unit(self._unit, position)
+	fray_ground_smoke_unit(self._unit, position)
 
 	local result = _activate_immediately_original(self, position, duration)
 
-	shai_ground_smoke_unit(self._unit, position)
+	fray_ground_smoke_unit(self._unit, position)
 
 	return result
 end
 
 function QuickSmokeGrenade:_activate(state, timer, position, duration)
-	shai_ground_smoke_unit(self._unit, position)
+	fray_ground_smoke_unit(self._unit, position)
 
 	local result = _activate_original(self, state, timer, position, duration)
 
-	shai_ground_smoke_unit(self._unit, position)
+	fray_ground_smoke_unit(self._unit, position)
 
 	return result
 end
@@ -85,7 +85,7 @@ function QuickSmokeGrenade:_play_sound_and_effects(...)
 	end
 
 	if self._state == 1 then
-		shai_ground_smoke_unit(self._unit, self._shoot_position)
+		fray_ground_smoke_unit(self._unit, self._shoot_position)
 
 		if self._shoot_position then
 			local sound_source = SoundDevice:create_source("grenade_fire_source")
@@ -94,7 +94,7 @@ function QuickSmokeGrenade:_play_sound_and_effects(...)
 			sound_source:post_event("grenade_gas_npc_fire")
 		end
 	elseif self._state == 2 then
-		shai_ground_smoke_unit(self._unit, self._unit:position())
+		fray_ground_smoke_unit(self._unit, self._unit:position())
 
 		if self._shoot_position then
 			self._unit:m_position(tmp_vec)
@@ -113,10 +113,10 @@ function QuickSmokeGrenade:_play_sound_and_effects(...)
 			self._unit:sound_source():post_event("grenade_gas_bounce")
 		end
 	elseif self._state == 3 then
-		shai_ground_smoke_unit(self._unit, self._unit:position())
+		fray_ground_smoke_unit(self._unit, self._unit:position())
 		self._unit:set_visible(true)
 	elseif self._state == 4 then
-		shai_ground_smoke_unit(self._unit, self._unit:position())
+		fray_ground_smoke_unit(self._unit, self._unit:position())
 
 		World:effect_manager():spawn({
 			effect = Idstring("effects/particles/explosions/explosion_smoke_grenade"),
@@ -125,7 +125,7 @@ function QuickSmokeGrenade:_play_sound_and_effects(...)
 		})
 
 		self._smoke_effect = World:effect_manager():spawn({
-			effect = Idstring(shai_hh_smoke_effect()),
+			effect = Idstring(fray_hh_smoke_effect()),
 			parent = self._unit:orientation_object()
 		})
 
