@@ -126,7 +126,9 @@ Hooks:PostHook(LevelsTweakData, "init", "hh_level_tweak_init", function(self)
 	self.rvd2.teams = hh_rvd_teams()
 
 	for level_id, packages in pairs(hh_level_packages) do
-		self[level_id].package = packages
+		if self[level_id] then
+			self[level_id].package = packages
+		end
 	end
 
 	self.shoutout_raid.ai_group_type = murkywater

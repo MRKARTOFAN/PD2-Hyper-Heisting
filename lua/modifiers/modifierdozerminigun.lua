@@ -13,7 +13,7 @@ function ModifierDozerMinigun:init(data)
 	
 	local unit_name_medic = Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic")
 	local unit_name_murkmedic = Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_medic/ene_murkywater_bulldozer_medic")
-	local unit_name_federalesmed = Idstring("units/pd2_dlc_mad/characters/ene_akan_dozer_medic/ene_akan_dozer_medic")
+	local unit_name_federalesmed = Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_medic_policia_federale/ene_swat_dozer_medic_policia_federale")
 	
 	table.insert(unit_types.america, unit_name)
 	table.insert(unit_types.russia, unit_name)
@@ -24,7 +24,5 @@ function ModifierDozerMinigun:init(data)
 	table.insert(unit_types.federales, unit_name_jjgatlingman)
 	table.insert(unit_types.federales, unit_name_federalesmed)
 	table.insert(unit_types.shared, unit_name_murker)
-	table.insert(unit_types.shared, unit_name_murkmedic)	
-	table.insert(unit_types.shared, unit_name_murker)
-	table.insert(unit_types.shared, unit_name_murkmedic)		
+	table.insert(unit_types.shared, unit_name_murkmedic)
 end

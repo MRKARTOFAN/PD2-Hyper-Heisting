@@ -2,7 +2,7 @@ Hooks:PostHook(BlackMarketTweakData, "_init_textures", "bmtsyncshit", function(s
 		self.textures.truthrunes = {
 			name_id = "pattern_truthrunes_title",
 			pcs = {},
-			texture = "patterns/真_fv",
+			texture = "patterns/truth_runes_fv",
 			value = 0,
 			global_value = "hyperheist"
 		}

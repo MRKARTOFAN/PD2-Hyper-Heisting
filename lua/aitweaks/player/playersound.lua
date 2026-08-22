@@ -1,9 +1,9 @@
-Hooks:PostHook(PlayerSound, "init" , "init_whiz_by_sources" , function(self)
+Hooks:PostHook(PlayerSound, "init" , "init_whiz_by_sources" , function(self, unit)
 	self:_init_whiz_by_sources()
-end)
 
-Hooks:PreHook(PlayerSound, "destroy" , "destroy_whiz_by_sources" , function(self)
-	self:_destroy_whiz_by_sources()
+	if self._whiz_by_sounds then
+		unit:base():add_destroy_listener("fray_player_sound_whiz_by", callback(self, self, "_destroy_whiz_by_sources"))
+	end
 end)
 
 local nr_whiz_by_sound_sources = 30

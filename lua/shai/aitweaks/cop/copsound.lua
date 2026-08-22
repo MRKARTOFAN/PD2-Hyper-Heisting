@@ -95,7 +95,19 @@ Hooks:PreHook(CopSound, "init", "sh_init", function (self)
 	end
 end)
 
-Hooks:OverrideFunction(CopSound, "say", function (self, sound_name, sync, skip_prefix, important)
+function CopSound:_destroy_fray_custom_voice()
+	HHStopCustomVoice(self)
+end
+
+Hooks:PostHook(CopSound, "init", "fray_custom_voice_destroy_listener", function (self, unit)
+	local base_ext = unit and unit:base()
+
+	if base_ext and base_ext.add_destroy_listener then
+		base_ext:add_destroy_listener("fray_cop_sound_custom_voice", callback(self, self, "_destroy_fray_custom_voice"))
+	end
+end)
+
+Hooks:OverrideFunction(CopSound, "say", function (self, sound_name, sync, skip_prefix, important, callback)
 	if FRAYPlayCustomVoice(self, sound_name, important) then
 		return
 	end
@@ -116,6 +128,14 @@ Hooks:OverrideFunction(CopSound, "say", function (self, sound_name, sync, skip_p
 		self._unit:network():send("say", event_id)
 	end
 
-	self._last_speech = self:_play(full_sound or event_id, nil, self._speak_done_callback)
+	local doneCallback = self._speak_done_callback
+	if callback then
+		doneCallback = function(...)
+			self._speak_done_callback(...)
+			return callback(...)
+		end
+	end
+
+	self._last_speech = self:_play(full_sound or event_id, nil, doneCallback)
 	self._speak_expire_t = self._last_speech and TimerManager:game():time() + 10 or 0
 end)

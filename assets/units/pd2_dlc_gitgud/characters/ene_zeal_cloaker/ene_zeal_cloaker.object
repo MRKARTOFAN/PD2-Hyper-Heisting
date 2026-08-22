@@ -193,66 +193,6 @@
 
 	<decal_surfaces default_material="flesh" />
 
-	<effects>
-		<effect_spawner name="smoke_24_blue" enabled="true" object="Hips" effect="effects/particles/custom/smoke_distorted_calm" />
-		<effect_spawner name="smoke_01_blue" enabled="true" object="Spine" effect="effects/particles/custom/smoke_distorted_calm" />
-		<effect_spawner name="smoke_02_blue" enabled="true" object="Spine1" effect="effects/particles/custom/smoke_distorted_calm" />
-		<effect_spawner name="smoke_03_blue" enabled="true" object="Spine2" effect="effects/particles/custom/smoke_distorted_calm" />
-		<effect_spawner name="smoke_04_blue" enabled="true" object="Neck" effect="effects/particles/custom/smoke_distorted_calm" />
-		<effect_spawner name="smoke_05_blue" enabled="true" object="Head" effect="effects/particles/custom/smoke_distorted_calm" />
-		<effect_spawner name="smoke_06_blue" enabled="true" object="LeftShoulder" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_07_blue" enabled="true" object="LeftArm" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_08_blue" enabled="true" object="LeftForeArm" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_09_blue" enabled="true" object="LeftForeArmRoll" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_10_blue" enabled="true" object="LeftHand" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_trail_04_blue" enabled="true" object="LeftHand" effect="effects/particles/custom/smoke_trail_small_calm" />
-		<effect_spawner name="smoke_11_blue" enabled="true" object="RightShoulder" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_12_blue" enabled="true" object="RightArm" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_13_blue" enabled="true" object="RightForeArm" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_14_blue" enabled="true" object="RightForeArmRoll" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_15_blue" enabled="true" object="RightHand" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_trail_03_blue" enabled="true" object="RightHand" effect="effects/particles/custom/smoke_trail_small_calm" />
-		<effect_spawner name="smoke_16_blue" enabled="true" object="LeftUpLeg" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_17_blue" enabled="true" object="LeftLeg" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_18_blue" enabled="true" object="LeftFoot" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_trail_02_blue" enabled="true" object="LeftFoot" effect="effects/particles/custom/smoke_trail_small_calm" />
-		<effect_spawner name="smoke_19_blue" enabled="true" object="LeftToeBase" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_20_blue" enabled="true" object="RightUpLeg" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_21_blue" enabled="true" object="RightLeg" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_22_blue" enabled="true" object="RightFoot" effect="effects/particles/custom/smoke_distorted_small_calm" />
-		<effect_spawner name="smoke_trail_01_blue" enabled="true" object="RightFoot" effect="effects/particles/custom/smoke_trail_small_calm" />
-		<effect_spawner name="smoke_23_blue" enabled="true" object="RightToeBase" effect="effects/particles/custom/smoke_distorted_small_calm" />
-
-		<effect_spawner name="smoke_24_red" enabled="false" object="Hips" effect="effects/particles/custom/smoke_distorted_rage" />
-		<effect_spawner name="smoke_01_red" enabled="false" object="Spine" effect="effects/particles/custom/smoke_distorted_rage" />
-		<effect_spawner name="smoke_02_red" enabled="false" object="Spine1" effect="effects/particles/custom/smoke_distorted_rage" />
-		<effect_spawner name="smoke_03_red" enabled="false" object="Spine2" effect="effects/particles/custom/smoke_distorted_rage" />
-		<effect_spawner name="smoke_04_red" enabled="false" object="Neck" effect="effects/particles/custom/smoke_distorted_rage" />
-		<effect_spawner name="smoke_05_red" enabled="false" object="Head" effect="effects/particles/custom/smoke_distorted_rage" />
-		<effect_spawner name="smoke_06_red" enabled="false" object="LeftShoulder" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_07_red" enabled="false" object="LeftArm" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_08_red" enabled="false" object="LeftForeArm" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_09_red" enabled="false" object="LeftForeArmRoll" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_10_red" enabled="false" object="LeftHand" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_trail_04_red" enabled="false" object="LeftHand" effect="effects/particles/custom/smoke_trail_small_rage" />
-		<effect_spawner name="smoke_11_red" enabled="false" object="RightShoulder" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_12_red" enabled="false" object="RightArm" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_13_red" enabled="false" object="RightForeArm" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_14_red" enabled="false" object="RightForeArmRoll" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_15_red" enabled="false" object="RightHand" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_trail_03_red" enabled="false" object="RightHand" effect="effects/particles/custom/smoke_trail_small_rage" />
-		<effect_spawner name="smoke_16_red" enabled="false" object="LeftUpLeg" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_17_red" enabled="false" object="LeftLeg" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_18_red" enabled="false" object="LeftFoot" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_trail_02_red" enabled="false" object="LeftFoot" effect="effects/particles/custom/smoke_trail_small_rage" />
-		<effect_spawner name="smoke_19_red" enabled="false" object="LeftToeBase" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_20_red" enabled="false" object="RightUpLeg" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_21_red" enabled="false" object="RightLeg" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_22_red" enabled="false" object="RightFoot" effect="effects/particles/custom/smoke_distorted_small_rage" />
-		<effect_spawner name="smoke_trail_01_red" enabled="false" object="RightFoot" effect="effects/particles/custom/smoke_trail_small_rage" />
-		<effect_spawner name="smoke_23_red" enabled="false" object="RightToeBase" effect="effects/particles/custom/smoke_distorted_small_rage" />
-	</effects>
-
 	<graphics>
 		<graphic_group name="character" enabled="true" culling_object="g_body">
 			<lod_object name="lod_body">

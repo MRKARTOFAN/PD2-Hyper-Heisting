@@ -53,7 +53,7 @@
 					<key t="0.9" v="0"/>
                     <key t="1" v="1"/>
 					<key t="2" v="0"/>
-                </opacity_keys>
+				</opacity_scale_keys>
                 <rotation_scale_keys loop="false">
                     <key t="0" v="0"/>
                     <key t="1" v="0"/>

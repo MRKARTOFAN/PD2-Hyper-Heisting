@@ -755,11 +755,13 @@ function GroupAIStateBesiege:_chk_group_use_grenade(assault_area, group, detonat
 	local nav_seg = managers.navigation._nav_segments[grenade_user.tracker:nav_segment()]
 	for neighbour_nav_seg_id, door_list in pairs(nav_seg.neighbours) do
 		if assault_area.nav_segs[neighbour_nav_seg_id] then
-			local random_door_id = door_list[math.random(#door_list)]
-			if type(random_door_id) == "number" then
-				door_pos = managers.navigation._room_doors[random_door_id].center
+			local random_door = door_list[math.random(#door_list)]
+			if type(random_door) == "number" then
+				door_pos = managers.navigation._room_doors[random_door].center
+			elseif random_door.x then
+				door_pos = random_door
 			else
-				door_pos = random_door_id:script_data().element:nav_link_end_pos()
+				door_pos = random_door:script_data().element:nav_link_end_pos()
 			end
 			break
 		end
@@ -1064,8 +1066,8 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 						return
 					end
 
-					if not PackageManager:has(Idstring("unit"), produce_data.name) then
-						managers.dyn_resource:load(Idstring("unit"), produce_data.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
+					if not PackageManager:has(IDS_UNIT, produce_data.name) then
+						managers.dyn_resource:load(IDS_UNIT, produce_data.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
 					end
 
 					local spawned_unit = sp_data.mission_element:produce(produce_data)

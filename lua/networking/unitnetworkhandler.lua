@@ -115,8 +115,13 @@ function UnitNetworkHandler:request_throw_projectile(projectile_type_index, posi
 	ProjectileBase.throw_projectile(projectile_type, position, dir, peer_id)
 end
 
-function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike, action_id, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) or not self._verify_character(unit) then
+function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike, action_id)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
+		return
+	end
+
+	local movement = unit:movement()
+	if not movement or not movement.action_request then
 		return
 	end
 
@@ -148,7 +153,7 @@ function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike
 		action_desc.blocks.taser_tased = -1
 	end
 
-	unit:movement():action_request(action_desc)
+	movement:action_request(action_desc)
 end
 
 function UnitNetworkHandler:action_aim_state(unit, state, sender_rpc)

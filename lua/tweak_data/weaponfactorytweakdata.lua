@@ -256,13 +256,6 @@ if self.wpn_fps_ass_sg416 then
 	self.parts.wpn_fps_ass_ak_m_proto.stats.reload = 3
 end
 
-if self.parts.wpn_fps_fla_mk2_body_long then --WAR! Nozzle
-	self.parts.wpn_fps_fla_mk2_body_long.desc_id = "bm_wpn_fps_fla_mk2_body_long_desc"
-	self.parts.wpn_fps_fla_mk2_body_long.has_description = true
-	self.parts.wpn_fps_fla_mk2_body_long.stats = {damage = -6, concealment = -2, recoil = 2}
-	self.parts.wpn_fps_fla_mk2_body_long.custom_stats = {range_mul = 3}
-end
-
 self.parts.wpn_fps_fla_system_b_wtf.desc_id = "bm_wpn_fps_fla_system_b_wtf_desc"
 self.parts.wpn_fps_fla_system_b_wtf.has_description = true
 self.parts.wpn_fps_fla_system_b_wtf.stats = {

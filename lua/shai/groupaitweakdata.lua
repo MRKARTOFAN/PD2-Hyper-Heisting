@@ -118,6 +118,21 @@ end)
 
 -- Special unit spawn limits
 Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits", function(self, difficulty_index)
+	local vanilla_faction_units = {}
+	for category_name, category in pairs(self.unit_categories) do
+		if category.unit_types then
+			local faction_units = {}
+
+			for _, faction in ipairs({ "russia", "federales", "zombie" }) do
+				if category.unit_types[faction] then
+					faction_units[faction] = deep_clone(category.unit_types[faction])
+				end
+			end
+
+			vanilla_faction_units[category_name] = faction_units
+		end
+	end
+
 	local limits_shield = { 0, 2, 2, 3, 3, 4, 4, 5 }
 	local limits_medic  = { 0, 0, 0, 0, 1, 2, 3, 4 }
 	local limits_taser  = { 0, 0, 1, 1, 2, 2, 3, 3 }
@@ -853,11 +868,25 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits",
 		}
 	end
 
+	for category_name, category in pairs(self.unit_categories) do
+		if category.unit_types then
+			local stock_units = vanilla_faction_units[category_name] or {}
+			local role_fallback = category.unit_types.america or category.unit_types.shared or category.unit_types.murkywater
+
+			for _, faction in ipairs({ "russia", "federales", "zombie" }) do
+				if stock_units[faction] then
+					category.unit_types[faction] = stock_units[faction]
+				elseif role_fallback then
+					category.unit_types[faction] = deep_clone(role_fallback)
+				end
+			end
+		end
+	end
+
 	local medic_dozer_units = {}
 	for _, unit_name in ipairs({
 		"units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic",
 		"units/pd2_dlc_drm/characters/ene_bulldozer_medic_classic/ene_bulldozer_medic_classic",
-		"units/pd2_dlc_mad/characters/ene_akan_dozer_medic/ene_akan_dozer_medic",
 		"units/pd2_dlc_mad/characters/ene_akan_fbi_tank_medic/ene_akan_fbi_tank_medic",
 		"units/pd2_dlc_hvh/characters/ene_bulldozer_medic_hvh/ene_bulldozer_medic_hvh",
 		"units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_medic/ene_murkywater_bulldozer_medic",

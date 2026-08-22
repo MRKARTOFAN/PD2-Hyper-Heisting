@@ -29,8 +29,6 @@
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870" target_type="sequence_manager" merge_mode="script_merge"/>				
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga" target_type="sequence_manager" merge_mode="script_merge"/>				
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg" target_type="sequence_manager" merge_mode="script_merge"/>	
-		<mod file="dozersevil_mini.xml" type="custom_xml" target_file="units/pd2_dlc_mad/characters/ene_akan_dozer_mini/ene_akan_dozer_mini" target_type="sequence_manager" merge_mode="script_merge"/>	
-		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_mad/characters/ene_akan_dozer_medic/ene_akan_dozer_medic" target_type="sequence_manager" merge_mode="script_merge"/>	
 		
 		<!--zombie bulldozers -->		
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1" target_type="sequence_manager" merge_mode="script_merge"/>				
@@ -38,11 +36,6 @@
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3" target_type="sequence_manager" merge_mode="script_merge"/>
 		
 		<!--murky bulldozers -->				
-		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_mod_psc/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2" target_type="sequence_manager" merge_mode="script_merge"/>				
-		<mod file="dozersevil_mini.xml" type="custom_xml" target_file="units/pd2_mod_psc/characters/ene_murkywater_bulldozer_1/ene_murkywater_bulldozer_1" target_type="sequence_manager" merge_mode="script_merge"/>				
-		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_mod_psc/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3" target_type="sequence_manager" merge_mode="script_merge"/>				
-		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_mod_psc/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4" target_type="sequence_manager" merge_mode="script_merge"/>
-		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_mod_psc/characters/ene_murkywater_bulldozer_medic/ene_murkywater_bulldozer_medic" target_type="sequence_manager" merge_mode="script_merge"/>
 		<mod file="dozersevil_mini.xml" type="custom_xml" target_file="units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_1/ene_murkywater_bulldozer_1" target_type="sequence_manager" merge_mode="script_merge"/>
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3" target_type="sequence_manager" merge_mode="script_merge"/>
 		<mod file="dozersevil.xml" type="custom_xml" target_file="units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_medic/ene_murkywater_bulldozer_medic" target_type="sequence_manager" merge_mode="script_merge"/>
@@ -56,12 +49,4 @@
 		
 	</ScriptMods>
 
-	<!-- THE long barrel for the flamethrower-->
-	<WeaponMod id="wpn_fps_fla_mk2_body_long" inherit_adds="true" based_on="wpn_fps_fla_mk2_body" type="lower_reciever" unit="units/mods/weapons/wpn_fps_fla_mk2_pts/wpn_fps_fla_mk2_body_long" drop="false" texture_bundle_folder="mods" is_a_unlockable="true">
-		<stats/>
-		<weapons>
-			<value_node value="wpn_fps_fla_mk2"/>
-		</weapons>
-		<pcs/>
-	</WeaponMod>
 </table>

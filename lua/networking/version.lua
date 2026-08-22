@@ -1,7 +1,5 @@
-if not Distribution then
-	return
-end
+local frayVersion = ModInstance:GetVersion()
 
 Hooks:PostHook(_G, "pd2_version", "fray_pd2_version", function()
-	return Hooks:GetReturn() .. "PD2FRAY"
+	return Hooks:GetReturn() .. "_fray_v" .. frayVersion
 end)

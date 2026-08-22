@@ -36,21 +36,7 @@ local trolliam_replacement_table = {
 	["units/pd2_mod_psc/characters/ene_murky_NH_r870/ene_murky_NH_r870"] = "units/pd2_mod_epictroll/characters/ene_trolliam_calhoun/ene_trolliam_calhoun"
 }
 
-if level == "spa" or level == "glace" or level == "brb" or level == "red2" or level == "run" or level == "flat" or level == "dinner" then
-	replacement_table = {
-		["units/payday2/characters/ene_cop_3/ene_cop_3"] = "units/pd2_mod_beatpricks/characters/ene_cop_3/ene_cop_3",
-		["units/payday2/characters/ene_cop_2/ene_cop_2"] = "units/pd2_mod_beatpricks/characters/ene_cop_2/ene_cop_2",
-		["units/payday2/characters/ene_cop_4/ene_cop_4"] = "units/pd2_mod_beatpricks/characters/ene_cop_4/ene_cop_4",
-		["units/payday2/characters/ene_cop_1/ene_cop_1"] = "units/pd2_mod_beatpricks/characters/ene_cop_1/ene_cop_1"
-	}
-elseif level == "rvd1" or level == "rvd2" or level == "jolly" then
-	replacement_table = {
-		["units/payday2/characters/ene_cop_3/ene_cop_3"] = "units/pd2_dlc_rvd/characters/ene_la_cop_3/ene_la_cop_3",
-		["units/payday2/characters/ene_cop_2/ene_cop_2"] = "units/pd2_dlc_rvd/characters/ene_la_cop_2/ene_la_cop_2",
-		["units/payday2/characters/ene_cop_4/ene_cop_4"] = "units/pd2_dlc_rvd/characters/ene_la_cop_4/ene_la_cop_4",
-		["units/payday2/characters/ene_cop_1/ene_cop_1"] = "units/pd2_dlc_rvd/characters/ene_la_cop_1/ene_la_cop_1"
-	}
-elseif level == "vit" and diff_index == 8 then
+if level == "vit" and diff_index == 8 then
 	replacement_table = {
 		["units/pd2_mod_psc/characters/ene_murky_punk_moss/ene_murky_punk_moss"] = "units/pd2_dlc_gitgud/characters/ene_zeal_punk_moss/ene_zeal_punk_moss",
 		["units/pd2_mod_psc/characters/ene_murky_punk_mp5/ene_murky_punk_mp5"] = "units/pd2_dlc_gitgud/characters/ene_zeal_punk_mp5/ene_zeal_punk_mp5",

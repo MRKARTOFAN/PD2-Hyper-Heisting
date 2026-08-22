@@ -411,21 +411,6 @@ Hooks:PostHook(CopDamage, "sync_damage_melee", "hh_melee_headshot_effect_sync", 
 	end
 end)
 
--- Zeal effect removal
-Hooks:PreHook(CopDamage, "die", "zeal_effect_removal_die", function (self, attack_data)
-	if self._unit:base() then
-		self._unit:base():disable_zeal_effect()
-	end
-	
-	local current_unit = self._unit:name()
-	if self._unit:base()._tweak_table == "taser" and current_unit == Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_tazer/ene_zeal_tazer") then
-		self._cruel_death_effect = World:effect_manager():spawn({
-			effect = Idstring("effects/particles/custom/taser_death_explosion"),
-			parent = self._unit:get_object(Idstring("Spine2"))
-		})
-	end
-end)
-
 -- [Karto] HH drama stuff
 Hooks:PostHook(CopDamage, "clbk_suppression_decay", "hh_fray_suppression_hardness", function(self)
 	if Global.game_settings and Global.game_settings.one_down then

@@ -11,6 +11,14 @@ for _, filter in pairs(color_filters) do
 	})
 end
 
+local special_contracts = tweak_data.gui.crime_net.special_contracts
+
+for index = #special_contracts, 1, -1 do
+	if special_contracts[index].name_id == "menu_mutators" then
+		table.remove(special_contracts, index)
+	end
+end
+
 tweak_data.style_meter_events = {
 	kill = {
 		amount = 0.2,

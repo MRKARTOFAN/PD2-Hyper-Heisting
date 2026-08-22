@@ -9,12 +9,6 @@
 		<depends_on effect="effects/payday2/particles/impacts/blood/blood_impact_katana" />
 		<depends_on bnk="soundbanks/regular_vox" />
 		<depends_on effect="effects/particles/character/cloaker_goggle"/>
-		<depends_on effect="effects/particles/CruelEffects/smoke_distorted_blue"/>
-		<depends_on effect="effects/particles/CruelEffects/smoke_distorted_small_blue"/>
-		<depends_on effect="effects/particles/CruelEffects/smoke_trail_small_blue"/>
-		<depends_on effect="effects/particles/CruelEffects/smoke_distorted_red"/>
-		<depends_on effect="effects/particles/CruelEffects/smoke_distorted_small_red"/>
-		<depends_on effect="effects/particles/CruelEffects/smoke_trail_small_red"/>
 		<depends_on effect="effects/payday2/particles/explosions/smoke_explosion/dark_smoke_big"/>
 		<depends_on unit="units/payday2/characters/ene_acc_baton/ene_acc_baton" />
 		<depends_on unit="units/pd2_dlc_gitgud/characters/ene_zeal_cloaker/debris/ene_spook_head_debris" />

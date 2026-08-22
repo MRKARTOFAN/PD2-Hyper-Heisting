@@ -364,3 +364,11 @@ function GroupAIStateBase:_get_anticipation_duration(anticipation_duration_table
 
 	return hh_get_anticipation_duration_original(self, anticipation_duration_table, is_first)
 end
+
+
+local add_area_original = GroupAIStateBase.add_area
+function GroupAIStateBase:add_area(area_id, nav_segs, ...)
+	return add_area_original(self, tostring(area_id), table.collect(nav_segs, function(value)
+		return tostring(value)
+	end), ...)
+end

@@ -17,17 +17,11 @@ Hooks:PostHook(WeaponTweakData, "init", "lore_init", function(self, tweakdata)
 	self.trolliam_sidearm_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"	
 	self.trolliam_sidearm_npc.DAMAGE = 15 --150 damage it works well trust me
 	
-	self.xkill_npc = deep_clone(self.c45_npc)
-	self.xkill_npc.sounds.prefix = "c45_npc"
-	
 	self.streak_npc = deep_clone(self.c45_npc)
 	self.streak_npc.sounds.prefix = "pl14_npc"	
 	
 	self.kmtac_npc = deep_clone(self.c45_npc)
 	self.kmtac_npc.sounds.prefix = "usp45_npc"		
-	
-	self.x_xkill_npc = deep_clone(self.x_c45_npc)
-	self.x_xkill_npc.sounds.prefix = "c45_npc"	
 	
 	self.x_streak_npc = deep_clone(self.x_c45_npc)
 	self.x_streak_npc.sounds.prefix = "pl14_npc"
@@ -57,11 +51,6 @@ Hooks:PostHook(WeaponTweakData, "init", "lore_init", function(self, tweakdata)
 	self.silserbu_npc = deep_clone(self.r870_npc)
 	self.silserbu_npc.sounds.prefix = "serbu_npc"
 	self.silserbu_npc.has_suppressor = "suppressed_a"
-	
-	self.quagmire_npc = deep_clone(self.m4_npc)
-	self.quagmire_npc.sounds.prefix = "contraband_npc"
-	self.quagmire_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
-	self.quagmire_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	
 	self.galil_npc = deep_clone(self.m4_npc)
 	self.galil_npc.sounds.prefix = "galil_npc"
@@ -121,7 +110,6 @@ Hooks:PostHook(WeaponTweakData, "init", "lore_init", function(self, tweakdata)
 	self.g36_npc.DAMAGE = 1
 	self.ak47_npc.DAMAGE = 1
 	self.smoke_npc.DAMAGE = 1
-	self.quagmire_npc.DAMAGE = 1
 	self.galil_npc.DAMAGE = 1
 	self.scar_npc.DAMAGE = 1
 	self.saiga_npc.DAMAGE = 5
@@ -133,7 +121,6 @@ Hooks:PostHook(WeaponTweakData, "init", "lore_init", function(self, tweakdata)
 	self.smoke_npc.auto.fire_rate = 0.08
 	self.ak47_ass_npc.auto.fire_rate = 0.08
 	self.ak47_npc.auto.fire_rate = 0.08
-	self.quagmire_npc.fire_rate = 0.08
 	self.galil_npc.fire_rate = 0.08
 	self.scar_npc.fire_rate = 0.08
 	
@@ -145,7 +132,6 @@ Hooks:PostHook(WeaponTweakData, "init", "lore_init", function(self, tweakdata)
 	self.scar_npc.suppression = 1
 	self.g36_npc.suppression = 1
 	self.smoke_npc.suppression = 1
-	self.quagmire_npc.suppression = 1
 	self.galil_npc.suppression = 1
 	self.lazer_npc.suppression = 1
 	self.mp5_npc.suppression = 2.5
@@ -380,7 +366,6 @@ function WeaponTweakData:_set_normal()
 	self.ak47_npc.DAMAGE = 0.5
 	self.scar_npc.DAMAGE = 0.5
 	self.smoke_npc.DAMAGE = 0.5
-	self.quagmire_npc.DAMAGE = 0.5
 	self.galil_npc.DAMAGE = 0.5
 	self.r870_npc.DAMAGE = 2.5
 	self.bayou_npc.DAMAGE = 2.5
@@ -396,8 +381,6 @@ function WeaponTweakData:_set_normal()
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 16
 	self.ak47_npc.CLIP_AMMO_MAX = 16
 	self.lazer_npc.CLIP_AMMO_MAX = 16
-	self.quagmire_npc.CLIP_AMMO_MAX = 16
-	self.quagmire_npc.CLIP_AMMO_MAX = 16
 	
 	--shotgun tweaks, fires 3 times before reload on SWAT-tier
 	self.r870_npc.CLIP_AMMO_MAX = 3
@@ -453,7 +436,6 @@ function WeaponTweakData:_set_hard() --He's only done it for the fuck-ing.
 	self.ak47_npc.DAMAGE = 0.5
 	self.scar_npc.DAMAGE = 0.5
 	self.smoke_npc.DAMAGE = 0.5
-	self.quagmire_npc.DAMAGE = 0.5
 	self.galil_npc.DAMAGE = 0.5
 	self.r870_npc.DAMAGE = 2.5
 	self.bayou_npc.DAMAGE = 2.5
@@ -469,7 +451,6 @@ function WeaponTweakData:_set_hard() --He's only done it for the fuck-ing.
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 16
 	self.ak47_npc.CLIP_AMMO_MAX = 16
 	self.lazer_npc.CLIP_AMMO_MAX = 16
-	self.quagmire_npc.CLIP_AMMO_MAX = 16
 	self.galil_npc.CLIP_AMMO_MAX = 16
 	
 	--shotgun tweaks, fires 3 times before reload on SWAT-tier
@@ -522,7 +503,6 @@ function WeaponTweakData:_set_overkill() --aldstone? shit id be more worried abo
 	self.g36_npc.DAMAGE = 1
 	self.ak47_npc.DAMAGE = 1
 	self.smoke_npc.DAMAGE = 1
-	self.quagmire_npc.DAMAGE = 1
 	self.galil_npc.DAMAGE = 1
 	
 	--rifle tweaks, 2 seconds of firing
@@ -533,7 +513,6 @@ function WeaponTweakData:_set_overkill() --aldstone? shit id be more worried abo
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 25
 	self.ak47_npc.CLIP_AMMO_MAX = 25
 	self.lazer_npc.CLIP_AMMO_MAX = 25
-	self.quagmire_npc.CLIP_AMMO_MAX = 25
 	self.galil_npc.CLIP_AMMO_MAX = 25
 	
 	--shotgun tweaks, fires 4 times before reload on FBI+ tiers
@@ -603,7 +582,6 @@ function WeaponTweakData:_set_overkill_145()
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 25
 	self.ak47_npc.CLIP_AMMO_MAX = 25
 	self.lazer_npc.CLIP_AMMO_MAX = 25
-	self.quagmire_npc.CLIP_AMMO_MAX = 25
 	self.galil_npc.CLIP_AMMO_MAX = 25
 	
 	--shotgun tweaks, fires 4 times before reload on FBI-tier
@@ -680,7 +658,6 @@ function WeaponTweakData:_set_easy_wish()
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 30
 	self.ak47_npc.CLIP_AMMO_MAX = 30
 	self.lazer_npc.CLIP_AMMO_MAX = 30
-	self.quagmire_npc.CLIP_AMMO_MAX = 30
 	self.galil_npc.CLIP_AMMO_MAX = 30
 	
 	--shotgun tweaks, fires 4 times before reload on FBI+ tiers
@@ -770,7 +747,6 @@ function WeaponTweakData:_set_overkill_290()
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 45
 	self.ak47_npc.CLIP_AMMO_MAX = 45
 	self.lazer_npc.CLIP_AMMO_MAX = 45
-	self.quagmire_npc.CLIP_AMMO_MAX = 45
 	self.galil_npc.CLIP_AMMO_MAX = 45
 	
 	--shotgun tweaks, fires 4 times before reload on FBI+ tiers
@@ -860,7 +836,6 @@ function WeaponTweakData:_set_sm_wish()
 	self.ak47_ass_npc.CLIP_AMMO_MAX = 45
 	self.ak47_npc.CLIP_AMMO_MAX = 45
 	self.lazer_npc.CLIP_AMMO_MAX = 45
-	self.quagmire_npc.CLIP_AMMO_MAX = 45
 	self.galil_npc.CLIP_AMMO_MAX = 45
 	
 	--shotgun tweaks, fires 4 times before reload on FBI+ tiers
@@ -895,7 +870,6 @@ function WeaponTweakData:_set_sm_wish()
 	self.ak47_npc.DAMAGE = 1
 	self.smoke_npc.DAMAGE = 1
 	self.lazer_npc.DAMAGE = 1
-	self.quagmire_npc.DAMAGE = 1
 	self.galil_npc.DAMAGE = 1
 	
 	--Turret tweaks.
@@ -948,7 +922,7 @@ function WeaponTweakData:_init_data_npc_melee()
 		player_blood_effect = true
 	}
 	self.npc_melee.glowstick = {
-		unit_name = Idstring("units/pd2_dlc_gitgud/characters/ene_acc_glowstick/ene_acc_glowstick"),
+		unit_name = Idstring("units/payday2/characters/ene_acc_baton/ene_acc_baton"),
 		damage = 15,
 		animation_param = "melee_knife",
 		player_blood_effect = true

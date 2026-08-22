@@ -4306,23 +4306,12 @@ function CharacterTweakData:_create_table_structure()
 		{ "m4_cooler", "units/pd2_dlc_gitgud/weapons/wpn_npc_m4_(cooler)/wpn_npc_m4_(cooler)" },
 		{ "s553_zeal", "units/pd2_dlc_gitgud/weapons/wpn_npc_s553/wpn_npc_s553" },
 		{ "lazer", "units/pd2_dlc_gitgud/weapons/wpn_npc_lazer/wpn_npc_lazer" },
-		{ "tazerlazer", "units/pd2_mod_zmansion/weapons/wpn_npc_tazerlazer/wpn_npc_tazerlazer" },
 		{ "blazter", "units/pd2_dlc_gitgud/weapons/wpn_npc_blazter/wpn_npc_blazter" },
 		{ "bayou_spas", "units/payday2/weapons/wpn_npc_bayou/wpn_npc_bayou" },
-		{ "quagmire", "units/pd2_mod_psc/weapons/wpn_npc_quagmire/wpn_npc_quagmire" },
 		{ "galil", "units/payday2/weapons/wpn_npc_galil/wpn_npc_galil" },
-		{ "silserbu", "units/pd2_dlc_drm/weapons/wpn_npc_silserbu/wpn_npc_silserbu" },
-		{ "xkill", "units/payday2/weapons/wpn_npc_xkill/wpn_npc_xkill" },
-		{ "x_xkill", "units/payday2/weapons/wpn_npc_xkill/wpn_npc_x_xkill" },
-		{ "streak", "units/pd2_dlc_mad/weapons/wpn_npc_pl14/wpn_npc_pl14" },
-		{ "x_streak", "units/pd2_dlc_mad/weapons/wpn_npc_pl14/wpn_npc_x_pl14" },
-		{ "kmtac", "units/pd2_dlc_gitgud/weapons/wpn_npc_kmtac/wpn_npc_kmtac" },
-		{ "x_kmtac", "units/pd2_dlc_gitgud/weapons/wpn_npc_kmtac/wpn_npc_x_kmtac" },
 		{ "trolliam_sidearm", "units/pd2_mod_epictroll/weapons/trolliamsidearm/trolliamsidearm" },
 		{ "degle", "units/payday2/weapons/wpn_npc_degle/wpn_npc_degle" },
-		{ "m60", "units/pd2_mod_psc/weapons/wpn_npc_m60/wpn_npc_m60" },
-		{ "m37", "units/pd2_dlc_drm/weapons/wpn_npc_m37/wpn_npc_m37" },
-		{ "chernobog", "units/pd2_mod_psc/weapons/wpn_npc_chernobog/wpn_npc_chernobog" }
+		{ "m37", "units/pd2_dlc_drm/weapons/wpn_npc_m37/wpn_npc_m37" }
 	}
 
 	for _, data in ipairs(weapon_additions) do
@@ -4363,17 +4352,12 @@ function CharacterTweakData:character_map()
 	end
 
 	local character_additions = {
-		{ "ghosts", "units/pd2_mod_zmansion/characters/", { "ene_true_zeal_cloaker", "ene_true_zeal_rifle", "ene_true_zeal_shotgun", "ene_true_zeal_taser" } },
-		{ "additions", "units/payday2/characters/", { "ene_fbi_swat_3", "ene_swat_3", "ene_gangster_ninja_m4", "ene_medic_m4_hh" } },
-		{ "bexhh", "units/pd2_dlc_bex/characters/", { "ene_swat_policia_federale_r870_hh", "ene_swat_policia_federale_mp5", "ene_medic_federale_rifle_hh", "ene_medic_federale_r870_hh", "ene_swat_heavy_policia_federale_fbi_r870_hh", "ene_heavy_swat_shield_federale_ds", "ene_bex_ninja_c45", "ene_policia_punk_bronco", "ene_policia_03", "ene_tazer_1" } },
-		{ "beatpricks", "units/pd2_mod_beatpricks/characters/", { "ene_cop_3", "ene_cop_2", "ene_cop_1", "ene_cop_4" } },
-		{ "drm", "units/pd2_dlc_drm/characters/", { "ene_bulldozer_medic", "ene_bulldozer_minigun", "ene_bulldozer_minigun_classic", "ene_zeal_swat_heavy_sniper", "ene_zeal_armored_light", "ene_murky_heavy_ump", "ene_fbi_heavy_ump", "ene_bulldozer_sniper", "ene_sniper_heavy", "ene_spook_heavy", "ene_taser_heavy", "ene_shield_heavy", "ene_medic_heavy_m4", "ene_medic_heavy_r870", "ene_city_swat_saiga", "ene_medic_carkdown", "ene_ovk_mangler" } },
-		{ "gitgud", "units/pd2_dlc_gitgud/characters/", { "ene_zeal_bulldozer", "ene_zeal_bulldozer_2", "ene_zeal_bulldozer_3", "ene_zeal_cloaker", "ene_zeal_swat", "ene_zeal_city_1", "ene_zeal_city_2", "ene_zeal_city_3", "ene_zeal_medic", "ene_zeal_medic_r870", "ene_zeal_swat_heavy", "ene_zeal_swat_heavy_r870", "ene_zeal_swat_shield", "ene_zeal_swat_shield_hh", "ene_zeal_tazer", "ene_zeal_punk_mp5", "ene_zeal_punk_moss", "ene_zeal_punk_bronco", "ene_zeal_fbigod_m4", "ene_zeal_fbigod_c45", "ene_zeal_sniper" } },
-		{ "psc", "units/pd2_mod_psc/characters/", { "ene_murky_light_rifle", "ene_murky_heavy_scar", "ene_murky_NH_rifle", "ene_murky_NH_r870", "ene_murky_light_r870", "ene_murky_heavy_r870", "ene_murky_light_ump", "ene_murky_fbigod_m4", "ene_murky_fbigod_c45", "ene_murky_fbigod_c45_DS", "ene_murky_shield", "ene_murky_shield_ld", "ene_murky_DS_shield", "ene_murky_punk_c45", "ene_murky_punk_bronco", "ene_murky_punk_mp5", "ene_murky_punk_moss", "ene_murky_cloaker", "ene_murkywater_medic", "ene_murkywater_medic_r870", "ene_murkywater_tazer", "ene_murkywater_cloaker", "ene_murkywater_bulldozer_1", "ene_murkywater_bulldozer_2", "ene_murkywater_bulldozer_3", "ene_murkywater_bulldozer_4", "ene_murkywater_bulldozer_medic", "ene_murkywater_shield", "ene_murkywater_sniper", "ene_murkywater_heavy", "ene_murkywater_heavy_shotgun", "ene_murkywater_heavy_g36", "ene_murkywater_light_city", "ene_murkywater_light_city_r870", "ene_murkywater_light_fbi_r870", "ene_murkywater_light_fbi", "ene_murkywater_light", "ene_murkywater_light_r870" } },
-		{ "ftsu", "units/pd2_mod_ftsu/characters/", { "ene_gensec_fbigod_c45", "ene_gensec_fbigod_m4", "ene_gensec_fbiguard_sg", "ene_gensec_sniper", "ene_gensec_punk_mp5", "ene_gensec_punk_moss", "ene_gensec_punk_bronco" } },
-		{ "epictroll", "units/pd2_mod_epictroll/characters/", { "ene_trolliam_calhoun" } },
-		{ "hvh", "units/pd2_dlc_hvh/characters/", { "ene_cop_hvh_1", "ene_cop_hvh_2", "ene_cop_hvh_3", "ene_cop_hvh_4", "ene_cop_hvh_moss", "ene_swat_hvh_1", "ene_swat_hvh_2", "ene_swat_hvh_3", "ene_fbi_hvh_1", "ene_fbi_hvh_2", "ene_fbi_hvh_3", "ene_fbigod_hvh_m4", "ene_fbigod_hvh_c45", "ene_spook_hvh_1", "ene_swat_heavy_hvh_1", "ene_swat_heavy_hvh_r870", "ene_tazer_hvh_1", "ene_shield_hvh_1", "ene_shield_hvh_2", "ene_medic_hvh_r870", "ene_medic_hvh_m4", "ene_bulldozer_hvh_1", "ene_bulldozer_hvh_2", "ene_bulldozer_hvh_3", "ene_fbi_swat_hvh_1", "ene_fbi_swat_hvh_2", "ene_fbi_swat_hvh_3", "ene_fbi_heavy_hvh_1", "ene_fbi_heavy_hvh_r870", "ene_sniper_hvh_2", "ene_fbi_swat_shield_ds" } },
-		{ "mad", "units/pd2_dlc_mad/characters/", { "civ_male_scientist_01", "civ_male_scientist_02", "ene_akan_fbi_heavy_g36", "ene_akan_fbi_heavy_g36_hh", "ene_akan_fbi_heavy_r870_hh", "ene_akan_fbi_shield_sr2_smg", "ene_akan_fbi_spooc_asval_smg", "ene_akan_fbi_swat_ak47_ass", "ene_akan_fbi_swat_dw_ak47_ass", "ene_akan_fbi_swat_dw_r870", "ene_akan_fbi_swat_r870", "ene_akan_fbi_tank_r870", "ene_akan_fbi_tank_rpk_lmg", "ene_akan_fbi_tank_saiga", "ene_akan_cs_cop_ak47_ass", "ene_akan_cs_cop_akmsu_smg", "ene_akan_cs_cop_asval_smg", "ene_akan_cs_cop_r870", "ene_akan_cs_heavy_ak47_ass", "ene_akan_cs_shield_c45", "ene_akan_cs_swat_ak47_ass", "ene_akan_cs_swat_r870", "ene_akan_cs_swat_sniper_svd_snp", "ene_akan_cs_tazer_ak47_ass", "ene_akan_medic_ak47_ass", "ene_akan_medic_ak47_ass_hh", "ene_akan_medic_r870", "ene_akan_hyper_fbi_akmsu_smg", "ene_akan_hyper_swat_akmsu_smg", "ene_akan_hyper_fbininja_ak47_ass", "ene_akan_hyper_fbininja_c45", "ene_akan_hyper_fbininja_c45_DS", "ene_akan_hyper_DS_shield", "ene_akan_dozer_medic", "ene_akan_dozer_mini" } }
+		{ "additions", "units/payday2/characters/", { "ene_gangster_ninja_m4" } },
+		{ "drm", "units/pd2_dlc_drm/characters/", { "ene_zeal_armored_light", "ene_murky_heavy_ump", "ene_fbi_heavy_ump", "ene_bulldozer_sniper", "ene_sniper_heavy", "ene_spook_heavy", "ene_taser_heavy", "ene_shield_heavy", "ene_medic_heavy_m4", "ene_medic_heavy_r870", "ene_city_swat_saiga", "ene_medic_carkdown", "ene_ovk_mangler" } },
+		{ "gitgud", "units/pd2_dlc_gitgud/characters/", { "ene_zeal_city_1", "ene_zeal_city_2", "ene_zeal_city_3", "ene_zeal_medic", "ene_zeal_medic_r870", "ene_zeal_swat_heavy", "ene_zeal_swat_heavy_r870", "ene_zeal_punk_mp5", "ene_zeal_punk_moss", "ene_zeal_punk_bronco", "ene_zeal_fbigod_m4", "ene_zeal_fbigod_c45" } },
+		{ "psc", "units/pd2_mod_psc/characters/", { "ene_murky_light_rifle", "ene_murky_heavy_scar", "ene_murky_light_r870", "ene_murky_heavy_r870", "ene_murky_light_ump", "ene_murky_fbigod_m4", "ene_murky_fbigod_c45", "ene_murky_punk_bronco", "ene_murky_punk_mp5", "ene_murky_punk_moss", "ene_murkywater_medic", "ene_murkywater_medic_r870" } },
+		{ "ftsu", "units/pd2_mod_ftsu/characters/", { "ene_gensec_fbigod_c45", "ene_gensec_fbigod_m4", "ene_gensec_punk_mp5", "ene_gensec_punk_moss", "ene_gensec_punk_bronco" } },
+		{ "epictroll", "units/pd2_mod_epictroll/characters/", { "ene_trolliam_calhoun" } }
 	}
 
 	for _, data in ipairs(character_additions) do

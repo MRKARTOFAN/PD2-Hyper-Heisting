@@ -446,7 +446,6 @@
 		["menu_risk_easy_wish"] = "Demands focus. Getting hot in here!",
 		["menu_risk_elite"] = "More units rolling in! More heat around the corner!",
 		["menu_risk_sm_wish"] = "There is no escaping the flames! FIGHT!",
-		["menu_hh_mutator_incomp"] = "This mutator is incompatible with Fray...! Sadly!",
 	})
 end)
 
