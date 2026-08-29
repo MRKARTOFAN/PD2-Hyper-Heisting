@@ -1,3 +1,7 @@
+if PD2FRAY:IsVisualProviderEnabled("Hyper ZEAL Punks and Ninjas") then
+	Hooks:RemovePostHook("hyper_punk_init_unit_categories", GroupAITweakData)
+end
+
 Hooks:PostHook(GroupAITweakData, "_init_task_data", "fray_grenade_settings", function(self, difficulty_index)
 	local f = math.max(0, difficulty_index - 2) / 6
 	self.smoke_grenade_timeout = { 25, 35 }
@@ -904,6 +908,21 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits",
 				end
 			end
 		end
+	end
+
+	if PD2FRAY:IsVisualProviderEnabled("Hyper ZEAL Punks and Ninjas") then
+		local guarded_categories = {}
+		for _, name in ipairs({ "FBI_suit_C45_M4", "FBI_suit_M4_MP5", "FBI_suit_stealth_MP5" }) do
+			if self.unit_categories[name] then
+				guarded_categories[name] = deep_clone(self.unit_categories[name])
+			end
+		end
+
+		DelayedCalls:Add("PD2FRAYRestoreVisualProviderCategories", 0, function()
+			for name, category in pairs(guarded_categories) do
+				self.unit_categories[name] = category
+			end
+		end)
 	end
 end)
 

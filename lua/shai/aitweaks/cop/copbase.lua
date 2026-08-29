@@ -1,3 +1,20 @@
+if PD2FRAY:IsVisualProviderEnabled("Hyper ZEAL Punks and Ninjas") then
+	Hooks:RemovePreHook("hyper_punk_post_init", CopBase)
+end
+
+Hooks:PreHook(CopBase, "post_init", "fray_visual_provider_weapon_snapshot", function(self)
+	if PD2FRAY:IsVisualProviderEnabled("Hyper ZEAL Punks and Ninjas") then
+		self._fray_visual_provider_weapon_id = self._default_weapon_id
+	end
+end)
+
+Hooks:PostHook(CopBase, "post_init", "fray_visual_provider_weapon_restore", function(self)
+	if self._fray_visual_provider_weapon_id then
+		self._default_weapon_id = self._fray_visual_provider_weapon_id
+		self._fray_visual_provider_weapon_id = nil
+	end
+end)
+
 -- Dynamically load throwable if we have one
 local unit_ids = IDS_UNIT
 Hooks:PostHook(CopBase, "init", "sh_init", function(self)

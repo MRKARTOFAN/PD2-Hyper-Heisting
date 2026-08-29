@@ -5,6 +5,20 @@ PD2FRAY.a = math.random() < 0.001
 PD2FRAY._mod_path = ModPath
 PD2FRAY._options_path = ModPath .. "menu/options.txt"
 PD2FRAY._save_path = SavePath .. "fray_settings.txt"
+PD2FRAY._visual_provider_names = {
+	["Hyper ZEAL"] = true,
+	["Hyper ZEAL Punks and Ninjas"] = true
+}
+
+function PD2FRAY:IsVisualProviderEnabled(name)
+	if not self._visual_provider_names[name] or not BLT or not BLT.Mods then
+		return false
+	end
+
+	local provider = BLT.Mods:GetModByName(name)
+	return provider and provider:IsEnabled() or false
+end
+
 PD2FRAY.settings = {
 	toggle_overhaul_player = true,
 	toggle_hhassault = false,
