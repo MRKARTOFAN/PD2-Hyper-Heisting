@@ -2,6 +2,6 @@
 <mod name="PD2FRAY" global_key="PD2FRAY">
 	<:include src="lib.xml" />
 	<:include src="corelib.xml" />
-	<:include src="visualproviders.xml" />
+	<:include src="enemyassetmods.xml" />
 	<tweak definition="tweaks.xml" />
 </mod>

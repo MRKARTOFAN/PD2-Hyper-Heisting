@@ -63,8 +63,8 @@
 	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_medic_r870/ene_zeal_medic_r870_husk" load="false"/>
 	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_fbigod_c45/ene_zeal_fbigod_c45" load="true"/>
 	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_fbigod_c45/ene_zeal_fbigod_c45_husk" load="true"/>
-	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_fbigod_m4/ene_zeal_fbigod_m4" load="true"/>
-	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_fbigod_m4/ene_zeal_fbigod_m4_husk" load="true"/>
+	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_fbigod_m4/ene_zeal_fbigod_m4" load="false"/>
+	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_fbigod_m4/ene_zeal_fbigod_m4_husk" load="false"/>
 	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_punk_mp5/ene_zeal_punk_mp5" load="false"/>
 	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_punk_mp5/ene_zeal_punk_mp5_husk" load="false"/>
 	<unit path="units/pd2_dlc_gitgud/characters/ene_zeal_punk_moss/ene_zeal_punk_moss" load="false"/>
@@ -110,18 +110,18 @@
 
 	<unit path="units/pd2_dlc_drm/characters/ene_bulldozer_sniper/ene_bulldozer_sniper" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_bulldozer_sniper/ene_bulldozer_sniper_husk" load="true"/>
-	<unit path="units/pd2_dlc_drm/characters/ene_zeal_armored_light/ene_zeal_armored_light" load="true"/>
-	<unit path="units/pd2_dlc_drm/characters/ene_zeal_armored_light/ene_zeal_armored_light_husk" load="true"/>
+	<unit path="units/pd2_dlc_drm/characters/ene_zeal_armored_light/ene_zeal_armored_light" load="false"/>
+	<unit path="units/pd2_dlc_drm/characters/ene_zeal_armored_light/ene_zeal_armored_light_husk" load="false"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_murky_heavy_ump/ene_murky_heavy_ump" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_murky_heavy_ump/ene_murky_heavy_ump_husk" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_fbi_heavy_ump/ene_fbi_heavy_ump" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_fbi_heavy_ump/ene_fbi_heavy_ump_husk" load="true"/>
-	<unit path="units/pd2_dlc_drm/characters/ene_sniper_heavy/ene_sniper_heavy" load="true"/>
-	<unit path="units/pd2_dlc_drm/characters/ene_sniper_heavy/ene_sniper_heavy_husk" load="true"/>
+	<unit path="units/pd2_dlc_drm/characters/ene_sniper_heavy/ene_sniper_heavy" load="false"/>
+	<unit path="units/pd2_dlc_drm/characters/ene_sniper_heavy/ene_sniper_heavy_husk" load="false"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_spook_heavy/ene_spook_heavy" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_spook_heavy/ene_spook_heavy_husk" load="true"/>
-	<unit path="units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy" load="true"/>
-	<unit path="units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy_husk" load="true"/>
+	<unit path="units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy" load="false"/>
+	<unit path="units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy_husk" load="false"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_shield_heavy/ene_shield_heavy" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_shield_heavy/ene_shield_heavy_husk" load="true"/>
 	<unit path="units/pd2_dlc_drm/characters/ene_medic_heavy_m4/ene_medic_heavy_m4" load="true"/>

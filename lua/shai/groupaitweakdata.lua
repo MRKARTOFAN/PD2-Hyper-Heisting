@@ -1,4 +1,4 @@
-if PD2FRAY:IsVisualProviderEnabled("Hyper ZEAL Punks and Ninjas") then
+if PD2FRAY:IsEnemyAssetModEnabled("Hyper ZEAL Punks and Ninjas") then
 	Hooks:RemovePostHook("hyper_punk_init_unit_categories", GroupAITweakData)
 end
 
@@ -910,7 +910,7 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits",
 		end
 	end
 
-	if PD2FRAY:IsVisualProviderEnabled("Hyper ZEAL Punks and Ninjas") then
+	if PD2FRAY:IsEnemyAssetModEnabled("Hyper ZEAL Punks and Ninjas") then
 		local guarded_categories = {}
 		for _, name in ipairs({ "FBI_suit_C45_M4", "FBI_suit_M4_MP5", "FBI_suit_stealth_MP5" }) do
 			if self.unit_categories[name] then
@@ -918,7 +918,7 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits",
 			end
 		end
 
-		DelayedCalls:Add("PD2FRAYRestoreVisualProviderCategories", 0, function()
+		DelayedCalls:Add("PD2FRAYRestoreEnemyAssetModCategories", 0, function()
 			for name, category in pairs(guarded_categories) do
 				self.unit_categories[name] = category
 			end
