@@ -7,7 +7,8 @@ PD2FRAY._options_path = ModPath .. "menu/options.txt"
 PD2FRAY._save_path = SavePath .. "fray_settings.txt"
 PD2FRAY._enemy_asset_mod_names = {
 	["Hyper ZEAL"] = true,
-	["Hyper ZEAL Punks and Ninjas"] = true
+	["Hyper ZEAL Punks and Ninjas"] = true,
+	["Resmod ZEAL"] = true
 }
 
 function PD2FRAY:IsEnemyAssetModEnabled(name)

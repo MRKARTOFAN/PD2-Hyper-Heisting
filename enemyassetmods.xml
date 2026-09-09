@@ -66,6 +66,18 @@
 		<file name="units/pd2_mod_ftsu/characters/ene_gensec_fbigod_c45/ene_gensec_fbigod_c45_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_fbigod_c45/ene_gensec_fbigod_c45_husk.unit"/>
 		<file name="units/pd2_mod_psc/characters/ene_murky_fbigod_c45/ene_murky_fbigod_c45.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_fbigod_c45/ene_murky_fbigod_c45.unit"/>
 		<file name="units/pd2_mod_psc/characters/ene_murky_fbigod_c45/ene_murky_fbigod_c45_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_fbigod_c45/ene_murky_fbigod_c45_husk.unit"/>
+		<file name="units/pd2_mod_ftsu/characters/ene_gensec_punk_bronco/ene_gensec_punk_bronco.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_punk_bronco/ene_gensec_punk_bronco.unit"/>
+		<file name="units/pd2_mod_ftsu/characters/ene_gensec_punk_bronco/ene_gensec_punk_bronco_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_punk_bronco/ene_gensec_punk_bronco_husk.unit"/>
+		<file name="units/pd2_mod_ftsu/characters/ene_gensec_punk_mp5/ene_gensec_punk_mp5.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_punk_mp5/ene_gensec_punk_mp5.unit"/>
+		<file name="units/pd2_mod_ftsu/characters/ene_gensec_punk_mp5/ene_gensec_punk_mp5_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_punk_mp5/ene_gensec_punk_mp5_husk.unit"/>
+		<file name="units/pd2_mod_ftsu/characters/ene_gensec_punk_moss/ene_gensec_punk_moss.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_punk_moss/ene_gensec_punk_moss.unit"/>
+		<file name="units/pd2_mod_ftsu/characters/ene_gensec_punk_moss/ene_gensec_punk_moss_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_ftsu/characters/ene_gensec_punk_moss/ene_gensec_punk_moss_husk.unit"/>
+		<file name="units/pd2_mod_psc/characters/ene_murky_punk_bronco/ene_murky_punk_bronco.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_punk_bronco/ene_murky_punk_bronco.unit"/>
+		<file name="units/pd2_mod_psc/characters/ene_murky_punk_bronco/ene_murky_punk_bronco_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_punk_bronco/ene_murky_punk_bronco_husk.unit"/>
+		<file name="units/pd2_mod_psc/characters/ene_murky_punk_mp5/ene_murky_punk_mp5.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_punk_mp5/ene_murky_punk_mp5.unit"/>
+		<file name="units/pd2_mod_psc/characters/ene_murky_punk_mp5/ene_murky_punk_mp5_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_punk_mp5/ene_murky_punk_mp5_husk.unit"/>
+		<file name="units/pd2_mod_psc/characters/ene_murky_punk_moss/ene_murky_punk_moss.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_punk_moss/ene_murky_punk_moss.unit"/>
+		<file name="units/pd2_mod_psc/characters/ene_murky_punk_moss/ene_murky_punk_moss_husk.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/pd2_mod_psc/characters/ene_murky_punk_moss/ene_murky_punk_moss_husk.unit"/>
 		<file name="units/payday2/characters/ene_cop_3/ene_cop_3.unit" path="assets/units/payday2/characters/ene_cop_3/ene_cop_3.unit"/>
 		<file name="units/payday2/characters/ene_cop_3/ene_cop_3_husk.unit" path="assets/units/payday2/characters/ene_cop_3/ene_cop_3_husk.unit"/>
 		<file name="units/payday2/characters/ene_fbi_3/ene_fbi_3.unit" path="assets/enemyassetmods/hyper_zeal_punks_ninjas/units/payday2/characters/ene_fbi_3/ene_fbi_3.unit"/>
@@ -103,5 +115,37 @@
 		<file name="units/pd2_dlc_drm/characters/ene_sniper_heavy/ene_sniper_heavy_husk.unit" path="assets/enemyassetmods/cruel_trance/units/pd2_dlc_drm/characters/ene_sniper_heavy/ene_sniper_heavy_husk.unit"/>
 		<file name="units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy.unit" path="assets/enemyassetmods/cruel_trance/units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy.unit"/>
 		<file name="units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy_husk.unit" path="assets/enemyassetmods/cruel_trance/units/pd2_dlc_drm/characters/ene_taser_heavy/ene_taser_heavy_husk.unit"/>
+	</group>
+
+	<group target="scripted" load_group="fray_enemyassetmods_resmod_zeal_common">
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy_husk.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy_husk.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_medic/ene_zeal_medic.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_medic/ene_zeal_medic.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_medic/ene_zeal_medic_husk.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_medic/ene_zeal_medic_husk.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_medic_r870/ene_zeal_medic_r870.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_medic_r870/ene_zeal_medic_r870.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_medic_r870/ene_zeal_medic_r870_husk.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_medic_r870/ene_zeal_medic_r870_husk.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy_r870/ene_zeal_swat_heavy_r870.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy_r870/ene_zeal_swat_heavy_r870.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy_r870/ene_zeal_swat_heavy_r870_husk.unit" path="assets/enemyassetmods/resmod_zeal/common/units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy_r870/ene_zeal_swat_heavy_r870_husk.unit"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/common/ene_zeal_swat_heavy_2/ene_zeal_swat_heavy_2.object" path="assets/enemyassetmods/resmod_zeal/common/objects/ene_zeal_swat_heavy_2.object"/>
+	</group>
+
+	<group target="scripted" load_group="fray_enemyassetmods_resmod_zeal_taser_headgear">
+		<file name="units/pd2_dlc_gitgud/characters/ene_acc_zeal_tazer_helmet/ene_acc_zeal_tazer_helmet.unit" path="assets/enemyassetmods/resmod_zeal/taser_headgear/ene_acc_zeal_tazer_helmet.unit"/>
+	</group>
+
+	<group target="scripted" load_group="fray_enemyassetmods_resmod_zeal_cities">
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1.unit" path="assets/enemyassetmods/resmod_zeal/cities/units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1_husk.unit" path="assets/enemyassetmods/resmod_zeal/cities/units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1_husk.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_city_2/ene_zeal_city_2.unit" path="assets/enemyassetmods/resmod_zeal/cities/units/pd2_dlc_gitgud/characters/ene_zeal_city_2/ene_zeal_city_2.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_city_2/ene_zeal_city_2_husk.unit" path="assets/enemyassetmods/resmod_zeal/cities/units/pd2_dlc_gitgud/characters/ene_zeal_city_2/ene_zeal_city_2_husk.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3.unit" path="assets/enemyassetmods/resmod_zeal/cities/units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3.unit"/>
+		<file name="units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3_husk.unit" path="assets/enemyassetmods/resmod_zeal/cities/units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3_husk.unit"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_1/ene_zeal_swat/ene_zeal_swat.object" path="assets/enemyassetmods/resmod_zeal/cities/objects/city_1/ene_zeal_swat.object"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_2/ene_zeal_swat_2/ene_zeal_swat_2.object" path="assets/enemyassetmods/resmod_zeal/cities/objects/city_2/ene_zeal_swat_2.object"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_3/ene_zeal_swat/ene_zeal_swat.object" path="assets/enemyassetmods/resmod_zeal/cities/objects/city_3/ene_zeal_swat.object"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_1/ene_acc_zeal_swat_helmet/ene_acc_zeal_swat_helmet.unit" path="assets/enemyassetmods/resmod_zeal/cities/headgear/city_1/ene_acc_zeal_swat_helmet.unit"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_1/ene_acc_zeal_swat_helmet/ene_acc_zeal_swat_helmet.object" path="assets/enemyassetmods/resmod_zeal/cities/headgear/city_1/ene_acc_zeal_swat_helmet.object"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_3/ene_acc_zeal_swat_helmet/ene_acc_zeal_swat_helmet.unit" path="assets/enemyassetmods/resmod_zeal/cities/headgear/city_3/ene_acc_zeal_swat_helmet.unit"/>
+		<file name="units/fray_enemyassetmods/resmod_zeal/city_3/ene_acc_zeal_swat_helmet/ene_acc_zeal_swat_helmet.object" path="assets/enemyassetmods/resmod_zeal/cities/headgear/city_3/ene_acc_zeal_swat_helmet.object"/>
 	</group>
 </assets>
