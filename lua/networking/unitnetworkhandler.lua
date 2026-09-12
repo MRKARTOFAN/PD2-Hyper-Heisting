@@ -1,135 +1,64 @@
-function UnitNetworkHandler:set_health(unit, percent, max_mul, sender)
-	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+Hooks:PostHook(UnitNetworkHandler, "set_health", "fray_set_health_ratio", function(self, unit, percent, max_mul, sender)
+	if not alive(unit) or type(percent) ~= "number" or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
 	end
 
-	local peer = self._verify_sender(sender)
-	local peer_id = peer:id()
-	local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+	local char_dmg_ext = unit:character_damage()
 
-	if character_data and character_data.panel_id then
-		unit:character_damage()._health_ratio = percent / 100
-		managers.hud:set_teammate_health(character_data.panel_id, {
-			current = percent * max_mul,
-			total = 100 * max_mul,
-			max = 100 * max_mul
-		})
-	else
-		unit:character_damage()._health_ratio = percent / 100
-		managers.hud:set_mugshot_health(unit:unit_data().mugshot_id, percent / 100)
+	if char_dmg_ext then
+		char_dmg_ext._health_ratio = percent / 100
 	end
-
-	if percent ~= 100 then
-		managers.mission:call_global_event("player_damaged")
-	end
-end
+end)
 
 function UnitNetworkHandler:send_drama(drama, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+	if not Network:is_server() or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
 	local peer = self._verify_sender(sender)
 
-	if not peer then
+	if not peer or type(drama) ~= "number" or drama ~= drama or drama == math.huge or drama == -math.huge then
 		return
 	end
 
-	managers.groupai:state():_add_drama(drama)
+	local state = managers.groupai and managers.groupai:state()
+
+	if state and state._add_drama then
+		state:_add_drama(math.clamp(drama, -1, 1))
+	end
 end
 
 function UnitNetworkHandler:fray_lvm(sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+	if not Network:is_server() or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	local level_data = Global and Global.level_data
+
+	if not level_data then
 		return
 	end
 
 	_G.PD2FRAY_LVM = true
-	_G.PD2FRAY_LVM_LEVEL = Global.level_data
-end
-
-function UnitNetworkHandler:sync_begin_hh_stealth_message()
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	managers.hud:present_mid_text({
-		text = "PAGER CALL INCOMING...",
-		time = 3
-	})
-end
-
-function UnitNetworkHandler:sync_client_whisper_mass_pager_t(timer, title_message)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	managers.groupai:state():sync_client_whisper_mass_pager_t(timer, title_message)
-end
-
-function UnitNetworkHandler:sync_client_whisper_strike_message(reason, count)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	managers.groupai:state():sync_client_whisper_strike_message(reason, count)
-end
-
-function UnitNetworkHandler:sync_client_whisper_wipe_clbks(show_camera_message)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	managers.groupai:state():sync_client_whisper_wipe_clbks(show_camera_message)
-end
-
-function UnitNetworkHandler:set_client_groupai_ecm_data(call, camera, pager)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-	
-	local ecm_settings = {call = call, camera = camera, pager = pager}
-
-	managers.groupai:state():_set_client_groupai_ecm_data(ecm_settings)
-end
-
-function UnitNetworkHandler:request_throw_projectile(projectile_type_index, position, dir, sender)
-	local peer = self._verify_sender(sender)
-
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
-		return
-	end
-
-	local peer_id = peer:id()
-	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
-
-	if not projectile_type then
-		return
-	end
-
-	local no_cheat_count = tweak_data.blackmarket.projectiles[projectile_type].no_cheat_count
-
-	if not no_cheat_count and not managers.player:verify_grenade(peer_id) then
-		return
-	end
-
-	ProjectileBase.throw_projectile(projectile_type, position, dir, peer_id)
+	_G.PD2FRAY_LVM_LEVEL = level_data
 end
 
 function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike, action_id)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
+	if not self._verify_character(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	local movement = unit:movement()
-	if not movement or not movement.action_request then
+	local mov_ext = unit:movement()
+
+	if not mov_ext or not mov_ext.action_request then
 		return
 	end
 
 	local action_desc = {
 		block_type = "walk",
-		type = "spooc",
-		path_index = 1,
 		body_part = 1,
+		path_index = 1,
+		type = "spooc",
 		nav_path = {
 			unit:position()
 		},
@@ -137,8 +66,8 @@ function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike
 		flying_strike = flying_strike,
 		action_id = action_id,
 		blocks = {
-			idle = -1,
 			act = -1,
+			idle = -1,
 			turn = -1,
 			walk = -1
 		}
@@ -146,238 +75,37 @@ function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike
 
 	if flying_strike then
 		action_desc.blocks.light_hurt = -1
-		action_desc.blocks.heavy_hurt = -1
-		action_desc.blocks.fire_hurt = -1
 		action_desc.blocks.hurt = -1
+		action_desc.blocks.heavy_hurt = -1
 		action_desc.blocks.expl_hurt = -1
+		action_desc.blocks.fire_hurt = -1
 		action_desc.blocks.taser_tased = -1
 	end
 
-	movement:action_request(action_desc)
+	mov_ext:action_request(action_desc)
 end
 
-function UnitNetworkHandler:action_aim_state(unit, state, sender_rpc)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) or not self._verify_sender(sender_rpc) then
+function UnitNetworkHandler:reload_weapon_cop(unit, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character_and_sender(unit, sender) then
 		return
 	end
 
-	if state then
-		local shoot_action = {
-			block_type = "action",
-			body_part = 3,
-			type = "shoot"
-		}
+	local mov_ext = alive(unit) and unit:movement()
+	local inventory = alive(unit) and unit:inventory()
+	local weapon = inventory and inventory:equipped_unit()
+	local weapon_base = alive(weapon) and weapon:base()
+	local ammo_base = weapon_base and weapon_base.ammo_base and weapon_base:ammo_base()
 
-		unit:movement():action_request(shoot_action)
-	else
-		unit:movement():sync_action_aim_end()
-	end
-end
-
-function UnitNetworkHandler:m79grenade_explode_on_client(position, normal, user, damage, range, curve_pow, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+	if not mov_ext or not ammo_base or not ammo_base.set_ammo_remaining_in_clip then
 		return
 	end
 
-	if not self._verify_character_and_sender(user, sender) then
-		if alive(user) and user:movement() and user:movement()._active_actions then --this instance was actually a shotgun push ragdoll pos sync
-			local death_action = user:movement()._active_actions[1]
+	local current_action = mov_ext.get_action and mov_ext:get_action(3)
 
-			if death_action and death_action:type() == "hurt" and death_action._hips_obj then
-				local u_body = user:body(damage)
-
-				if u_body:enabled() and u_body:dynamic() then
-					u_body:set_position(position)
-				end
-			end
-		end
-
-		return
-	end
-
-	ProjectileBase._explode_on_client(position, normal, user, damage, range, curve_pow)
-end
-
-function UnitNetworkHandler:action_hurt_start(unit, hurt_type_idx, body_part, death_type_idx, type_idx, variant_idx, direction_vec, hit_pos)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	local hurt_type = CopActionHurt.idx_to_hurt_type(hurt_type_idx)
-
-	if hurt_type == "death" then
-		if alive(unit) then
-			local action_type = CopActionHurt.idx_to_type(type_idx)
-			local variant = CopActionHurt.idx_to_variant(variant_idx)
-			local block_type = hurt_type
-			local mov_ext = unit:movement()
-			local client_interrupt = nil
-
-			if mov_ext._queued_actions then
-				mov_ext._queued_actions = {}
-			end
-
-			if mov_ext._rope then
-				mov_ext._rope:base():retract()
-
-				mov_ext._rope = nil
-				mov_ext._rope_death = true
-
-				if unit:sound().anim_clbk_play_sound then
-					unit:sound():anim_clbk_play_sound(unit, "repel_end")
-				end
-			end
-
-			if Network:is_server() then
-				mov_ext:set_attention()
-			else
-				client_interrupt = true
-				mov_ext:synch_attention()
-			end
-
-			local blocks = {
-				act = -1,
-				aim = -1,
-				action = -1,
-				tase = -1,
-				walk = -1,
-				light_hurt = -1,
-				death = -1
-			}
-
-			local action_data = {
-				allow_network = false,
-				client_interrupt = client_interrupt,
-				hurt_type = hurt_type,
-				block_type = block_type,
-				blocks = blocks,
-				body_part = body_part,
-				death_type = CopActionHurt.idx_to_death_type(death_type_idx),
-				type = action_type,
-				variant = variant,
-				direction_vec = direction_vec,
-				hit_pos = hit_pos
-			}
-
-			unit:movement():action_request(action_data)
-		end
-	else
-		if not self._verify_character(unit) then
-			return
-		end
-
-		local action_data = nil
-		local action_type = CopActionHurt.idx_to_type(type_idx)
-
-		if action_type == "healed" then
-			if unit:anim_data() and unit:anim_data().act then
-				return
-			end
-
-			action_data = {
-				body_part = body_part,
-				type = "healed",
-				client_interrupt = Network:is_client()
-			}
-		else
-			local block_type = hurt_type
-
-			if hurt_type == "expl_hurt" or hurt_type == "fire_hurt" or hurt_type == "poison_hurt" or hurt_type == "taser_tased" then
-				block_type = "heavy_hurt"
-			end
-
-			if Network:is_server() and unit:movement():chk_action_forbidden(block_type) then
-				return
-			end
-
-			local variant = CopActionHurt.idx_to_variant(variant_idx)
-			local client_interrupt, blocks = nil
-
-			if variant == "tase" then
-				block_type = "bleedout"
-			elseif hurt_type == "expl_hurt" or hurt_type == "fire_hurt" or hurt_type == "poison_hurt" or hurt_type == "taser_tased" then
-				block_type = "heavy_hurt"
-
-				client_interrupt = Network:is_client()
-			else
-				block_type = hurt_type
-
-				if hurt_type ~= "bleedout" and hurt_type ~= "fatal" then
-					client_interrupt = Network:is_client()
-				end
-			end
-
-			if hurt_type ~= "light_hurt" then
-				blocks = {
-					act = -1,
-					aim = -1,
-					action = -1,
-					tase = -1,
-					walk = -1,
-					light_hurt = -1
-				}
-
-				if hurt_type == "bleedout" then
-					blocks.bleedout = -1
-					blocks.hurt = -1
-					blocks.heavy_hurt = -1
-					blocks.hurt_sick = -1
-					blocks.concussion = -1
-				end
-			end
-
-			action_data = {
-				allow_network = false,
-				client_interrupt = client_interrupt,
-				hurt_type = hurt_type,
-				block_type = block_type,
-				blocks = blocks,
-				body_part = body_part,
-				death_type = CopActionHurt.idx_to_death_type(death_type_idx),
-				type = action_type,
-				variant = variant,
-				direction_vec = direction_vec,
-				hit_pos = hit_pos
-			}
-		end
-
-		unit:movement():action_request(action_data)
-	end
-end
-
-function UnitNetworkHandler:sync_medic_heal(unit, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
-		return
-	end
-
-	MedicActionHeal.check_achievements()
-
-	if not self._verify_character(unit) then
-		return
-	end
-
-	local char_dmg_ext = unit:character_damage()
-
-	if char_dmg_ext and char_dmg_ext.sync_heal_action then
-		char_dmg_ext:sync_heal_action()
-	end
-end
-function UnitNetworkHandler:reload_weapon_cop(cop, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character_and_sender(cop, sender) then
-		return
-	end
-
-	if not alive(cop) then
-		return
-	end
-
-	local current_action = cop:movement():get_action(3)
-	if current_action and current_action:type() == "shoot" then
-		-- If we are currently in shoot action, set the mag to empty
-		cop:inventory():equipped_unit():base():ammo_base():set_ammo_remaining_in_clip(0)
-	else
-		-- Otherwise request an actual reload action
-		cop:movement():action_request({
+	if current_action and current_action.type and current_action:type() == "shoot" then
+		ammo_base:set_ammo_remaining_in_clip(0)
+	elseif mov_ext.action_request then
+		mov_ext:action_request({
 			body_part = 3,
 			type = "reload"
 		})

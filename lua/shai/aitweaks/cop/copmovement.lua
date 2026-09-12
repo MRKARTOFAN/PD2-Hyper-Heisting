@@ -73,21 +73,32 @@ function CopMovement:damage_clbk(my_unit, damage_info)
 end
 
 
--- Toggle flashlights when set to cool or uncool
 Hooks:PreHook(CopMovement, "_post_init", "sh__post_init", function(self)
-	local equipped_weapon = self._ext_inventory:equipped_unit()
-	if alive(equipped_weapon) then
-		equipped_weapon:base():set_flashlight_enabled(false)
+	local inventory = self._ext_inventory
+	local equipped_weapon = inventory and inventory:equipped_unit()
+	local weapon_base = alive(equipped_weapon) and equipped_weapon:base()
+
+	if weapon_base and weapon_base.set_flashlight_enabled then
+		weapon_base:set_flashlight_enabled(false)
 	end
 end)
 
 function CopMovement:_chk_flashlight_state()
-	local equipped_weapon = self._ext_inventory:equipped_unit()
-	if not alive(equipped_weapon) then
+	local inventory = self._ext_inventory
+	local equipped_weapon = inventory and inventory:equipped_unit()
+	local weapon_base = alive(equipped_weapon) and equipped_weapon:base()
+
+	if not weapon_base or not weapon_base.set_flashlight_enabled then
 		return
 	end
 
-	local flashlight_on = not self:cool() and not self._ext_inventory:shield_unit() and managers.game_play_central:flashlights_on()
+	local gameplay = managers.game_play_central
+
+	if not gameplay then
+		return
+	end
+
+	local flashlight_on = not self:cool() and not inventory:shield_unit() and gameplay:flashlights_on()
 	if flashlight_on then
 		local lights = self._unit:get_objects_by_type(Idstring("light"))
 		if #lights > 0 and lights[1]:enable() then
@@ -95,7 +106,7 @@ function CopMovement:_chk_flashlight_state()
 		end
 	end
 
-	equipped_weapon:base():set_flashlight_enabled(flashlight_on)
+	weapon_base:set_flashlight_enabled(flashlight_on)
 end
 
 Hooks:PostHook(CopMovement, "set_cool", "sh_set_cool", CopMovement._chk_flashlight_state)
