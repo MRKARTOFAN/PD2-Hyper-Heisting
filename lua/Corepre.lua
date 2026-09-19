@@ -1,7 +1,5 @@
 _G.PD2FRAY = PD2FRAY or {}
 
-PD2FRAY.a = math.random() < 0.001
-
 PD2FRAY._mod_path = ModPath
 PD2FRAY._options_path = ModPath .. "menu/options.txt"
 PD2FRAY._save_path = SavePath .. "fray_settings.txt"
@@ -21,7 +19,6 @@ function PD2FRAY:IsEnemyAssetModEnabled(name)
 end
 
 PD2FRAY.settings = {
-	toggle_overhaul_player = true,
 	toggle_hhassault = false,
 	toggle_hhskulldiff = false,
 	toggle_suppression = true,
@@ -32,8 +29,7 @@ PD2FRAY.settings = {
 	first_launch = true
 }
 
-PD2FRAY.session_settings = {} --leave empty; generated on load
-PD2FRAY.show_popup = nil
+PD2FRAY.session_settings = {}
 
 function PD2FRAY:ChangeSetting(setting_name,value,apply_immediately)
 	self.settings[setting_name] = value
@@ -48,10 +44,6 @@ end
 
 function PD2FRAY:SkullDiffEnabled()
 	return self:GetSessionSetting("toggle_hhskulldiff")
-end
-
-function PD2FRAY:DofEnabled()
-	return self:GetSessionSetting("toggle_noweirddof")
 end
 
 function PD2FRAY:BlurzoneEnabled()
@@ -120,53 +112,4 @@ PD2FRAY:LoadSettings()
 if PD2FRAY.settings.first_launch then
 	PD2FRAY.settings.first_launch = false
 	PD2FRAY:SaveSettings(true)
-end
-
---this file is the only time that settings should be loaded from the mod save file;
---any changes will not take place until Lua is reloaded (eg. load into new mission or on restart),
---UNLESS specifically requesting current setting:
---	PD2FRAY:GetSetting("setting_name_example")
---or if saving to apply immediately:
---	PD2FRAY:SaveSettings(true)
---	PD2FRAY:ChangeSetting("setting_name_example",12345,true)
---for anything that requires a restart, you should use 
---	PD2FRAY:GetSessionSetting("setting_name_example")
-
--- Voice Framework Setup
-local C = blt_class()
-VoicelineFramework = C
-VoicelineFramework.BufferedSounds = {}
-
-function C:register_unit(unit_name)
-	--log("VF: Registering Unit, " .. unit_name)
-	if _G.voiceline_framework then
-		_G.voiceline_framework.BufferedSounds[unit_name] = {}
-	end
-end
-
-function C:register_line_type(unit_name, line_type)
-	if _G.voiceline_framework then
-		if _G.voiceline_framework.BufferedSounds[unit_name] then
-			--log("VF: Registering Type, " .. line_type .. " for Unit " .. unit_name)
-			local fuck = _G.voiceline_framework.BufferedSounds[unit_name]
-			fuck[line_type] = {}
-		end
-	end
-end
-
-function C:register_voiceline(unit_name, line_type, path)
-	if _G.voiceline_framework then
-		if _G.voiceline_framework.BufferedSounds[unit_name] then
-			local fuck = _G.voiceline_framework.BufferedSounds[unit_name]
-			if fuck[line_type] then
-				--log("VF: Registering Path, " .. path .. " for Unit " .. unit_name)
-				table.insert(fuck[line_type], XAudio.Buffer:new(path))
-			end
-		end
-	end
-end
-
-if not _G.voiceline_framework then
-	blt.xaudio.setup()
-	_G.voiceline_framework = VoicelineFramework:new()
 end

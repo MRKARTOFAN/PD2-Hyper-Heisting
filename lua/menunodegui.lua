@@ -7,8 +7,13 @@ local warned_mods = {
     ["SC"] = "Restoration",
     ["deathvox"] = "Crackdown"
 }
+local warning_shown
 
 Hooks:PostHook(MenuNodeGui,"_setup_item_rows","fray_mememode_safety_notif",function(self,node,...)
+	if warning_shown then
+		return
+	end
+
     local title = "HYPER HEISTING MEME MODE SAFETY FEATURE ACTIVATED"
     local desc = "Caution! You have the following AI-changing mods installed, which may conflict with Fray:\n"
     local has_any
@@ -20,6 +25,7 @@ Hooks:PostHook(MenuNodeGui,"_setup_item_rows","fray_mememode_safety_notif",funct
     end
 	
     if has_any then 
+		warning_shown = true
         QuickMenu:new(title, desc, nil, true)
     end
 end)

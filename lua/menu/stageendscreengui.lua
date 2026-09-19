@@ -242,7 +242,7 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 
 	if managers.job:stage_success() then
 		managers.briefing:_clear_event()
-		self._bain_debrief_t = TimerManager:main():time() + 1
+		self._bain_debrief_t = TimerManager:game():time() + 1
 	end
 
 	self._reduced_to_small_font = managers.crime_spree:is_active()
@@ -254,8 +254,6 @@ function StageEndScreenGui:play_bain_debrief()
 	local variant = managers.groupai:state():endscreen_variant() or 0
 	local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 	local outro_event = level_data and (variant == 0 and level_data.outro_event or level_data.outro_event[variant])
-
-	Application:debug("StageEndScreenGui:play_bain_debrief()", outro_event)
 
 	if outro_event then
 		local snd_event = nil
@@ -272,7 +270,6 @@ function StageEndScreenGui:play_bain_debrief()
 		end
 
 		if snd_event then
-			print("[StageEndScreenGui] ", snd_event)
 			managers.briefing:post_event(snd_event, {
 				show_subtitle = false,
 				listener = {

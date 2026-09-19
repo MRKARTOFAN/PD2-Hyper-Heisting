@@ -19,12 +19,8 @@ function BlackMarketManager:equipped_melee_weapon_damage_info(lerp_value)
 	
 	local max_damage = stats.max_damage
 	
-	--log("max damage is:" .. max_damage .. "")
-	
 	if managers.player:has_category_upgrade("player", "momentummaker_aced") then
 		max_damage = max_damage * 2
-		
-		--log("mod damage is:" .. max_damage .. "")
 	end
 
 	local dmg = math.lerp(stats.min_damage, max_damage, lerp_value)

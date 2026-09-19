@@ -93,7 +93,12 @@ Hooks:PostHook(TaserLogicAttack, "enter", "sh_enter", function (data)
 	data.brain:set_update_enabled_state(true)
 
 	local my_data = data.internal_data
-	my_data.tase_sphere_cast_radius = data.char_tweak.weapon[data.unit:inventory():equipped_unit():base():weapon_tweak_data().usage].tase_sphere_cast_radius
+	local inventory = data.unit:inventory()
+	local weapon = inventory and inventory:equipped_unit()
+	local weapon_base = alive(weapon) and weapon:base()
+	local weapon_tweak = weapon_base and weapon_base.weapon_tweak_data and weapon_base:weapon_tweak_data()
+	local usage_tweak = weapon_tweak and data.char_tweak.weapon[weapon_tweak.usage]
+	my_data.tase_sphere_cast_radius = usage_tweak and usage_tweak.tase_sphere_cast_radius or 0
 	my_data.tase_slot_mask = managers.slot:get_mask("bullet_blank_impact_targets")
 	my_data.detection_task_key = "TaserLogicAttack._upd_enemy_detection" .. tostring(data.key)
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, TaserLogicAttack._upd_enemy_detection, data, data.t + 0.2)

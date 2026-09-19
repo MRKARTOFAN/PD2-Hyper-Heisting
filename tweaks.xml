@@ -240,6 +240,38 @@
 	
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
+			<xml/>
+			<state name="std" type="template_state" segment="base"/>
+		</search>
+		<target mode="attach">
+			<to name="cm_sp_male_stripper" redirect="std/stand/so/idle/e_nl_cali_girls"/>
+		</target>
+	</tweak>
+
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
+		<search>
+			<xml/>
+		</search>
+		<target mode="attach">
+			<to name="cm_sp_male_stripper" redirect="std/stand/so/idle/e_nl_cali_girls"/>
+			<state name="std/stand/so/idle/e_nl_cali_girls" type="loop" segment="base">
+				<anim name="e_nl_cali_girls"/>
+				<exit name="std/stand/still/idle/look"/>
+			</state>
+		</target>
+	</tweak>
+
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_subset">
+		<search>
+			<xml/>
+		</search>
+		<target mode="attach">
+			<anim name="e_nl_cali_girls" file="anims/shared/special/e_nl_cali_girls" blend_set="all"/>
+		</target>
+	</tweak>
+
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
+		<search>
 				<xml/>
 				<state name="std/stand/spawn"/>
 				<from_group name="std/stand/still/idle"/>
@@ -257,40 +289,6 @@
 		</search>
 		<target mode="attributes">
 				<attr name="blend" value="0"/>
-		</target>
-	</tweak>
-	
-	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
-		<search>
-				<xml/>
-				<state name="std" type="template_state" segment="base"/>
-		</search>
-		<target mode="attach">
-			<to name="e_nl_cali_girls" redirect="std/stand/so/idle/e_nl_cali_girls"/>
-		</target>
-	</tweak>
-	
-	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
-		<search>
-				<xml/>
-		</search>
-		<target mode="attach">
-			<to name="e_nl_cali_girls" redirect="std/stand/so/idle/e_nl_cali_girls"/>
-			
-			<state name="std/stand/so/idle/e_nl_cali_girls" type="loop" segment="base">
-				<anim name="e_nl_cali_girls"/>
-				
-				<exit name="std/stand/still/idle/look"/>
-			</state>
-		</target>
-	</tweak>
-	
-	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_subset">
-		<search>
-				<xml/>
-		</search>
-		<target mode="attach">
-			<anim name="e_nl_cali_girls" file="anims/shared/special/e_nl_cali_girls" blend_set="all"/>
 		</target>
 	</tweak>
 	

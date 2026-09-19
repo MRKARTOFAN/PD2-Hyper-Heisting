@@ -353,6 +353,7 @@ local function load_resmod_zeal()
 	if not mod_asset_loader then
 		return false
 	end
+	release_enemy_asset_mod_units(mod_asset_loader, "main", resmod_zeal_fray_units)
 
 	local taser_headgear_group = asset_loader.script_loadable_packages["fray_enemyassetmods_resmod_zeal_taser_headgear"]
 	local taser_headgear_resources = {
@@ -365,8 +366,6 @@ local function load_resmod_zeal()
 		return false
 	end
 	asset_loader:LoadAssetGroup("fray_enemyassetmods_resmod_zeal_taser_headgear")
-
-	release_enemy_asset_mod_units(mod_asset_loader, "main", resmod_zeal_fray_units)
 
 	local common_wrappers = asset_loader.script_loadable_packages["fray_enemyassetmods_resmod_zeal_common"]
 	local city_wrappers = asset_loader.script_loadable_packages["fray_enemyassetmods_resmod_zeal_cities"]
@@ -602,4 +601,8 @@ DelayedCalls:Add("PD2FRAYLoadEnemyAssetMods", 0, function()
 	end
 
 	preload_fray_units(conditional_fray_units, claimed_units)
+	PD2FRAY._enemy_asset_mod_preload_units = conditional_fray_units
+	if PD2FRAY._preload_enemy_asset_mod_units then
+		PD2FRAY._preload_enemy_asset_mod_units(managers and managers.dyn_resource)
+	end
 end)

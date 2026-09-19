@@ -852,7 +852,6 @@ function HUDAssaultCorner:set_color_state(state, dont_refresh_hud)
 			self:_update_assault_hud_color(self._assault_survived_color)
 		end
 	else
-		log("HUDASSAULTCORNER: STATE DOES NOT MATCH ANY COLOR!!!")
 		self._assault_state = "normal"
 		self:_update_assault_hud_color(self._regular_assault_color)
 	end

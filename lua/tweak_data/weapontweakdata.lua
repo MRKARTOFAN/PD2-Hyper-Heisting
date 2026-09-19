@@ -3789,6 +3789,7 @@ local shotgun_tuning = {
 	amr12 = {pellet_damage = 16, near = 650, far = 1450},
 	bs23 = {pellet_damage = 36, near = 1000, far = 2100},
 	beck = {pellet_damage = 32, near = 900, far = 1900},
+	bleckert = {pellet_damage = 32, near = 900, far = 1900},
 	minibeck = {pellet_damage = 16, near = 650, far = 1450},
 	littlest = {pellet_damage = 32, near = 650, far = 1400}
 }

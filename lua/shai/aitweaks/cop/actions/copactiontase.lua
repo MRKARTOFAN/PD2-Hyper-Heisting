@@ -32,8 +32,14 @@ function CopActionTase:on_attention(attention)
 		return
 	end
 
-	local weap_tweak = self._ext_inventory:equipped_unit():base():weapon_tweak_data()
-	local weapon_usage_tweak = self._common_data.char_tweak.weapon[weap_tweak.usage]
+	local weapon = self._ext_inventory and self._ext_inventory:equipped_unit()
+	local weapon_base = alive(weapon) and weapon:base()
+	local weap_tweak = weapon_base and weapon_base.weapon_tweak_data and weapon_base:weapon_tweak_data()
+	local weapon_usage_tweak = weap_tweak and self._common_data.char_tweak.weapon[weap_tweak.usage]
+
+	if not weapon_usage_tweak then
+		return self:on_attention(nil)
+	end
 
 	self._weap_tweak = weap_tweak
 	self._w_usage_tweak = weapon_usage_tweak

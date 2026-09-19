@@ -1,86 +1,10 @@
 PlayerStandard._style_meter_multiplier = 1
-local temp_vec1 = Vector3()
-
-local mvec3_dis_sq = mvector3.distance_sq
-local mvec3_set = mvector3.set
-local mvec3_sub = mvector3.subtract
-local mvec3_add = mvector3.add
-local mvec3_mul = mvector3.multiply
-local mvec3_norm = mvector3.normalize
 
 Hooks:PostHook(PlayerStandard, "_calculate_standard_variables", "FRAY__calculate_standard_variables", function(self, t, dt)
 	self._setting_hold_to_jump = managers.user:get_setting("hold_to_jump")
 	self._setting_hold_to_fire = managers.user:get_setting("holdtofire")
 	self._single_shot_autofire = self._setting_hold_to_fire
 end)
-
-function PlayerStandard:enter(state_data, enter_data)
-	PlayerMovementState.enter(self, state_data, enter_data)
-	tweak_data:add_reload_callback(self, self.tweak_data_clbk_reload)
-
-	self._state_data = state_data
-	self._state_data.using_bipod = managers.player:current_state() == "bipod"
-	self._equipped_unit = self._ext_inventory:equipped_unit()
-	local weapon = self._ext_inventory:equipped_unit()
-	self._weapon_hold = weapon and weapon:base().weapon_hold and weapon:base():weapon_hold() or weapon and weapon:base().get_name_id and weapon:base():get_name_id()
-
-	self:inventory_clbk_listener(self._unit, "equip")
-	self:_enter(enter_data)
-	self:_update_ground_ray()
-
-	self._controller = self._unit:base():controller()
-
-	if not self._unit:mover() then
-		self:_activate_mover(PlayerStandard.MOVER_STAND)
-	end
-
-	if not _G.IS_VR and (enter_data and enter_data.wants_crouch or not self:_can_stand()) and not self._state_data.ducking then
-		self:_start_action_ducking(managers.player:player_timer():time())
-	end
-
-	self._ext_camera:clbk_fp_enter(self._unit:rotation():y())
-
-	if self._ext_movement:nav_tracker() then
-		self._pos_reservation = {
-			radius = 100,
-			position = self._ext_movement:m_pos(),
-			filter = self._ext_movement:pos_rsrv_id()
-		}
-		self._pos_reservation_slow = {
-			radius = 100,
-			position = mvector3.copy(self._ext_movement:m_pos()),
-			filter = self._ext_movement:pos_rsrv_id()
-		}
-
-		managers.navigation:add_pos_reservation(self._pos_reservation)
-		managers.navigation:add_pos_reservation(self._pos_reservation_slow)
-	end
-
-	for _, data in ipairs(self._ext_inventory._available_selections) do
-		local unit = data.unit
-
-		managers.hud:set_ammo_amount(unit:base():selection_index(), unit:base():ammo_info())
-	end
-
-	if enter_data and enter_data.equip_weapon then
-		self:_start_action_unequip_weapon(managers.player:player_timer():time(), {
-			selection_wanted = enter_data.equip_weapon
-		})
-	end
-
-	if enter_data then
-		self._change_weapon_data = enter_data.change_weapon_data or self._change_weapon_data
-		self._unequip_weapon_expire_t = enter_data.unequip_weapon_expire_t or self._unequip_weapon_expire_t
-		self._equip_weapon_expire_t = enter_data.equip_weapon_expire_t or self._equip_weapon_expire_t
-	end
-
-	self:_reset_delay_action()
-
-	self._last_velocity_xy = Vector3()
-	self._last_sent_pos_t = enter_data and enter_data.last_sent_pos_t or managers.player:player_timer():time()
-	self._last_sent_pos = enter_data and enter_data.last_sent_pos or mvector3.copy(self._pos)
-	self._gnd_ray = true
-end
 
 function PlayerStandard:_stance_entered(unequipped)
 	local stance_standard = tweak_data.player.stances.default[managers.player:current_state()] or tweak_data.player.stances.default.standard
@@ -486,8 +410,6 @@ function PlayerStandard:_check_action_jump(t, input)
 					local max_walk_speed_hopping = self:_get_max_walk_speed(t, true) * 1.5
 					local mul = 1 + 125 / max_walk_speed_hopping
 					
-					--log(tostring(mul))
-					
 					jump_vel_xy = math.min(max_walk_speed_hopping, math.abs(self._last_velocity_xy:length()) * mul) * dot_mul
 				end
 				
@@ -648,11 +570,8 @@ function PlayerStandard:_update_movement(t, dt)
 		local lleration = acceleration
 		
 		if math.abs(self._last_velocity_xy:length()) > wanted_walk_speed then
-			--log("deccelerate!")
 			lleration = decceleration
 		end
-		
-		--log("lleration: " .. lleration .. "")
 		
 		if self._jump_vel_xy and self._state_data.in_air and mvector3.dot(self._jump_vel_xy, self._last_velocity_xy) >= 0 then
 			local wanted_walk_speed_air = WALK_SPEED_MAX * math.min(1, self._move_dir:length())
@@ -910,11 +829,8 @@ function PlayerStandard:_get_melee_charge_lerp_value(t, offset)
 	local melee_entry = managers.blackmarket:equipped_melee_weapon()
 	local max_charge_time = tweak_data.blackmarket.melee_weapons[melee_entry].stats.charge_time
 	
-	--log("origin time: " .. max_charge_time .. "")
-	
 	if managers.player:has_category_upgrade("player", "momentummaker_aced") then
 		max_charge_time = max_charge_time * 0.5
-		--log("mod time: " .. max_charge_time .. "")
 	end
 
 	max_charge_time = max_charge_time * HHUpgradeValueAny("player", "acupuncture_charge_speed_multiplier", "draw_of_the_sword_charge_speed_multiplier", "mentor_crew_melee_speed_multiplier", 1)
@@ -1321,8 +1237,6 @@ function PlayerStandard:_start_action_melee(t, input, instant)
 		t_multiplier = 0.01
 	end
 	
-	--log("t_multiplier is " .. tostring(t_multiplier) .. "")
-
 	self._camera_unit:anim_state_machine():set_global(self._state_data.melee_global_value, 1)
 
 	local current_state_name = self._camera_unit:anim_state_machine():segment_state(self:get_animation("base"))
@@ -2063,77 +1977,6 @@ function PlayerStandard:_do_action_throw_projectile(t, input, drop_projectile)
 	self:_stance_entered()
 end
 
-function PlayerStandard:_check_action_interact(t, input)
-	local keyboard = self._controller.TYPE == "pc" or managers.controller:get_default_wrapper_type() == "pc"
-	local new_action, timer, interact_object = nil
-
-	if input.btn_interact_press then
-		if _G.IS_VR then
-			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
-		end
-
-		if not self:_action_interact_forbidden() then
-			new_action, timer, interact_object = self._interaction:interact(self._unit, input.data, self._interact_hand)
-
-			if new_action then
-				self:_play_interact_redirect(t, input)
-			end
-
-			if timer then
-				new_action = true
-
-				self._ext_camera:camera_unit():base():set_limits(80, 50)
-				self:_start_action_interact(t, input, timer, interact_object)
-			end
-
-			if not new_action then
-				self._start_intimidate = true
-				self._start_intimidate_t = t
-			end
-		end
-	end
-
-	local secondary_delay = tweak_data.team_ai.stop_action.delay
-	local force_secondary_intimidate = false
-
-	if not new_action and keyboard and input.btn_interact_secondary_press then
-		force_secondary_intimidate = true
-	end
-
-	if input.btn_interact_release then
-		local released = true
-
-		if _G.IS_VR then
-			local release_hand = input.btn_interact_left_release and PlayerHand.LEFT or PlayerHand.RIGHT
-			released = release_hand == self._interact_hand
-		end
-
-		if released then
-			if self._start_intimidate and not self:_action_interact_forbidden() then
-				if t < self._start_intimidate_t + secondary_delay then
-					self:_start_action_intimidate(t)
-
-					self._start_intimidate = false
-					
-					return
-				end
-			else
-				self:_interupt_action_interact()
-			end
-		end
-	end
-
-	if (self._start_intimidate or force_secondary_intimidate) and not self:_action_interact_forbidden() and (not keyboard and t > self._start_intimidate_t + secondary_delay or force_secondary_intimidate) then
-		self:_start_action_intimidate(t, true)
-
-		self._start_intimidate = false
-		
-		return
-	end
-
-	return new_action
-end
-
 local function spread_inspire_panic(unit)
 	local enemies = World:find_units_quick("sphere", unit:movement():m_pos(), tweak_data.upgrades.inspire_panic_range, managers.slot:get_mask("enemies"))
 
@@ -2360,45 +2203,6 @@ function PlayerStandard:_get_input(t, dt, paused)
 	return input
 end
 
-function PlayerStandard:_upd_nav_data()
-	if mvec3_dis_sq(self._m_pos, self._pos) > 4 then
-		if self._ext_movement:nav_tracker() then
-			self._ext_movement:nav_tracker():move(self._pos)
-
-			local nav_seg_id = self._ext_movement:nav_tracker():nav_segment()
-
-			if self._standing_nav_seg_id ~= nav_seg_id then
-				self._standing_nav_seg_id = nav_seg_id
-				local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
-				local location_id = metadata.location_id
-
-				managers.hud:set_player_location(location_id)
-				self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
-				self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
-				managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
-			end
-		end
-
-		if self._pos_reservation then
-			managers.navigation:move_pos_rsrv(self._pos_reservation)
-
-			local slow_dist = 100
-
-			mvec3_set(temp_vec1, self._pos_reservation_slow.position)
-			mvec3_sub(temp_vec1, self._pos_reservation.position)
-
-			if slow_dist < mvec3_norm(temp_vec1) then
-				mvec3_mul(temp_vec1, slow_dist)
-				mvec3_add(temp_vec1, self._pos_reservation.position)
-				mvec3_set(self._pos_reservation_slow.position, temp_vec1)
-				managers.navigation:move_pos_rsrv(self._pos_reservation)
-			end
-		end
-
-		self._ext_movement:set_m_pos(self._pos)
-	end
-end
-
 function PlayerStandard:update(t, dt)
 	PlayerMovementState.update(self, t, dt)
 	
@@ -2496,10 +2300,9 @@ function PlayerStandard:_add_unit_to_char_table(char_table, unit, unit_type, int
 	end
 end
 
-function PlayerStandard:_action_interact_forbidden()
-	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self._melee_stunned
-
-	return action_forbidden
+local _action_interact_forbidden_original = PlayerStandard._action_interact_forbidden
+function PlayerStandard:_action_interact_forbidden(...)
+	return self._melee_stunned or _action_interact_forbidden_original(self, ...)
 end
 
 function PlayerStandard:_play_distance_interact_redirect(t, variant)
@@ -2566,30 +2369,14 @@ function PlayerStandard:_do_action_intimidate(t, interact_type, sound_name, skip
 	end
 end
 
+local _start_action_interact_original = PlayerStandard._start_action_interact
 function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
-	self:_interupt_action_reload(t)
-	self:_interupt_action_steelsight(t)
-	self:_interupt_action_running(t)
-	self:_interupt_action_charging_weapon(t)
 	self:_interupt_action_melee(t)
 	self:_interupt_action_interact(t)
 	self:_interupt_action_throw_grenade(t)
 	self:_interupt_action_throw_projectile(t)
 
-	local final_timer = timer
-	final_timer = managers.modifiers:modify_value("PlayerStandard:OnStartInteraction", final_timer, interact_object)
-	self._interact_expire_t = final_timer
-	local start_timer = 0
-	self._interact_params = {
-		object = interact_object,
-		timer = final_timer,
-		tweak_data = interact_object:interaction().tweak_data
-	}
-
-	self:_play_unequip_animation()
-	managers.hud:show_interaction_bar(start_timer, final_timer)
-	managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, true, self._interact_params.tweak_data, final_timer, false)
-	self._unit:network():send("sync_interaction_anim", true, self._interact_params.tweak_data)
+	return _start_action_interact_original(self, t, input, timer, interact_object)
 end
 
 -- Inspire boost interaction speed (from James mod)

@@ -462,14 +462,12 @@ function PlayerDamage:damage_melee(attack_data)
 	end
 	
 	if not attack_data.is_cloaker_kick then
-		--log("damage was " .. tostring(attack_data.damage) .. "")
 		local dmg_mul = pm:damage_reduction_skill_multiplier("melee", sneakier_activated) --the vanilla function has this line, but it also uses bullet damage reduction skills due to it redirecting to damage_bullet to get results
 		
 		attack_data.damage = attack_data.damage * dmg_mul
 		
 		attack_data.damage = pm:modify_value("damage_taken", attack_data.damage, attack_data) --apply damage resistances before checking for bleedout and other things
 		
-		--log("damage became " .. tostring(attack_data.damage) .. "")
 	else
 		self._old_last_received_dmg = nil
 		local damage = self:_max_health() / 2
@@ -498,7 +496,6 @@ function PlayerDamage:damage_melee(attack_data)
 		
 		--enemies were meleeing players and taking their guns away during invincibility frames and thats no bueno
 		if alive_g(attack_data.attacker_unit) and not self:is_downed() and not self._bleed_out and not self._dead and cur_state ~= "bipod" and cur_state ~= "fatal" and cur_state ~= "bleedout" and not self._invulnerable and not self._unit:character_damage().swansong and not self._unit:movement():tased() and not self._mission_damage_blockers.invulnerable and not self._god_mode and not self:incapacitated() and not self._unit:movement():current_state().immortal and dmg_is_allowed then
-			-- log("balls")				
 			if alive_g(player_unit) then
 				local melee_stun_t = 0.4
 				
@@ -799,12 +796,10 @@ function PlayerDamage:play_melee_hit_sound_and_effects(attack_data, sound_type, 
 	local valid_attacker = attacker_unit and alive_g(attacker_unit) and attacker_unit:base()
 
 	if valid_attacker then
-		--get melee weapon id
-		if attacker_unit:base().is_husk_player then
-			local peer_id = managers.network:session():peer_by_unit(attacker_unit):id()
-			local peer = managers.network:session():peer(peer_id)
-
-			melee_name_id = peer:melee_id()
+			if attacker_unit:base().is_husk_player then
+				local session = managers.network:session()
+				local peer = session and session:peer_by_unit(attacker_unit)
+				melee_name_id = peer and peer:melee_id()
 		else
 			melee_name_id = attacker_unit:base().melee_weapon and attacker_unit:base():melee_weapon()
 		end
@@ -1075,12 +1070,10 @@ end
 
 function PlayerDamage:activate_jackpot_token()
 	self._jackpot_token = true
-	--log("this party's gettin crazy")
 end
 
 function PlayerDamage:activate_docbag_token()
 	self._docbag_token = true
-	--log("yes")
 end
 
 function PlayerDamage:_regenerated(no_messiah)
@@ -1331,11 +1324,9 @@ function PlayerDamage:damage_bullet(attack_data)
 				end
 			end
 		end
-		--log("damage was " .. tostring(attack_data.damage) .. "")
 		local dmg_mul = pm:damage_reduction_skill_multiplier("bullet", sneakier_activated)
 		attack_data.damage = attack_data.damage * dmg_mul
 		attack_data.damage = pm:modify_value("damage_taken", attack_data.damage, attack_data)
-		--log("damage became " .. tostring(attack_data.damage) .. "")
 		attack_data.damage = managers.mutators:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
 		attack_data.damage = managers.modifiers:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
 
@@ -1416,17 +1407,20 @@ function PlayerDamage:damage_bullet(attack_data)
 			self:_send_damage_drama(attack_data, health_subtracted)
 		end
 	else
-		local fuck = math.random() < 0.00001
-		
-		if PD2FRAY.a and fuck then
-			if attack_data.attacker_unit and alive(attack_data.attacker_unit) and attack_data.attacker_unit.movement and attack_data.attacker_unit.brain and attack_data.attacker_unit:brain().set_objective then
-				local unit = attack_data.attacker_unit
-				if not unit:movement():chk_action_forbidden("walk") and not unit:movement():chk_action_forbidden("idle") then
-					unit:brain():set_objective({
+		if Network:is_server() and not self._fray_cali_girls_checked then
+			local unit = attack_data.attacker_unit
+			local movement = alive(unit) and unit.movement and unit:movement()
+			local brain = alive(unit) and unit.brain and unit:brain()
+
+			if movement and brain and brain.set_objective and not movement:chk_action_forbidden("walk") and not movement:chk_action_forbidden("idle") then
+				self._fray_cali_girls_checked = true
+
+				if math.random() < 0.001 then
+					brain:set_objective({
 						type = "act",
 						action_duration = 8,
 						action = {
-							variant = "e_nl_cali_girls",
+							variant = "cm_sp_male_stripper",
 							body_part = 1,
 							type = "act",
 							blocks = {
@@ -1435,12 +1429,10 @@ function PlayerDamage:damage_bullet(attack_data)
 							}
 						}
 					})
-					
-					PD2FRAY.a = nil
 				end
 			end
 		end
-	
+
 		self:chk_queue_taunt_line(attack_data)
 	end
 	

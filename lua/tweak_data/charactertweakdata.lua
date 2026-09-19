@@ -3231,7 +3231,6 @@ Hooks:PostHook(CharacterTweakData, "_init_fbi", "fraypost_fbi", function(self, p
 	self.fbi.chatter = presets.enemy_chatter.swat
 	self.fbi.steal_loot = true
 	if level == "kosugi" or level == "kosugi_hh" then
-		-- log("wow")
 		self.fbi.access = "security"
 	else
 		self.fbi.access = "spooc"
@@ -3239,7 +3238,6 @@ Hooks:PostHook(CharacterTweakData, "_init_fbi", "fraypost_fbi", function(self, p
 	self.fbi_pager = deep_clone(self.fbi)
 	local level = Global.level_data and Global.level_data.level_id
 	if level == "kosugi" or level == "kosugi_hh" then
-		-- log("wow")
 		self.fbi_pager.access = "security"
 	else
 		self.fbi_pager.access = "spooc"
@@ -3326,7 +3324,6 @@ Hooks:PostHook(CharacterTweakData, "_init_heavy_swat", "fraypost_hswat", functio
 	self.heavy_swat.melee_weapon = "fists"
 	local level = Global.level_data and Global.level_data.level_id
 	if level == "kosugi" or level == "kosugi_hh" then
-		-- log("damn daniel")
 		self.heavy_swat.access = "security"
 	else
 		self.heavy_swat.access = "swat"
@@ -3374,10 +3371,8 @@ Hooks:PostHook(CharacterTweakData, "_init_fbi_swat", "fraypost_fswat", function(
 
 	local level = Global.level_data and Global.level_data.level_id
 	if level == "kosugi" or level == "kosugi_hh" then
-		-- log("damn daniel")
 		self.fbi_swat.access = "security"
 	else
-		-- log("wew")
 		self.fbi_swat.access = "swat"
 	end
 
@@ -3422,7 +3417,6 @@ Hooks:PostHook(CharacterTweakData, "_init_fbi_heavy_swat", "fraypost_fhswat", fu
 	self.fbi_heavy_swat.speech_prefix_count = 4
 	local level = Global.level_data and Global.level_data.level_id
 	if level == "kosugi" or level == "kosugi_hh" then
-		-- log("damn daniel")
 		self.fbi_heavy_swat.access = "security"
 	else
 		self.fbi_heavy_swat.access = "swat"
@@ -4243,43 +4237,47 @@ function CharacterTweakData:_set_sm_wish()
 end
 
 --Bot weapons, here we go
-local FRAYBotWeaponHooks = {
-	{ "_init_russian", "fraypost_russian", { { "russian", "wpn_fps_ass_amcar_npc" } } },
-	{ "_init_german", "fraypost_german", { { "german", "wpn_fps_shot_r870_npc" } } },
-	{ "_init_spanish", "fraypost_spanish", { { "spanish", "wpn_fps_lmg_m249_npc" } } },
-	{ "_init_american", "fraypost_american", { { "american", "wpn_fps_ass_ak5_npc" } } },
-	{ "_init_jowi", "fraypost_jowi", { { "jowi", "wpn_fps_snp_tti_npc" } } },
-	{ "_init_old_hoxton", "fraypost_hoxton", { { "old_hoxton", "wpn_fps_ass_m14_npc" } } },
-	{ "_init_clover", "fraypost_clover", { { "female_1", "wpn_fps_ass_l85a2_npc" } } },
-	{ "_init_dragan", "fraypost_dragan", { { "dragan", "wpn_fps_ass_vhs_npc" } } },
-	{ "_init_jacket", "fraypost_jacket", { { "jacket", "wpn_fps_smg_cobray_npc" } } },
-	{ "_init_bonnie", "fraypost_bonnie", { { "bonnie", "wpn_fps_shot_b682_npc" } } },
-	{ "_init_sokol", "fraypost_sokol", { { "sokol", "wpn_fps_ass_asval_npc" } } },
-	{ "_init_dragon", "fraypost_dragon", { { "dragon", "wpn_fps_smg_baka_npc" } } },
-	{ "_init_bodhi", "fraypost_bodhi", { { "bodhi", "wpn_fps_snp_model70_npc" } } },
-	{ "_init_jimmy", "fraypost_jimmy", { { "jimmy", "wpn_fps_smg_sr2_npc" } } },
-	{ "_init_sydney", "fraypost_sydney", { { "sydney", "wpn_fps_ass_tecci_npc" } } },
-	{ "_init_wild", "fraypost_wild", { { "wild", "wpn_fps_sho_boot_npc" } } },
-	{ "_init_chico", "fraypost_chico", { { "chico", "wpn_fps_ass_contraband_npc" } } },
-	{ "_init_max", "fraypost_max", { { "max", "wpn_fps_ass_akm_gold_npc" } } },
-	{ "_init_joy", "fraypost_joy", { { "joy", "wpn_fps_smg_shepheard_npc" } } },
-	{ "_init_myh", "fraypost_myh", { { "myh", "wpn_fps_ass_ching_npc" } } },
-	{ "_init_ecp", "fraypost_ecps", { { "ecp_female", "wpn_fps_ass_famas_npc" }, { "ecp_male", "wpn_fps_ass_scar_npc" } } }
+local FRAYBotWeaponLoadouts = {
+	russian = "wpn_fps_ass_amcar_npc",
+	german = "wpn_fps_shot_r870_npc",
+	spanish = "wpn_fps_lmg_m249_npc",
+	american = "wpn_fps_ass_ak5_npc",
+	jowi = "wpn_fps_snp_tti_npc",
+	old_hoxton = "wpn_fps_ass_m14_npc",
+	female_1 = "wpn_fps_ass_l85a2_npc",
+	dragan = "wpn_fps_ass_vhs_npc",
+	jacket = "wpn_fps_smg_cobray_npc",
+	bonnie = "wpn_fps_shot_b682_npc",
+	sokol = "wpn_fps_ass_asval_npc",
+	dragon = "wpn_fps_smg_baka_npc",
+	bodhi = "wpn_fps_snp_model70_npc",
+	jimmy = "wpn_fps_smg_sr2_npc",
+	sydney = "wpn_fps_ass_tecci_npc",
+	wild = "wpn_fps_sho_boot_npc",
+	chico = "wpn_fps_ass_contraband_npc",
+	max = "wpn_fps_ass_akm_gold_npc",
+	joy = "wpn_fps_smg_shepheard_npc",
+	myh = "wpn_fps_ass_ching_npc",
+	ecp_female = "wpn_fps_ass_famas_npc",
+	ecp_male = "wpn_fps_ass_scar_npc"
 }
 
-for _, hook_data in ipairs(FRAYBotWeaponHooks) do
-	local init_func = hook_data[1]
-	local hook_id = hook_data[2]
-	local loadout = hook_data[3]
+Hooks:PostHook(CharacterTweakData, "_init_team_ai", "fraypost_team_ai", function(self, presets)
+	local move_speed = presets and presets.move_speed and presets.move_speed.teamai
 
-	Hooks:PostHook(CharacterTweakData, init_func, hook_id, function(self, presets)
-		for _, data in ipairs(loadout) do
-			local character = self[data[1]]
-			character.weapon.weapons_of_choice.primary = data[2]
-			character.move_speed = presets.move_speed.teamai
+	for tweak_name, primary_weapon in pairs(FRAYBotWeaponLoadouts) do
+		local character = self[tweak_name]
+		local weapons_of_choice = character and character.weapon and character.weapon.weapons_of_choice
+
+		if weapons_of_choice then
+			weapons_of_choice.primary = primary_weapon
 		end
-	end)
-end
+
+		if character and move_speed then
+			character.move_speed = move_speed
+		end
+	end
+end)
 
 --End Perferred Bot Weapons
 
@@ -4460,6 +4458,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		"drug_lord_boss_stealth",
 		"triad_boss",
 		"triad_boss_no_armor",
+		"auctioneer_boss",
 		"sniper",
 		"armored_sniper",
 		"shadow_spooc",
