@@ -872,6 +872,18 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits",
 		}
 	end
 
+	if difficulty_index > 7 then
+		self.unit_categories.FBI_swat_M4.unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1")
+		}
+		self.unit_categories.CS_swat_R870.unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_city_2/ene_zeal_city_2")
+		}
+		self.unit_categories.CS_swat_MP5.unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3")
+		}
+	end
+
 	for category_name, category in pairs(self.unit_categories) do
 		if category.unit_types then
 			local stock_units = vanilla_faction_units[category_name] or {}
