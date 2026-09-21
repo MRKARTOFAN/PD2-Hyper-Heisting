@@ -838,7 +838,7 @@ Hooks:PostHook(GroupAITweakData, "_init_unit_categories", "fray_special_limits",
 		self.unit_categories.FBI_LHmix = {
 			unit_types = {
 				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_city_1/ene_zeal_city_1"),
+					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_city_3/ene_zeal_city_3"),
 					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
 				},
 				bo_hh = {
