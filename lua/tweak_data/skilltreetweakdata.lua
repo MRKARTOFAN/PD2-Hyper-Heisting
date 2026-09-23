@@ -463,7 +463,7 @@ function SkillTreeTweakData:init(tweak_data)
 		},
 		{
 			upgrades = {
-				"start_action_stam_drain_reduct"
+				"player_start_action_stam_drain_reduct"
 			},
 			cost = self.costs.pro
 		},

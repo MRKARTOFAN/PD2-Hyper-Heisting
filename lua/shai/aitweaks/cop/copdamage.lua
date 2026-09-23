@@ -56,7 +56,8 @@ function CopDamage:roll_critical_hit(attack_data, damage)
 	damage = damage or attack_data.damage
 
 	if self:can_be_critical(attack_data) and math.random() < managers.player:critical_hit_chance() then
-		return true, damage * 3
+		local multiplier = managers.player:has_category_upgrade("player", "crit_damage_up") and 3 or 1.5
+		return true, damage * multiplier
 	end
 
 	return false, damage
@@ -102,11 +103,14 @@ end)
 local damage_explosion = CopDamage.damage_explosion
 function CopDamage:damage_explosion(attack_data, ...)
 	local no_blood = self._no_blood
+	local previous_attack_data = self._hh_active_attack_data
 	self._no_blood = attack_data.variant == "stun"
+	self._hh_active_attack_data = attack_data
 
 	local result = damage_explosion(self, attack_data, ...)
 
 	self._no_blood = no_blood
+	self._hh_active_attack_data = previous_attack_data
 
 	return result
 end
@@ -170,9 +174,21 @@ end
 local damage_fire_original = CopDamage.damage_fire
 function CopDamage:damage_fire(attack_data, ...)
 	local head_body_name = self._head_body_name
+	local previous_attack_data = self._hh_active_attack_data
 	self._head_body_name = nil
+	self._hh_active_attack_data = attack_data
 	local result = damage_fire_original(self, attack_data, ...)
 	self._head_body_name = head_body_name
+	self._hh_active_attack_data = previous_attack_data
+	return result
+end
+
+local damage_tase_original = CopDamage.damage_tase
+function CopDamage:damage_tase(attack_data, ...)
+	local previous_attack_data = self._hh_active_attack_data
+	self._hh_active_attack_data = attack_data
+	local result = damage_tase_original(self, attack_data, ...)
+	self._hh_active_attack_data = previous_attack_data
 	return result
 end
 
@@ -185,7 +201,7 @@ end)
 local _hh_apply_bullet_death_resist
 local _apply_damage_reduction_original = CopDamage._apply_damage_reduction
 function CopDamage:_apply_damage_reduction(damage, attack_data, ...)
-	attack_data = attack_data or self._hh_active_bullet_attack_data
+	attack_data = attack_data or self._hh_active_attack_data
 	damage = _apply_damage_reduction_original(self, damage, attack_data, ...)
 
 	if self._last_medic_heal_t and TimerManager:game():time() - self._last_medic_heal_t < 2 then
@@ -269,11 +285,12 @@ function CopDamage:damage_bullet(attack_data, ...)
 		attack_data.variant = "bullet"
 	end
 
-	self._hh_active_bullet_attack_data = attack_data
+	local previous_attack_data = self._hh_active_attack_data
+	self._hh_active_attack_data = attack_data
 
 	local result = damage_bullet_original(self, attack_data, ...)
 
-	self._hh_active_bullet_attack_data = nil
+	self._hh_active_attack_data = previous_attack_data
 	self._hh_bullet_resist_effect_to_sync = nil
 
 	return result
@@ -351,16 +368,6 @@ Hooks:PreHook(CopDamage, "damage_melee", "hh_melee_headshot_damage", function(se
 	local damage = attack_data.damage
 
 	if attack_data.attacker_unit and attack_data.attacker_unit == managers.player:player_unit() then
-		local critical_hit, crit_damage = self:roll_critical_hit(attack_data, damage)
-
-		if critical_hit then
-			managers.hud:on_crit_confirmed()
-			damage = crit_damage
-			attack_data.critical_hit = true
-		else
-			managers.hud:on_hit_confirmed()
-		end
-
 		if head then
 			managers.player:on_headshot_dealt()
 		end

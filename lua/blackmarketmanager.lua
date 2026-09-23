@@ -42,10 +42,6 @@ function BlackMarketManager:recoil_addend(name, categories, recoil_index, silenc
 		for i = 1, #categories do
 			local category = categories[i]
 			index = index + managers.player:upgrade_value(category, "recoil_index_addend", 0)
-			
-			if category == "shotgun" then 
-				index = index + managers.player:upgrade_value("player", "shot_shoulders_recoil_addend", 0)
-			end
 		end
 		
 		if managers.player:player_unit() and managers.player:player_unit():character_damage():is_suppressed() then

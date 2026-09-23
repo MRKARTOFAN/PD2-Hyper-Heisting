@@ -16,6 +16,10 @@ function ShotgunBase:fire_rate_multiplier()
 		multiplier = multiplier * (1 + math.abs(managers.player._pop_pop_mul))
 	end
 
+	if self._setup and self._setup.user_unit == managers.player:player_unit() then
+		multiplier = multiplier * managers.player:cool_hunting_fire_rate_multiplier()
+	end
+
 	return multiplier
 end
 
@@ -84,8 +88,6 @@ function ShotgunBase:get_damage_falloff(damage, col_ray, user_unit)
 	if new_damage < damage_percent_min then
 		new_damage = damage_percent_min
 	end
-
-	--log("damage is: " .. tostring(new_damage) .. "")
 
 	return new_damage
 end

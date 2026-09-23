@@ -619,7 +619,7 @@ Hooks:Add("LocalizationManagerPostInit", "FRAY_overhaul", function(loc)
 			["menu_shotgun_cqb_beta_desc"] = "BASIC: ##$basic##\nYour weapon swap speed is increased by ##+50%## while you are ##sprinting##.\n\nACE: ##$pro##\nYou reload shotguns ##+20%## faster while sprinting and ##+40%## faster when you're not.\n\n##You don't want to know what it actually is, but there's no arguing with the results.##",
 			
 			["menu_shotgun_impact_beta"] = "Shotgun Shoulders",
-			["menu_shotgun_impact_beta_desc"] = "BASIC: ##$basic##\nYour shotguns gain ##+12## stability.\n\nACE: ##$pro##\nYour shotguns deal ##+25%## damage to ##healthy enemies##.\n\n##FLASHYN!##",
+			["menu_shotgun_impact_beta_desc"] = "BASIC: ##$basic##\nShotgun swap speed is ##4x## faster.\n\nACE: ##$pro##\nAll weapons receive ##8x## faster swap speed.\n\n##FLASHYN!##",
 			
 			["menu_close_by_beta"] = "Cool Hunting",
 			["menu_close_by_beta_desc"] = "BASIC: ##$basic##\nYour shotguns gain ##+25%## increased magazine capacity.\n\nIn addition, your shotguns with magazines have their magazine size increased by ##+8##.\n\nACE: ##$pro##\nYour shotguns gain a ##+0.5%## increase to firerate when you kill an enemy.\n\nThe buff lasts ##2## seconds, and can be stacked ##infinitely##, with each activation ##refreshing it's duration##.\n\n##Problem solved!##",

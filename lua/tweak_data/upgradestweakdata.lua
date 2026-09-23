@@ -613,18 +613,18 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 		}
 	}
 	
-	self.values.player.shot_shoulders_recoil_addend = {
-		3
+	self.values.player.shot_shoulders_swap_basic = {
+		4
 	}
-	self.values.player.shot_shoulders_crowbar = {
-		1.25
+	self.values.player.shot_shoulders_swap_aced = {
+		8
 	}
 	self.definitions.player_shot_shoulders_basic = {
 		name_id = "menu_shot_shoulders_basic",
 		category = "feature",
 		upgrade = {
 			value = 1,
-			upgrade = "shot_shoulders_recoil_addend",
+			upgrade = "shot_shoulders_swap_basic",
 			category = "player"
 		}
 	}
@@ -633,7 +633,7 @@ Hooks:PostHook(UpgradesTweakData, "init", "skillupgrades", function(self, tweak_
 		category = "feature",
 		upgrade = {
 			value = 1,
-			upgrade = "shot_shoulders_crowbar",
+			upgrade = "shot_shoulders_swap_aced",
 			category = "player"
 		}
 	}

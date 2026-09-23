@@ -396,7 +396,6 @@ end
 
 function PlayerManager:consume_bloodthirst_reload()	
 	if self._melee_reload_speed_active then
-		--log("*toilet flush noise*")
 		self._enemies_killed_bloodthirst = nil
 		self._melee_damage_mult = nil
 		self._melee_reload_speed_active = nil
@@ -587,7 +586,8 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	local t = Application:time()
 
 	if variant ~= "melee" and equipped_base and self:has_category_upgrade("player", "cool_hunting_aced") and equipped_base:is_category("shotgun") then
-		self._cool_chain_mul = self._cool_chain_mul and self._cool_chain_mul - 0.05 or 0.95
+		local stacks = self._cool_hunting_t and self._cool_hunting_t > t and self._cool_hunting_stacks or 0
+		self._cool_hunting_stacks = (stacks or 0) + 1
 		self._cool_hunting_t = t + 2
 	end
 
@@ -650,6 +650,14 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	return effect_sync_index
 end
 
+function PlayerManager:cool_hunting_fire_rate_multiplier()
+	if self._cool_hunting_t and self._cool_hunting_t > Application:time() then
+		return 1 + (self._cool_hunting_stacks or 0) * 0.005
+	end
+
+	return 1
+end
+
 function PlayerManager:add_yield_my_flesh_health_damage(health_damage_ratio)
 	self._yield_my_flesh_damage_ratio = math.min(1, (self._yield_my_flesh_damage_ratio or 0) + health_damage_ratio)
 end
@@ -684,7 +692,7 @@ Hooks:PostHook(PlayerManager, "update", "fray_update", function(self, t, dt)
 		end
 
 		if self._cool_hunting_t and self._cool_hunting_t < t then
-			self._cool_chain_mul = nil
+			self._cool_hunting_stacks = nil
 			self._cool_hunting_t = nil
 		end
 
@@ -839,17 +847,14 @@ function PlayerManager:activate_heal_upgrades(token, syringebasic, syringeaced)
 end
 
 function PlayerManager:upd_pop_pop(t)
-	--log("hmm")
 	local player_unit = self:player_unit()
 
 	if not player_unit then
-		--log("how")
 		self._pop_pop_mul = nil
 		return
 	end
 	
 	if not player_unit:movement():current_state()._shooting_t_pop then
-		--log("hmm")
 		self._pop_pop_mul = nil
 		return
 	end
@@ -857,7 +862,6 @@ function PlayerManager:upd_pop_pop(t)
 	local weapon_unit = self:equipped_weapon_unit()
 	
 	if not weapon_unit or weapon_unit:base():fire_mode() == "single" then
-		--log("nani")
 		return
 	end
 	
@@ -866,15 +870,12 @@ function PlayerManager:upd_pop_pop(t)
 	if state._shooting_t_pop then
 		local pop_t = state._shooting_t_pop - t
 		pop_t = math.max(pop_t, 0)
-		--log("pop_t is " .. tostring(pop_t) .. "")
 		local lerp_value = math.clamp(pop_t, 0, 3) / 3
 		local pop_mul = math.lerp(0.25, 0, lerp_value)
 		
 		self._pop_pop_mul = 0 - pop_mul
 		
-		--log("pop is " .. tostring(self._pop_pop_mul) .. "")
 	else
-		--log("aargh")
 		self._pop_pop_mul = nil
 	end
 		

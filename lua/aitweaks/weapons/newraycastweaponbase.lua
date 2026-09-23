@@ -16,6 +16,10 @@ function NewRaycastWeaponBase:fire_rate_multiplier()
 		multiplier = multiplier * (1 + math.abs(managers.player._pop_pop_mul))
 	end
 
+	if self:is_category("shotgun") and self._setup and self._setup.user_unit == managers.player:player_unit() then
+		multiplier = multiplier * managers.player:cool_hunting_fire_rate_multiplier()
+	end
+
 	return multiplier
 end
 

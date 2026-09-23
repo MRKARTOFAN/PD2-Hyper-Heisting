@@ -1819,9 +1819,21 @@ function PlayerStandard:_interupt_action_reload(t)
 	self:send_reload_interupt()
 end 
 
-function PlayerStandard:_get_swap_speed_multiplier()
-	local multiplier = 12 
-	local weapon_tweak_data = self._equipped_unit:base():weapon_tweak_data()
+function PlayerStandard:_get_swap_speed_multiplier(shotgun_swap)
+	local weapon_base = self._equipped_unit:base()
+	local weapon_tweak_data = weapon_base:weapon_tweak_data()
+	local shoulders_basic = managers.player:upgrade_value("player", "shot_shoulders_swap_basic", 0)
+	local shoulders_aced = managers.player:upgrade_value("player", "shot_shoulders_swap_aced", 0)
+	local multiplier = shoulders_aced > 0 and shoulders_aced or 1
+
+	if shotgun_swap == nil then
+		shotgun_swap = weapon_base:is_category("shotgun")
+	end
+
+	if shotgun_swap and shoulders_basic > 0 then
+		multiplier = shoulders_aced > 0 and multiplier + shoulders_basic or shoulders_basic
+	end
+
 	multiplier = multiplier * managers.player:upgrade_value("weapon", "swap_speed_multiplier", 1)
 	multiplier = multiplier * managers.player:upgrade_value("weapon", "passive_swap_speed_multiplier", 1)
 
@@ -1846,7 +1858,19 @@ function PlayerStandard:_get_swap_speed_multiplier()
 end
 
 function PlayerStandard:_start_action_unequip_weapon(t, data)
-	local speed_multiplier = self:_get_swap_speed_multiplier()
+	local target_selection
+
+	if data.next then
+		target_selection = self._ext_inventory:get_next_selection()
+	elseif data.previous then
+		target_selection = self._ext_inventory:get_previous_selection()
+	elseif data.selection_wanted then
+		target_selection = self._ext_inventory:get_selected(data.selection_wanted)
+	end
+
+	local target_unit = target_selection and target_selection.unit
+	data._hh_shotgun_swap = self._equipped_unit:base():is_category("shotgun") or (target_unit and alive(target_unit) and target_unit:base():is_category("shotgun")) or false
+	local speed_multiplier = self:_get_swap_speed_multiplier(data._hh_shotgun_swap)
 
 	self._equipped_unit:base():tweak_data_anim_stop("fire")
 	self:_check_stop_shooting()
@@ -1911,9 +1935,11 @@ function PlayerStandard:_start_action_equip_weapon(t)
 		weapon_base._next_fire_allowed = t
 	end
 
-	local speed_multiplier = self:_get_swap_speed_multiplier()
-	
-	speed_multiplier = speed_multiplier + 0.5 --why not?
+	local speed_multiplier = self:_get_swap_speed_multiplier(self._change_weapon_data._hh_shotgun_swap)
+
+	if managers.player:has_category_upgrade("player", "shot_shoulders_swap_aced") then
+		speed_multiplier = speed_multiplier + 0.5
+	end
 
 	self._equipped_unit:base():tweak_data_anim_stop("unequip")
 	self._equipped_unit:base():tweak_data_anim_play("equip", speed_multiplier)
