@@ -51,6 +51,16 @@ Hooks:PostHook(WeaponTweakData, "init", "lore_init", function(self, tweakdata)
 	self.silserbu_npc = deep_clone(self.r870_npc)
 	self.silserbu_npc.sounds.prefix = "serbu_npc"
 	self.silserbu_npc.has_suppressor = "suppressed_a"
+
+	self.bleckert_npc = deep_clone(self.r870_npc)
+	self.bleckert_npc.categories = clone(self.bleckert_crew.categories)
+	self.bleckert_npc.sounds.prefix = self.bleckert_crew.sounds.prefix
+	self.bleckert_npc.muzzleflash = self.bleckert_crew.muzzleflash
+	self.bleckert_npc.muzzleflash_silenced = self.bleckert_crew.muzzleflash_silenced
+	self.bleckert_npc.shell_ejection = self.bleckert_crew.shell_ejection
+	self.bleckert_npc.hold = self.bleckert_crew.hold
+	self.bleckert_npc.reload = self.bleckert_crew.reload
+	self.bleckert_npc.anim_usage = self.bleckert_crew.anim_usage or self.bleckert_crew.usage
 	
 	self.galil_npc = deep_clone(self.m4_npc)
 	self.galil_npc.sounds.prefix = "galil_npc"

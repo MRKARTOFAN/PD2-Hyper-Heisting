@@ -143,6 +143,7 @@
 	<post :script_path="shai/quicksmokegrenade.lua" :hook_id="units/weapons/grenades/quicksmokegrenade"/>
 
 	<post :script_path="shai/aitweaks/weapons/raycastweaponbase.lua" :hook_id="units/weapons/raycastweaponbase"/>
+	<post :script_path="shai/aitweaks/weapons/npcraycastweaponbase.lua" :hook_id="units/weapons/npcraycastweaponbase"/>
 	<post :script_path="shai/akimboweaponbase.lua" :hook_id="units/weapons/akimboweaponbase"/>
 	<!-- SHAI ends here -->
 	<post :script_path="aitweaks/weapons/newraycastweaponbase.lua" :hook_id="units/weapons/newraycastweaponbase"/>

@@ -1,6 +1,8 @@
 local origin_presets = CharacterTweakData._presets
 local origin_create_table_structure = CharacterTweakData._create_table_structure
 local origin_charmap = CharacterTweakData.character_map
+local origin_init_security = CharacterTweakData._init_security
+local origin_init_auctioneer_boss = CharacterTweakData._init_auctioneer_boss
 
 local function HHVec(strafe, fwd, bwd)
 	return { strafe = strafe, fwd = fwd, bwd = bwd }
@@ -125,6 +127,10 @@ end
 
 function CharacterTweakData:_presets(tweak_data)
 	local presets = origin_presets(self, tweak_data)
+	local vanilla_auctioneer = { _enemy_list = {} }
+	origin_init_security(vanilla_auctioneer, presets)
+	origin_init_auctioneer_boss(vanilla_auctioneer, presets)
+	self._fray_vanilla_auctioneer = deep_clone(vanilla_auctioneer.auctioneer_boss)
 
 	--replace existing suppression presets with lighter and consistent ones to accomodate for lack of immediate enemy suppression
 	presets.suppression = {
@@ -2695,8 +2701,12 @@ function CharacterTweakData:_set_characters_weapon_preset(preset)
 	for i = 1, #self._enemy_list do
 		local name = self._enemy_list[i]
 
-		self[name].weapon = presets.weapon[preset]
+		if name ~= "auctioneer_boss" then
+			self[name].weapon = presets.weapon[preset]
+		end
 	end
+
+	self:_multiply_weapon_delay(self.auctioneer_boss.weapon, 0)
 
 	self.sniper.weapon = presets.weapon.rhythmsniper
 	self.heavy_swat_sniper.weapon = presets.weapon.rhythmsniper
@@ -3883,8 +3893,15 @@ end
 
 --difficulty tweaks begin here.
 
+Hooks:PostHook(CharacterTweakData, "_init_auctioneer_boss", "fray_vanilla_auctioneer", function(self)
+	if self._fray_vanilla_auctioneer then
+		self.auctioneer_boss = self._fray_vanilla_auctioneer
+		self._fray_vanilla_auctioneer = nil
+	end
+end)
+
 function CharacterTweakData:_set_normal()
-	self:_multiply_all_hp(2, 1)
+	self:_multiply_all_hp(2, 1, 1, 1)
 	self:_multiply_all_speeds(1, 1)
 	self:_set_characters_crumble_chance(0.5, 0.3, 0.9)
 
@@ -3913,7 +3930,7 @@ end
 --HARD setup begins here, landmark (POW)
 
 function CharacterTweakData:_set_hard()
-	self:_multiply_all_hp(2, 1)
+	self:_multiply_all_hp(2, 1, 1, 1)
 	self:_multiply_all_speeds(1, 1)
 	self:_set_characters_crumble_chance(0.5, 0.3, 0.9)
 
@@ -3942,7 +3959,7 @@ end
 
 --VH setup, landmark (DOG)
 function CharacterTweakData:_set_overkill()
-	self:_multiply_all_hp(4, 1)
+	self:_multiply_all_hp(4, 1, 2, 2)
 	self:_multiply_all_speeds(1, 1)
 	self:_set_characters_crumble_chance(0.4, 0.2, 0.9)
 
@@ -3988,7 +4005,7 @@ end
 --OVK setup, landmark (QBY)
 
 function CharacterTweakData:_set_overkill_145()
-	self:_multiply_all_hp(4, 1)
+	self:_multiply_all_hp(4, 1, 3, 3)
 	self:_set_characters_crumble_chance(0.4, 0.2, 0.9)
 
 	self.tank_mini.HEALTH_INIT = 4000
@@ -4067,7 +4084,7 @@ end
 --MH setup, landmark (1ST ATT)
 
 function CharacterTweakData:_set_easy_wish()
-	self:_multiply_all_hp(4, 1)
+	self:_multiply_all_hp(4, 1, 6, 2)
 	self:_set_characters_crumble_chance(0.3, 0.15, 0.75)
 
 	self.tank_mini.HEALTH_INIT = 4000
@@ -4117,7 +4134,7 @@ end
 --DW setup, landmark (2ND IMP)
 
 function CharacterTweakData:_set_overkill_290()
-	self:_multiply_all_hp(4, 1)
+	self:_multiply_all_hp(4, 1, 6, 1.5)
 	self:_set_characters_crumble_chance(0.3, 0.15, 0.75)
 
 	self.tank_mini.HEALTH_INIT = 4000
@@ -4171,7 +4188,7 @@ end
 --DS setup, the 3rd Strike is what counts. (3RD STR)
 
 function CharacterTweakData:_set_sm_wish()
-	self:_multiply_all_hp(4, 1)
+	self:_multiply_all_hp(4, 1, 6, 1.5)
 	self:_set_characters_crumble_chance(0.25, 0.15, 0.6)
 
 	self.tank.HEALTH_INIT = 2000
@@ -4365,7 +4382,7 @@ function CharacterTweakData:character_map()
 	return char_map
 end
 
-function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
+function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul, auctioneer_hp_mul, auctioneer_hs_mul)
 	local function multiply_health(name)
 		local char = self[name]
 
@@ -4458,7 +4475,6 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		"drug_lord_boss_stealth",
 		"triad_boss",
 		"triad_boss_no_armor",
-		"auctioneer_boss",
 		"sniper",
 		"armored_sniper",
 		"shadow_spooc",
@@ -4466,6 +4482,14 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		"shadow_swat"
 	}) do
 		multiply_health(name)
+	end
+
+	local auctioneer = self.auctioneer_boss
+	if auctioneer then
+		auctioneer.HEALTH_INIT = auctioneer.HEALTH_INIT * (auctioneer_hp_mul or hp_mul)
+		if auctioneer.headshot_dmg_mul then
+			auctioneer.headshot_dmg_mul = auctioneer.headshot_dmg_mul * (auctioneer_hs_mul or hs_mul)
+		end
 	end
 
 	multiply_headshot("security")
